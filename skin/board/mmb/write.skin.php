@@ -394,7 +394,8 @@ if(!$is_error) {
 				<!-- 최소/최대 글자 수 사용 시 -->
 				<p id="char_count_desc">이 게시판은 최소 <strong><?php echo $write_min; ?></strong>글자 이상, 최대 <strong><?php echo $write_max; ?></strong>글자 이하까지 글을 쓰실 수 있습니다.</p>
 				<?php } ?>
-				<?php echo $editor_html; // 에디터 사용시는 에디터로, 아니면 textarea 로 노출 ?>
+				<div id="editor-container" style="margin-top:10px;"></div>
+				<textarea id="wr_content" name="wr_content" style="display:none;"><?php echo $content; ?></textarea>
 				<?php if($write_min || $write_max) { ?>
 				<!-- 최소/최대 글자 수 사용 시 -->
 				<div id="char_count_wrap"><span id="char_count"></span>글자</div>
@@ -445,6 +446,9 @@ if(!$is_error) {
 
 	function fwrite_submit(f)
 	{
+		// 1. Toast UI 에디터의 내용을 가져와서 textarea에 넣기
+    	const contentData = editor.getHTML(); 
+    	f.wr_content.value = contentData;
 		<?php echo $editor_js; // 에디터 사용시 자바스크립트에서 내용을 폼필드로 넣어주며 내용이 입력되었는지 검사함   ?>
 
 		var subject = "";
@@ -494,7 +498,8 @@ if(!$is_error) {
 			}
 		}
 
-<? if($w == '') { ?>
+// 이미지 필수체크 기능
+/* <? if($w == '') { ?>
 		if(f.wr_type.value == 'UPLOAD') {
 			if(document.getElementById('wr_file').value == '') { 
 				alert("업로드할 로그를 등록해 주시길 바랍니다.");
@@ -506,7 +511,7 @@ if(!$is_error) {
 				return false;
 			}
 		}
-<? } ?>
+<? } ?> */
 		document.getElementById("btn_submit").disabled = "disabled";
 		return true;
 	}
@@ -681,6 +686,26 @@ $('#fwrite select').change(function() {
 });
 
 
+</script>
+
+<script>
+// 에디터 초기화
+const editor = new toastui.Editor({
+    el: document.querySelector('#editor-container'),
+    height: '400px',
+    initialEditType: 'wysiwyg',
+    previewStyle: 'vertical',
+    theme: 'dark', // head.sub.php에 다크테마 CSS를 넣었을 경우
+    initialValue: document.querySelector('#wr_content').value,
+    language: 'ko-KR',
+    toolbarItems: [
+        ['heading', 'bold', 'italic', 'strike'],
+        ['hr', 'quote'],
+        ['ul', 'ol', 'task', 'indent', 'outdent'],
+        ['table', 'image', 'link'],
+        ['code', 'codeblock']
+    ]
+});
 </script>
 
 <? } ?>

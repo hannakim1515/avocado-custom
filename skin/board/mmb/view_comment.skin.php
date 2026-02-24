@@ -100,7 +100,7 @@ for ($index=0; $index<count($comment); $index++) {
 		<? } ?>
 	</div>
 
-	<div class="co-content">
+	<div class="co-content toastui-editor-contents">
 		<div class="original_comment_area">
 			<?
 				// 액션 로그 정보 가져 오기
@@ -131,9 +131,19 @@ for ($index=0; $index<count($comment); $index++) {
 				</span>
 			<? } 
 			// 코멘트 출력 부분
-			$log_comment['content'] = autolink($log_comment['content'], $bo_table, $stx); // 자동 링크 및 해시태그, 로그 링크 등 컨트롤 함수
-			$log_comment['content'] = emote_ev($log_comment['content']); // 이모티콘 출력 함수
-			echo $log_comment['content'];
+			// 1. 변수에 담긴 내용을 HTML 엔티티에서 다시 일반 태그로 되돌림
+			$pure_content = htmlspecialchars_decode($log_comment['content']);
+
+			// 2. 만약 내용에 태그가 포함되어 있다면 (에디터 사용)
+			if (preg_match("/<[^>]*>/i", $pure_content)) {
+				// 필터링 없이 원본 그대로 출력
+				echo $pure_content; 
+			} else {
+				// 태그가 없는 일반 댓글이라면 기존 그누보드/아보카도 방식 사용
+				$log_comment['content'] = autolink($log_comment['content'], $bo_table, $stx);
+				$log_comment['content'] = emote_ev($log_comment['content']);
+				echo $log_comment['content'];
+			}
 			?>
 		</div>
 		<? if($log_comment['is_edit']) { ?>
@@ -152,6 +162,8 @@ for ($index=0; $index<count($comment); $index++) {
 		<?php if ($log_comment['is_edit']) { ?><a href="<?php echo $c_edit_href;  ?>" onclick="comment_box('<?php echo $comment_id ?>', '<?=$list_item['wr_id']?>'); return false;" class="mod">수정</a><?php } ?>
 	</div>
 </div>
-<? } ?>
+
+<? 
+} ?>
 
 

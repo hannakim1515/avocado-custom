@@ -129,5 +129,11 @@ if(!defined('G5_IS_ADMIN'))
 <script>
 if(!parent || parent==this) $('html').addClass('single'); 
 </script>
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/theme/toastui-editor-dark.min.css" />
+
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
+<script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.js"></script>
 </head>
 <body>

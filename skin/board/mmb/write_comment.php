@@ -22,7 +22,7 @@ if ($is_comment_write) {
 	<input type="hidden" name="wr_subject" value="<?=$character['ch_name'] ? $character['ch_name'] : "GUEST"?>" />
 
 	<div class="input-comment">
-	<? if(count($mmb_item) > 0) { ?>
+	<? if(is_array($mmb_item) && count($mmb_item) > 0) { ?>
 		<select name="use_item" class="full">
 			<option value="">사용할 아이템 선택</option>
 		<?	for($h=0; $h < count($mmb_item); $h++) { ?>

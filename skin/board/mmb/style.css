@@ -232,3 +232,42 @@
 .guest-box .pw			{ position: relative; padding-left: 60px; box-sizing: border-box; }
 .guest-box .pw label	{ display: block; position: absolute; top: 0; left: 0; width: 60px; line-height: 30px; }
 
+/* 에디터 서식 강제 복구  */
+#log_list .item-comment .co-content.toastui-editor-contents ul,
+#log_list .item-comment .co-content.editor-style-root ul { 
+    list-style: disc !important; 
+    padding-left: 30px !important; 
+    margin: 10px 0 !important; 
+    display: block !important;
+}
+
+#log_list .item-comment .co-content.toastui-editor-contents ol,
+#log_list .item-comment .co-content.editor-style-root ol { 
+    list-style: decimal !important; 
+    padding-left: 30px !important; 
+    margin: 10px 0 !important; 
+    display: block !important;
+}
+
+#log_list .item-comment .co-content.toastui-editor-contents li,
+#log_list .item-comment .co-content.editor-style-root li { 
+    display: list-item !important; 
+    list-style: inherit !important;
+    margin-bottom: 5px !important;
+}
+
+#log_list .item-comment .co-content.toastui-editor-contents blockquote,
+#log_list .item-comment .co-content.editor-style-root blockquote { 
+    border-left: 4px solid #5bc0de !important; 
+    margin: 15px 0 !important; 
+    padding: 10px 20px !important; 
+    background: rgba(255,255,255,0.05) !important;
+    font-style: italic !important;
+    display: block !important;
+}
+
+/* 폰트 스타일 강제 적용 */
+#log_list .item-comment .co-content.toastui-editor-contents em,
+#log_list .item-comment .co-content.toastui-editor-contents i { font-style: italic !important; }
+#log_list .item-comment .co-content.toastui-editor-contents strong,
+#log_list .item-comment .co-content.toastui-editor-contents b { font-weight: bold !important; }
