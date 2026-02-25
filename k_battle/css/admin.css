@@ -1,0 +1,92 @@
+*{ 
+    box-sizing:border-box;
+    font-family:"main";
+}
+.ui-btn, th, td{
+    color:white !important;
+    background-color:black!important;
+}
+
+form{
+    padding: 10px;
+}
+
+.theme-form{
+    margin-bottom:10px;
+}
+.theme-form.member *{
+   text-align:center;
+}
+
+.theme-form td:first-child{
+    text-align:center;
+    background-color:black;
+    color:white;
+}
+
+.theme-form td span{
+    display:inline-block;
+    min-width:120px;
+    font-size:10px;
+    background-color:grey;
+    color:white;
+    padding: 0 10px;
+}
+
+.btns{
+    display:flex;
+    position:sticky;
+    top:0;
+    left:0;
+    justify-content:center;
+    align-items:center;
+    padding:5px 10px;
+    background-color:black;
+    z-index: 1;
+}
+
+.btns .ui-btn{
+    width:100%; 
+}
+
+.search_area{
+    display:flex;
+}
+.search_area form{
+    width:100%;
+    text-align:right;
+}
+.search_area form input,
+.search_area form select{
+    max-width:150px;
+}
+
+p.info:not(#action-info .info){
+    display:none;
+}
+
+.ui-btn{
+    display:inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.admin-wrapper .admin-area{
+    padding: 10px;
+}
+.admin-wrapper .title{
+    text-align:center;
+    background-color:white;
+    color:black;
+    padding: 10px 0;
+    margin: 10px auto;
+}
+.admin-wrapper .btn-list{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.admin-wrapper .btn-list *{
+    width:100%;
+}

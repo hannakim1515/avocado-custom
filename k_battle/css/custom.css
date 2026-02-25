@@ -1,0 +1,146 @@
+:root {
+    /*행동 선택 버튼*/
+    --action-select-size:44px;
+    --action-select-background: linear-gradient(to top, black, lightgrey);
+    --action-select-border-radius:5px;
+    --action-select-fontcolor:white;
+    --action-select-border:1px solid darkgrey;
+    --action-select-textshadow: -1px 0px black, 0px 1px black, 1px 0px black, 0px -1px black;
+    
+    /*행동 정보창*/
+    --action-info-background:linear-gradient(to top, #99999980, #ffffff80);
+    --action-info-border-radius:5px;
+    --action-info-fontcolor:black;
+
+    /*전투 로그*/
+    --log-area-font-family:"main";
+    --log-area-max-width:300px;
+    --log-area-fontcolor:rgb(255, 255, 255);
+    --log-area-background:linear-gradient(to top, #ffffff80,transparent);
+
+    /*전투 로그-턴 타이틀*/
+    --log-area-log-title-border-radius:10px;
+
+    --log-area-log-title-background-system:linear-gradient(to top, #2f4284e0,#9dd3e4aa);
+    --log-area-log-title-border-system:none;
+    --log-area-log-title-fontcolor-system:white;
+
+    --log-area-log-title-background-ch:linear-gradient(to top, #2f4284e0,#9dd3e4aa);
+    --log-area-log-title-border-ch:none;
+    --log-area-log-title-fontcolor-ch:white;
+    
+    --log-area-log-title-background-mo:linear-gradient(to top, #7c0e0ee8,#ffc1c1aa);
+    --log-area-log-title-border-mo:none;
+    --log-area-log-title-fontcolor-mo:white;
+
+    /*전투 로그-행동 타이틀*/
+    --log-area-act-title-border-radius:5px;
+
+    --log-area-act-title-background-atk:linear-gradient(to left, #7c0e0ee8,transparent);
+    --log-area-act-title-border-atk:none;
+    --log-area-act-title-fontcolor-atk:white;
+
+    --log-area-act-title-background-heal:linear-gradient(to left, #2f4284e0,transparent);
+    --log-area-act-title-border-heal:none;
+    --log-area-act-title-fontcolor-heal:white;
+
+    --log-area-act-title-background-skill:linear-gradient(to left, #087a2caa,transparent);
+    --log-area-act-title-border-skill:none;
+    --log-area-act-title-fontcolor-skill:white;
+
+    --log-area-act-title-background-item:linear-gradient(to left, #d89912aa,transparent);
+    --log-area-act-title-border-item:none;
+    --log-area-act-title-fontcolor-item:white;
+
+    --log-area-act-title-background-retire:linear-gradient(to left, #000000aa,transparent);
+    --log-area-act-title-border-retire:none;
+    --log-area-act-title-fontcolor-retire:white;
+    
+    /*전투 로그-수치 표기*/
+    --log-area-critical-fontcolor:gold;
+    --log-area-minus-fontcolor:crimson;
+    --log-area-plus-fontcolor:#3a88a8;
+    --log-area-turn-fontcolor:#3aa03a;
+
+    /*전투 로그-스킬 사용*/
+    --log-area-skill-icon:"block";
+    --log-area-skill-icon-size:20px;
+    --log-area-skill-name-fontsize:13px;
+    --log-area-skill-name-shadow:drop-shadow(0px 0px 2px palegoldenrod);
+    
+    --log-area-skill-info-background:#ffffff60;
+    --log-area-skill-info-border:1px solid white;
+    --log-area-skill-info-radius:5px;
+    --log-area-skill-info-fontsize:11px;
+
+    /*유닛 리스트-단순*/
+    --unit-list-border-radius:5px;
+    --unit-list-font-size:10px;
+    --unit-list-fontcolor:white;
+
+    --unit-list-item-thumb-width:80px;
+    --unit-list-item-thumb-background:linear-gradient(to top, black, #ffffff00);
+    --unit-list-item-thumb-border-radius:50px;
+    --unit-list-item-thumb-border:none;
+
+    --unit-list-item-width:140px;
+    --unit-list-item-background:transparent;
+    --unit-list-item-border-radius:0px;
+    --unit-list-item-border:none;
+
+    --unit-list-item-name-fontcolor:white;
+    --unit-list-item-name-fontsize:12px;
+    --unit-list-item-name-textshadow:-1px 0px black, 0px 1px black, 1px 0px black, 0px -1px black;
+    --unit-list-item-article-fontsize:9px;
+
+    /*유닛 세부정보*/
+    --unit-info-bar-height:15px;
+    --unit-info-bar-fontcolor:white;
+    --unit-info-bar-background:#00000040;
+    --unit-info-bar-background-hp:rgb(70, 22, 32);
+    --unit-info-bar-background-mp:rgb(103, 157, 178);
+
+    --unit-info-thumb-max-width:80px;
+    --unit-info-name-fontsize:16px;
+
+    --unit-info-bufficon-border-radius:5px;
+    --unit-info-bufficon-background-turndone:black;
+    --unit-info-bufficon-iconcolor-turndone:white;
+    --unit-info-bufficon-border-turndone:none;
+
+    --unit-info-bufficon-background-aggr:#c22e4a;
+    --unit-info-bufficon-iconcolor-aggr:white;
+    --unit-info-bufficon-border-aggr:none;
+
+    --unit-info-bufficon-background-stun:#f09f36;
+    --unit-info-bufficon-iconcolor-stun:white;
+    --unit-info-bufficon-border-stun:none;
+
+    --unit-info-bufficon-background-buff:#498662;
+    --unit-info-bufficon-iconcolor-buff:white;
+    --unit-info-bufficon-border-buff:none;
+
+    --unit-info-bufficon-background-debuff:#90419f;
+    --unit-info-bufficon-iconcolor-debuff:white;
+    --unit-info-bufficon-border-debuff:none;
+
+    /*강화*/
+
+    --ug-light-color:#f09f36;
+    --ug-fade-color:white;
+    --ug-item-background:linear-gradient(to top, black, lightgrey);
+    --ug-item-border:1px solid darkgrey;
+    --ug-item-border-radius:5px;
+    --ug-item-name-fontcolor:white;
+    --ug-item-name-fontsize:inherit;
+    --ug-item-name-textshadow: -1px 0px black, 0px 1px black, 1px 0px black, 0px -1px black;
+    --ug-info-background:transparent;
+    --ug-info-border-radius:5px;
+    --ug-info-fontcolor:white;
+    --ug-info-fontsize:16px;
+    --ug-fail-color:crimson;
+    --ug-success-color:#f09f36;
+    --ug-upgrade-color:#f058ee;
+}
+
+

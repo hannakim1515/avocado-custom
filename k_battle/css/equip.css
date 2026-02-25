@@ -1,0 +1,30 @@
+
+.equip-img:has(.eq_lv):before{
+    content:'';
+     position:absolute;
+     top:0;
+     left:0;
+     width:100%;
+     height:100%;
+     background:linear-gradient(to top, #ffbf3fd6, #7b7b7b00);
+     z-index:0;
+ }
+ .equip-img img{
+    z-index:1;
+ }
+ 
+ .eq_lv{
+     position:absolute;
+     bottom:1px;
+     right:1px;
+     font-size:8px!important;
+     line-height:11px!important;
+     text-shadow:none!important;
+     font-weight:900;
+     color:black;
+     background-color:#ffbf3f;
+     padding: 0 2px!important;
+     text-align:center;
+     border-radius:3px;
+     z-index:1;
+ }

@@ -1,0 +1,269 @@
+@charset "utf-8";
+
+#wrap {display:block; position:fixed; top:0; left:0; right:0; bottom:0; overflow:hidden !important;}
+* {box-sizing:border-box;}
+
+.dungeonWrap {display:block; position:relative; min-width:1024px; min-height:850px; height:100%; overflow:hidden;}
+
+
+/***********************************
+	상단 컨트롤 영역
+***********************************/
+
+.dungeon-top-area {display:block; position:absolute; top:0; left:0; right:0; height:70px; z-index:999;}
+.dungeon-top-area .inner {display:table; position:relative; width:100%; height:100%;}
+.dungeon-top-area .inner > * {display:table-cell; vertical-align:middle;}
+.dungeon-top-area .inner .turn {width:120px; text-align:center; background:#000;}
+.dungeon-top-area .inner .turn strong {display:block; font-size:20px;}
+
+.dungeon-top-area .control {padding-left:15px;}
+.dungeon-top-area .control a {display:inline-block; position:relative; padding:10px 15px; background:#333; color:#fff; border-radius:9em;}
+.dungeon-top-area .control a.off {background:#000;}
+
+
+/***********************************
+	메인 컨텐츠 레이아웃 영역
+***********************************/
+
+.dungeon-content-area {display:block; position:absolute; top:70px; bottom:0; left:0; right:0;}
+.dungeon-content-area .inner {height:100%;}
+
+.dungeon-active-pannel {position:absolute; left:0; top:0; bottom:0; width:38%;}
+.monster-active-pannel {position:absolute; right:0; top:0; bottom:0; width:60%;}
+
+@media all and (max-width:1400px) {
+	.dungeon-active-pannel {width:520px; z-index:1;}
+	.monster-active-pannel {width:800px; z-index:0;}
+}
+
+
+/***********************************
+	레이드몹 영역
+***********************************/
+
+.monster-active-pannel .pannel {display:block; position:relative; width:100%; height:100%; z-index:1;}
+.monster-active-pannel .allTurn {display:block; position:absolute; top:-70px; right:0; width:100px; height:100px; z-index:5; text-align:center; background:#850325;}
+.monster-active-pannel .allTurn .mid {display:table; width:100%; height:100%;}
+.monster-active-pannel .allTurn .mid > * {display:table-cell; vertical-align:middle;}
+.monster-active-pannel .allTurn span,
+.monster-active-pannel .allTurn strong {display:block; color:#fff;}
+.monster-active-pannel .allTurn strong {font-size:26px;}
+.monster-active-pannel .allTurn span {font-size:14px; line-height:1; margin-bottom:10px;}
+
+.monster-active-pannel .img {display:block; position:absolute; bottom:0; top:0; left:0; right:0; text-align:center; z-index:-1;}
+.monster-active-pannel .img img {display:block; position:relative; width:100%; height:100%; object-fit:contain;}
+
+.monster-active-pannel .status {display:block; position:absolute; width:50%; left:25%; bottom:120px;}
+.monster-active-pannel .status dl {display:table; width:100%; table-layout:fixed; margin:0 0 .5em;}
+.monster-active-pannel .status dl > * {display:table-cell; vertical-align:middle; color:#ff8b8b;}
+.monster-active-pannel .status dl dt {font-size:1.1em; width:2em;}
+.monster-active-pannel .status dl dd {position:relative; border:1px solid #ff8b8b; height:1.7em; box-sizing:border-box; padding:.2em;}
+.monster-active-pannel .status dl dd > span {display:block; position:relative; height:100%; background:#ff8b8b;}
+.monster-active-pannel .status .count {float:left; margin-left:2.2em; color:#ff8b8b;}
+.monster-active-pannel .status .buff {float:right; background:#000; padding:3px 5px; border-radius:5px;}
+.monster-active-pannel .status .buff span {padding:0 5px; font-size:11px;}
+.monster-active-pannel .status .name {display:block; position:relative; text-align:center; font-size:20px; padding:10px 0 20px; text-shadow: 0px 0px 6px rgba(0,0,0,1);}
+
+.monster-active-pannel .pop {display:block; position:absolute; top:50%; left:50%; width:300px; transform:translate(-50%, -65%); -webkit-transform:translate(-50%, -65%); z-index:999; text-align:center;}
+.monster-active-pannel .pop > * {display:block; position:relative; background:rgba(0,0,0,.8); border:1px solid #ff8b8b;}
+.monster-active-pannel .pop .tit {padding:20px 10px; margin-bottom:20px;}
+.monster-active-pannel .pop .tit strong {display:inline-block; position:relative; vertical-align:middle; font-size:15px; font-style:italic;}
+.monster-active-pannel .pop .state {padding:20px 15px; font-size:14px;}
+
+
+
+/***********************************
+	멤버 액션 영역
+***********************************/
+
+.dungeon-active-pannel {background:linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);}
+.dungeon-active-pannel .pannel {display:block; position:absolute; top:0; left:0; right:0; bottom:0; padding:15px; overflow:auto;}
+.dungeon-active-pannel .pannel {-ms-overflow-style:none; scrollbar-width:none;}
+.dungeon-active-pannel .pannel::-webkit-scrollbar {display:none;}
+
+.dungeon-active-pannel .write-area {display:block; position:absolute; left:0; right:0; bottom:0; height:200px;}
+.dungeon-active-pannel .write-area  + .pannel {bottom:200px;}
+
+.dungeon-active-pannel .write-area .tabs {display:table; width:100%; table-layout:fixed; height:40px;}
+.dungeon-active-pannel .write-area .tabs > * {display:table-cell; position:relative; vertical-align:middle; text-align:center; font-size:14px; color:#fff; border:0px solid #fff; border-bottom-width:1px;}
+
+.dungeon-active-pannel .write-area .tab-con {display:none; position:relative; height:160px; padding:15px; box-sizing:border-box; background:#000; border:1px solid #fff; border-top-width:0;}
+
+.dungeon-active-pannel .write-area[data-active="스킬"] .tabs *[data-tab="스킬"],
+.dungeon-active-pannel .write-area[data-active="아이템"] .tabs *[data-tab="아이템"],
+.dungeon-active-pannel .write-area[data-active="대화"] .tabs *[data-tab="대화"] {border-width:1px; border-bottom-width:0px; background:#000;}
+.dungeon-active-pannel .write-area[data-active="스킬"] .skill-con {display:block;}
+.dungeon-active-pannel .write-area[data-active="아이템"] .item-con {display:block;}
+.dungeon-active-pannel .write-area[data-active="대화"] .talk-con {display:block;}
+
+
+/********************************
+	Skill Contents
+********************************/
+
+.skill-con .in {position:relative; width:100%; height:130px;}
+.skill-con .left {position:absolute; top:0; left:0; bottom:0; width:40%; overflow:auto;}
+.skill-con .right {position:absolute; top:0; right:0; bottom:0; width:55%; overflow:auto;}
+
+.skill-target-area {display:block; position:relative; height:30px;}
+.skill-target-area select {width:100%; height:30px;}
+.skill-target-area .target {display:block; position:relative; font-size:12px; line-height:30px; text-align:center; background:rgb(117 139 189); color:#ffffff; font-weight:800; border:1px solid #fff;}
+.skill-target-area .target.ready {background:rgba(0,0,0,.6); color:#abb6ff;}
+.skill-target-area .target.enermy {font-weight:500; background:rgb(117 0 31); border:1px solid #fff;}
+.skill-target-area .target.error {color:#fff; font-weight:500; background:#470416; border:1px solid #fff;}
+
+.skill-descript {display:block; position:absolute; top:35px; left:0; right:0; bottom:40px; overflow:auto; padding:8px; background:rgba(255,255,255,.2); border:1px solid #fff;}
+.skill-descript .spec {margin-top:5px;}
+.skill-descript .spec em {font-size:11px;}
+.skill-descript .spec em + em:before {content:" / ";}
+
+.skill-control {display:block; position:absolute; left:0; right:0; bottom:0; height:30px; overflow:hidden;}
+.skill-control > * {display:block; position:relative; width:100%; height:100%; font-size:12px; background:#eee; border:1px solid #ddd; color:#000; border-radius:3px;}
+.skill-control > div {line-height:28px; text-align:center; background:#aaa; color:#999;}
+
+/* 현재 셋팅된 스킬 목록 */
+.skill-set-list:after {content:""; display:block; clear:both;}
+.skill-set-list li {display:block; float:left;}
+.skill-set-list li .item.none {display:none !important;}
+.skill-set-list .item {display:block; position:relative; width:40px; height:40px; margin:2px; z-index:0;}
+.skill-set-list .item .thumb {display:block; position:relative; width:100%; border:none; background:rgba(255,255,255,.3); overflow:hidden;}
+.skill-set-list .item .thumb:before {content:""; display:block; position:relative; padding-top:100%; z-index:-999;}
+.skill-set-list .item .thumb:after {content:""; display:block; position:absolute; top:0; left:0; right:0; bottom:0; background:url(../img/bak_slot.png) no-repeat 50% 50%; background-size:100% 100%; z-index:1;}
+.skill-set-list .item .thumb.lock:after {background-image:url(../img/bak_slot_lock.png);}
+.skill-set-list .item .thumb em {display:block; position:absolute; top:0; left:0; width:100%; height:100%; background:no-repeat 50% 50%; background-size:contain; z-index:0;}
+.skill-set-list .detail-layer {display:none;}
+
+
+
+/********************************
+	ITEM Contents
+********************************/
+
+.item-con .input {display:block; position:relative;}
+.item-con .input select {display:block; position:relative; width:100%; height:90px; padding:10px;}
+.item-con .input button {display:block; position:relative; height:30px; width:100%; text-align:center; background:#eee; color:#000; border:1px solid #ddd; font-weight:500; margin-top:5px; font-family:inherit; border-radius:3px;}
+.item-con .input button span {font-weight:800; font-family:inherit;}
+
+
+
+/********************************
+	Talk Contents
+********************************/
+
+.talk-con .input {display:block; position:relative;}
+.talk-con .input textarea {display:block; position:relative; height:90px; padding:10px;}
+.talk-con .input button {display:block; position:relative; height:30px; width:100%; text-align:center; background:#eee; color:#000; border:1px solid #ddd; font-weight:500; margin-top:5px; font-family:inherit; border-radius:3px;}
+.talk-con .input button span {font-weight:800; font-family:inherit;}
+
+
+
+/***********************************
+	Character List Active
+***********************************/
+
+.dungeon-active-pannel .character-list {display:block; position:relative;}
+.dungeon-active-pannel .character-list li {display:block; position:relative;}
+.dungeon-active-pannel .character-list li + li {margin-top:20px;}
+.dungeon-active-pannel .character-list .item {display:block; position:relative; padding:5px 5px 5px 60px; min-height:60px;}
+.dungeon-active-pannel .character-list .item .thumb {display:block; position:absolute; top:5px; left:0; width:50px; height:50px;}
+.dungeon-active-pannel .character-list .item .thumb:before {content:""; display:block; position:absolute; top:0; left:0; right:0; bottom:0; z-index:1; border:1px solid #fff;}
+.dungeon-active-pannel .character-list .item .thumb > * {display:block; position:absolute; top:0; left:0; right:0; bottom:0; overflow:hidden; background:#313131; z-index:0;}
+.dungeon-active-pannel .character-list .item .thumb img {display:block; position:relative; width:100%; height:100%; object-fit:cover;}
+
+.dungeon-active-pannel .character-list .item.aggro .thumb:before {border-color:#850325;}
+.dungeon-active-pannel .character-list li.state-E .item {opacity:.3; filter:grayscale(1);}
+
+.dungeon-active-pannel .character-list .comment {display:block; position:relative; z-index:0;}
+.dungeon-active-pannel .character-list .comment:before {content:""; display:block; position:absolute; top:0; left:0; right:0; bottom:.3em; opacity:1; z-index:-1;}
+
+.dungeon-active-pannel .character-list .comment .in {display:table; width:100%; table-layout:fixed;}
+.dungeon-active-pannel .character-list .comment .in > * {display:table-cell; vertical-align:top;}
+.dungeon-active-pannel .character-list .comment .status {width:140px; padding-left:15px;}
+
+.dungeon-active-pannel .character-list .comment .name {display:block; position:relative; padding-bottom:5px; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,.2);}
+.dungeon-active-pannel .character-list .comment .name strong {font-size:13px; color:#ececec;}
+.dungeon-active-pannel .character-list .comment .txt {display:block; font-size:13px; color:#4bc1e5; margin:10px 0;}
+.dungeon-active-pannel .character-list .comment .txt > * {color:#fff;}
+.dungeon-active-pannel .character-list .comment .txt p {display:inline; font-size:13px; margin-right:5px;}
+.dungeon-active-pannel .character-list .comment .txt p.txt-skill-info strong {font-weight:400; color:#4bc1e5;}
+.dungeon-active-pannel .character-list .comment .txt p.txt-skill-info strong:before {content:"【";}
+.dungeon-active-pannel .character-list .comment .txt p.txt-skill-info strong:after {content:"】";}
+.dungeon-active-pannel .character-list .comment .txt p.txt-skill-info em {color:#ffff99;}
+.dungeon-active-pannel .character-list .comment .txt p.txt-skill-result strong {font-weight:400; color:#fff;}
+.dungeon-active-pannel .character-list .comment .txt p.txt-skill-result strong:before {content:"【";}
+.dungeon-active-pannel .character-list .comment .txt p.txt-skill-result strong:after {content:"】";}
+
+.dungeon-active-pannel .character-list .comment .buffs {display:block; position:relative; overflow:hidden;}
+.dungeon-active-pannel .character-list .comment .buffs span {display:block; position:relative; background:rgba(255,255,255,.2); padding:0 5px; float:left; margin:2px; border-radius:3px; font-size:11px; color:#ddd;}
+
+.dungeon-active-pannel .character-list .comment .present {display:block; position:relative; font-size:13px;}
+.dungeon-active-pannel .character-list .comment .present .con {display:block; position:relative; text-align:center;}
+.dungeon-active-pannel .character-list .comment .present .con .loading {display:block; font-style:italic; color:#b5b5b5; font-size:12px; line-height:1.5em; padding:10px; background:rgba(255,255,255,.2); border-radius:5px;}
+.dungeon-active-pannel .character-list .comment .present .con p {display:block; position:relative; text-align:center; padding:5px 10px; border-radius:3px; background:rgba(255,255,255,.4); color:#fff; font-size:12px;}
+.dungeon-active-pannel .character-list .comment .present .con p strong {color:#fff;}
+.dungeon-active-pannel .character-list .comment .present .con p strong:before {content:"「";}
+.dungeon-active-pannel .character-list .comment .present .con p strong:after {content:"」";}
+.dungeon-active-pannel .character-list .comment .result-control {width:90px; text-align:right;}
+.dungeon-active-pannel .character-list .comment .result-control .ui-btn {width:70px; height:70px; border:1px solid rgba(255,255,255,.2);}
+
+.dungeon-active-pannel .character-list .status dl,
+.dungeon-active-pannel .character-list .status dt,
+.dungeon-active-pannel .character-list .status dd {padding:0; margin:0; font-size:11px;}
+.dungeon-active-pannel .character-list .status dl + dl {margin-top:5px;}
+.dungeon-active-pannel .character-list .status dl {display:table; width:100%; table-layout:fixed; vertical-align:middle; height:20px;}
+.dungeon-active-pannel .character-list .status dl > * {display:table-cell; position:relative; vertical-align:middle; z-index:0;}
+.dungeon-active-pannel .character-list .status dl dt {width:40px;}
+.dungeon-active-pannel .character-list .status dl dd {text-align:center; border-radius:9em; background:#000; border:1px solid #fff;}
+.dungeon-active-pannel .character-list .status dl dd em + strong:before {content:" / ";}
+.dungeon-active-pannel .character-list .status .graph {position:absolute; top:0; left:0; height:18px; width:100%; overflow:hidden; border-radius:9em; z-index:-1;}
+.dungeon-active-pannel .character-list .status .graph p {display:block; position:absolute; top:0; left:0; right:0; bottom:0;}
+.dungeon-active-pannel .character-list .status .graph p span {display:block; position:absolute; top:0; left:0; bottom:0; background:#850325;}
+.dungeon-active-pannel .character-list .status .text .graph {display:none !important;}
+
+
+
+/***********************************
+	Log List
+***********************************/
+
+.list-type-log .log-list {padding:2em;}
+.list-type-log .log-list li + li {display:block; position:relative; margin-top:1em;}
+
+.list-type-log .log-list .item {display:table; position:relative; width:100%; table-layout:fixed;}
+.list-type-log .log-list .item > * {display:table-cell;}
+.list-type-log .log-list .item .thumb {vertical-align:top; width:4em;}
+.list-type-log .log-list .item .thumb em {display:block; position:relative; width:2.5em; height:2.5em; border:1px solid #fff; border-radius:100%; overflow:hidden;}
+.list-type-log .log-list .item .thumb em img {display:block; position:relative; width:100%; height:100%; object-fit:cover;}
+.list-type-log .log-list .item .thumb.aggro em {border-color:#e90341;}
+.list-type-log .log-list .item .comment {vertical-align:middle;}
+
+.list-type-log .log-list .item[data-cate="대화"] .comment > div {display:block; position:relative; background:#313131; border-left:2px solid #fff; color:#fff; padding:8px 16px; font-size:13px; line-height:1.5em;}
+
+.list-type-log .log-list .item[data-cate="시스템"] .thumb {display:none;}
+.list-type-log .log-list .item[data-cate="시스템"] .comment > div {margin:1em 1.5em; background:#350d17; color:#fff; border:1px solid #350d17; border-radius:1.476em; padding:8px 10px; text-align:center; font-size:13px;}
+
+.list-type-log .log-list .item[data-cate="스킬"] .comment p {font-size:13px; color:#bababa; margin:3px 0;}
+.list-type-log .log-list .item[data-cate="스킬"] .comment p strong:before {content:"【";}
+.list-type-log .log-list .item[data-cate="스킬"] .comment p strong:after {content:"】";}
+.list-type-log .log-list .item[data-cate="스킬"] .comment .txt-skill-result em {font-size:1.3em; color:#fff; font-style:italic;}
+.list-type-log .log-list .item[data-cate="스킬"] .comment .txt-skill-result i {color:#ff7398; font-weight:500; margin-left:.5em;}
+
+.list-type-log .log-list .item[data-cate="아이템"] .comment p {font-size:13px; color:#bababa; margin:3px 0;}
+.list-type-log .log-list .item[data-cate="아이템"] .comment p strong {color:#ff7398;}
+.list-type-log .log-list .item[data-cate="아이템"] .comment p strong:before {content:"【";}
+.list-type-log .log-list .item[data-cate="아이템"] .comment p strong:after {content:"】";}
+.list-type-log .log-list .item[data-cate="아이템"] .comment .txt-skill-result em {font-size:1.3em; color:#fff; font-style:italic;}
+.list-type-log .log-list .item[data-cate="아이템"] .comment .txt-skill-result i {color:#ff7398; font-weight:500; margin-left:.5em;}
+
+.list-type-log .log-list .item[data-cate="몬스터"] .thumb {display:none;}
+.list-type-log .log-list .item[data-cate="몬스터"] .comment {padding:0;}
+.list-type-log .log-list .item[data-cate="몬스터"] .comment > div {position:relative; padding:20px; border:1px solid #c20134; text-align:center;}
+.list-type-log .log-list .item[data-cate="몬스터"] .comment > div:after {content:""; display:block; position:absolute; left:50%; bottom:-14px; margin-left:-107px; width:214px; height:41px; background:url(../img/log_light_acc.png) no-repeat 50% 50%;}
+.list-type-log .log-list .item[data-cate="몬스터"] .comment .msg {color:#f90042; font-size:15px; font-style:italic; font-weight:600; margin-bottom:4px;}
+.list-type-log .log-list .item[data-cate="몬스터"] .comment .result-log {font-size:14px; color:#bababa;}
+.list-type-log .log-list .item[data-cate="몬스터"] .comment .result-log strong {font-size:1.2em; margin:0 .3em; font-style:italic;}
+.list-type-log .log-list .item[data-cate="몬스터"] .comment .result-log i {font-style:italic;}
+
+
+
+

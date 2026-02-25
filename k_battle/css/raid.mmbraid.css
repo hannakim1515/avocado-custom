@@ -1,0 +1,234 @@
+@import url(./raid.default.css);
+
+@font-face {
+	font-family: 'material';
+	font-style: normal;
+	font-weight: 400;
+	src: url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
+}
+
+#admin_action{
+	border:1px solid yellow;
+	background-color:transparent;
+}
+
+#admin_action input::placeholder{
+	color:grey!important;
+}
+
+.monster-area, .rm-area, .monster-area *, .rm-area *{
+	box-sizing:border-box;
+	font-family:'main';
+}
+
+.member-in{
+    text-align:center;
+    padding: 5px;
+}
+.member-in .ui-btn, .mmbraid .ui-btn{
+    display:inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+.mmbraid{
+    text-align:right;
+}
+
+.monster-area{
+    text-align:center;
+    margin: 5px auto;
+    padding: 10px;
+    height:auto;
+}
+
+.monster-area .monster-image{
+    overflow:hidden;
+    width:100%;
+    margin:5px auto;
+}
+
+.monster-info{
+    margin:5px auto;
+}
+
+.hp-bar, .mp-bar{
+    overflow:hidden;
+    position:relative;
+    height:15px;
+}
+
+.mp-bar .bar-inner, .hp-bar .bar-inner{
+    position:absolute;
+    top:0;
+    left:0;
+    height:100%;
+}
+
+.monster-area .system-msg{
+    margin-top:15px;
+}
+
+.monster-info .mo-name{
+    padding: 5px;
+}
+
+.hp-bar i,
+.mp-bar i{
+    position:Absolute;
+    top:0;
+    right:5px;
+    color:white;
+    line-height:15px;
+}
+
+#log_list .item.raid_admin{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	flex-direction:column;
+	width:100%;
+	padding:0;
+	margin-left:0;
+	margin-right:0;
+	margin-top:0;
+	border-radius:10px;
+	overflow:hidden;
+}
+
+#log_list .item.raid_admin .item-inner{
+	width:100%;
+    display:flex;
+	justify-content:center;
+	align-items:center;
+	flex-direction:column;
+}
+#log_list .item.raid_admin .pic-header{
+	padding:0!important;
+}
+#log_list .item.raid_admin .pic-header *{
+	display:none!important;
+}
+
+#log_list .item.raid_admin .pic-header .del,
+#log_list .item.raid_admin .pic-header .mod{
+	display: block!important;
+	position:relative;
+	top:0;
+	left:0;
+	float: right;
+	width:14px;
+	height:14px;
+	padding:0 2px;
+	line-height:14px;
+}
+#log_list .item.raid_admin .pic-header .mod:before{
+	line-height:14px;
+}
+#log_list .item.raid_admin .pic-header:before{
+	font-family:"main";
+	width:100%;
+	text-align:center;
+	display:block;
+	padding:10px 0;
+	font-weight:900;
+}
+#log_list .item.raid_admin .original,
+#log_list .item.raid_admin .ui-comment .item-comment:first-child .co-header,
+#log_list .item.raid_admin .ui-comment .item-comment:first-child .co-footer{
+	display:none;	
+}
+#log_list .item.raid_admin .ui-comment .item-comment:first-child{
+	font-size:16px;
+	font-weight:900;
+	text-align:center;
+	padding-bottom:20px;
+}
+#log_list .item.raid_admin .ui-comment,
+#log_list .item.raid_admin .item-comment-box{
+	width:100%!important;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	flex-direction:column;
+    margin:0!important;
+    padding:0!important;
+}
+#log_list .item.raid_admin .item-inner .item-comment{
+	width:100%;
+	margin:0!important;
+}
+#log_list .item.raid_admin .item-comment-form-box{
+	width:100%;
+	padding:0!important;
+}
+#log_list .item.raid_admin .bo_vc_w .input-comment{
+	margin:0!important;
+}
+
+#raid_action.inner{
+	padding: 10px;
+	margin-bottom:10px;
+	
+}
+
+#action-select {
+    justify-content: start;
+	flex-wrap:wrap;
+}
+
+#action-info p{
+	text-align:left;
+}
+
+#raid_act_btn{
+	display:none!important;
+	pointer-events: none!important;
+}
+
+.log-area{
+    width:100%;
+	flex-direction: column;
+	margin-left:auto;
+	margin-right:auto;
+}
+.log-area li{
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.original_comment_area .log-area .mmbsystem{
+    color:var(--log-area-fontcolor);
+	font-size:1.15em;
+	text-align:center;
+	margin:15px 0px;
+	background:linear-gradient(to left, transparent, #00000088, transparent);
+	color:white;
+	padding: 5px 0;
+}
+
+.raid_admin .log-area{
+	margin-bottom: 40px;
+	overflow-x:hidden;
+}
+.raid_admin .log-area *{
+	max-width:initial;
+	text-align:center;
+	justify-content:center;
+}
+.monster-area .rm-buff{
+	padding-bottom: 3px;
+}
+
+#admin_action .theme-box p{
+	line-height: 1.3em;
+	padding-bottom:5px;
+}
+#admin_action .theme-box p span{
+	font-weight:900;
+}
+
+.log-area li .act-title.item {
+    padding-bottom:0!important;
+	margin:0!important;
+}
+

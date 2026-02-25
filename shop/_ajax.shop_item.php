@@ -2,13 +2,16 @@
 include_once("./_common.php");
 
 $item = sql_fetch("select * from {$g5['shop_table']} shop, {$g5['item_table']} item where shop.it_id = item.it_id and shop.sh_id = '{$sh_id}'");
+$discount = get_npc_cost($config['cf_shop_npc'], $character['ch_id']);
 
 if($item['sh_id']) {
 
 	$money = "";
 	$add_str = "";
 
-	if($item['sh_money'] && $item['sh_use_money']) { 
+	if($item['sh_money'] && $item['sh_use_money']) {
+		// 상점 NPC 정보 확인
+		$item['sh_money'] = floor($item['sh_money'] * $discount);
 		$money .= $add_str.$item['sh_money'].' '.$config['cf_money_pice'];
 		$add_str = ", ";
 	}

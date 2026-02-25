@@ -216,6 +216,15 @@ $frm_submit .= '</div>';
 
 						<input type="checkbox" name="it_use_mmb_able" id="it_use_mmb_able" value="1" <?=$item['it_use_mmb_able']=='1' ? "checked" : ""?> />
 						<label for="it_use_mmb_able">자비란 사용가능&nbsp;&nbsp;&nbsp;</label>
+
+						<!-- **************************************************************
+							S : 던전 기능 추가에 따른 아이템 관련 로직 변경
+						*******************************************************************-->
+						<input type="checkbox" name="it_use_battle_able" id="it_use_battle_able" value="1" <?=$item['it_use_battle_able']=='1' ? "checked" : ""?> />
+						<label for="it_use_battle_able">던전 전투 중 사용가능&nbsp;&nbsp;&nbsp;</label>
+						<!-- **************************************************************
+							E : 던전 기능 추가에 따른 아이템 관련 로직 변경
+						*******************************************************************-->
 						
 						<input type="checkbox" name="it_use_recepi" id="it_use_recepi" value="1" <?=$item['it_use_recepi']=='1' ? "checked" : ""?> />
 						<label for="it_use_recepi">레시피 재료 사용</label>

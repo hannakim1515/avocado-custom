@@ -29,6 +29,11 @@ if(!$in['in_id']) {
 }
 
 if($in['in_id'] && $re_ch['ch_id']) { 
+
+	sql_query (" UPDATE {$g5['k_ch_equip_table']} 
+					set eq_use = ''
+					where in_id='{$in_id}' ");
+
 	$inven_sql = "update {$g5['inventory_table']}
 					set ch_id = '{$re_ch['ch_id']}',
 						ch_name = '{$re_ch['ch_name']}',

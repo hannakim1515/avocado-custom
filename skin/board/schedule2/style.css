@@ -1,0 +1,107 @@
+@charset "utf-8";
+
+/* 공통 */ 
+#bo_list .theme-box {border-radius:5px;}
+#bo_list .ui-btn {border-radius:2px;}
+
+/* 캘린더 */
+.cal-nav td{text-align:center;vertical-align:middle;} 
+.cal-nav h2{text-align:center; font-size:16px; padding-bottom:5px;letter-spacing:3px;} 
+.cal-nav .ico{position:relative;display:inline-block;width:20px;height:20px;overflow:hidden;text-indent:100%;white-space:nowrap;}
+.cal-nav .ico:before{position:absolute;left:0;top:0;display:inline-block;width:20px;height:28px;line-height:28px;font-family:'icon';text-indent:0;}
+.cal-nav .ico.prevyr:before{content:"\ea21";}
+.cal-nav .ico.prevmth:before{content:"\ea23";}
+.cal-nav .ico.nextyr:before{content:"\ea22";}
+.cal-nav .ico.nextmth:before{content:"\ea24";}
+
+.sched-list.theme-list {border-collapse:separate;border-spacing: 1px;}
+.sched-list.theme-list th{ height:40px;padding:0;font-size:11px;font-weight:normal;border:0 none;background:#00000022;} /* 요일 표시 칸 */
+.sched-list.theme-list th.sun{background:#c7003955;} /* 일요일 */
+.sched-list.theme-list th.sat{background:#345ad655;} /* 토요일 */
+
+.sched-list.theme-list td {text-align:center; padding:15px 0 0;line-height:18px;font-size:11px;height:80px;border:0 none; background:#00000011;} /* 날짜 표시 칸 */
+.sched-list.theme-list td.noday {background:#aaaaaa11;} /* 날짜없는 칸 */
+
+.sched-list .date{margin:0 0 5px;}
+.sched-list.theme-list td i {position:relative;display:block;margin-bottom:5px;font-style:normal;}/* 날짜(숫자) */
+.sched-list.theme-list td.today i {font-weight:bold;}
+.sched-list.theme-list td.today i:after{ /* 오늘 날짜 동그라미 */
+    content:"";display:block;
+    position:absolute;top:50%;left:50%;
+    width:19px;height:19px;
+    border:2px solid #fff; border-radius:100%;
+    transform:translate(-50%,-50%);z-index:10;
+}
+
+/* 일정 표시 */
+.sched-list .liner{ position:relative; display:block;margin-top:1px; width:100%;height:18px;color:#fff; } 
+.sched-list .starter {padding:0;}
+.sched-list .liner:not(.first,.starter) {z-index:-1;}
+
+.sched-list .s_subject {height:18px;line-height:17px;}
+.sched-list .left .starter .s_subject {left:0;}
+.sched-list .right .starter .s_subject {right:0;}
+.sched-list .starter .s_subject,.sched-list .first .s_subject {border-radius: 5px;z-index:2;}
+.sched-list .starter .s_subject{position:absolute;width:100%;min-width:100%;padding:0 3px; white-space: nowrap;overflow:hidden;text-overflow: ellipsis; text-align:left;box-sizing:border-box;}
+.sched-list .starter:hover .s_subject {width:auto;overflow:visible;}
+.sched-list .liner:not(.first, .starter) p{background:none;}
+
+/* 일정 팝업레이어 */
+.sched-list .popup_layer {position:absolute; display:none;bottom:19px;left:50%;transform:translateX(-50%); padding:5px 10px 10px; border-radius:5px; width:140px; z-index:20;}
+.sched-list td a:hover {z-index:40;}
+.sched-list td a:hover .popup_layer {display:block;}
+.sched-list .left .popup_layer {left:0;transform:none;}
+.sched-list .right .popup_layer {left:auto;right:0;transform:none;}
+.sched-list .popup_layer .popup_title{padding:5px 0;font-size:13px;}
+.sched-list .popup_layer .popup_cont{word-break:keep-all;} 
+
+ /* 오늘 일정 */
+#today_schedule {text-align:left;} 
+#today_schedule p.ui-btn.point{margin-bottom:10px;line-height:26px;cursor:default;}
+#today_schedule .today-schedule {line-height:20px;padding:2px 0;}
+#today_schedule .today-schedule .ico{display:inline-block;width:10px;height:10px;border-radius:2px;}
+#today_schedule .today-schedule .sched-content {padding-left:14px;}
+ 
+
+
+/* 게시판 읽기 */
+#bo_v {margin-bottom:20px;padding-bottom:20px}
+
+#bo_v_table {position:absolute;top:0;right:16px;margin:0;padding:0 5px;height:25px;background:#ff3061;color:#fff;font-weight:bold;line-height:2.2em}
+#bo_v_link h2, #bo_v_bot h2, #bo_v_atc_title{position:absolute;font-size:0;line-height:0;overflow:hidden}
+
+#bo_v_title {padding:10px 0;font-size:1.4em}
+
+#bo_v_bot {zoom:1}
+#bo_v_bot:after {display:block;visibility:hidden;clear:both;content:""}
+#bo_v_bot ul {margin:0;padding:0;list-style:none}
+
+.bo_v_nb {float:left}
+.bo_v_nb li {float:left;margin-right:5px}
+.bo_v_com {float:right}
+.bo_v_com li {float:left;margin-left:5px}
+
+#bo_v_link {margin:20px 10px ;}
+
+#bo_v_img {margin:20px 0;}
+#bo_v_img:after {display:block;visibility:hidden;clear:both;content:""}
+
+#bo_v_con {margin-bottom:5px;width:100%;line-height:1.7em;word-break:break-all;overflow:hidden} 
+
+
+/* 게시판 쓰기 */
+#bo_w .wr_content {background:white;}
+#bo_w .ico{display:inline-block;padding:5px 10px;} 
+#bo_w .ico:before{padding-left:3px;}
+
+
+/*표시색상*/
+.color_1{background:#ff9900;}
+.color_2{background:#7b68ee;}
+.color_3{background:#20b2aa;} 
+.color_4{background:#c70039;}
+
+#bo_w .ico.color_1:before{content:"메인이벤트";}
+#bo_w .ico.color_2:before{content:"미니이벤트";}
+#bo_w .ico.color_3:before{content:"스페셜이벤트";} 
+#bo_w .ico.color_4:before{content:"기타";}

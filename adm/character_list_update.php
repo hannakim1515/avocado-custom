@@ -26,7 +26,8 @@ if ($_POST['act_button'] == "선택수정") {
 						set ch_type = '{$_POST['ch_type'][$k]}',
 							ch_side = '{$_POST['ch_side'][$k]}',
 							ch_class = '{$_POST['ch_class'][$k]}',
-							ch_state = '{$_POST['ch_state'][$k]}'
+							ch_state = '{$_POST['ch_state'][$k]}',
+							ch_is_hide = '{$_POST['ch_is_hide'][$k]}'
 						where ch_id = '{$_POST['ch_id'][$k]}' ";
 			sql_query($sql);
 		}

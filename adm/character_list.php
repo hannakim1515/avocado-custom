@@ -92,6 +92,15 @@ if($config['cf_class_title']) {
 
 }
 
+// ----------------------------- 필드 존재 여부 확인
+
+$check_field = sql_fetch("SHOW COLUMNS FROM {$g5['character_table']} LIKE 'ch_is_hide'");
+if(!$check_field) {
+	sql_query(" ALTER TABLE `{$g5['character_table']}` ADD `ch_is_hide` int(11) NOT NULL default '0' AFTER `ch_state` ");
+}
+
+//--------------------------------------------
+
 $profile = sql_fetch(" select ad_use_rank from {$g5['article_default_table']} ");
 if($profile['ad_use_rank']) {
 	$colspan++;
@@ -177,6 +186,7 @@ if($profile['ad_use_rank']) {
 		<col style="width: 120px;" />
 <? } ?>
 		<col style="width: 80px;" />
+		<col style="width: 50px;" />
 		<col style="width: 100px;" />
 	</colgroup>
 	<thead>
@@ -199,6 +209,7 @@ if($profile['ad_use_rank']) {
 		<th><?=$config['cf_class_title']?></th>
 <? } ?>
 		<th>상태</th>
+		<th>숨김</th>
 		<th>관리</th>
 	</tr>
 	</thead>
@@ -264,7 +275,9 @@ if($profile['ad_use_rank']) {
 				<option value="삭제" <?=$row['ch_state'] == "삭제" ? "selected" : "" ?>>삭제</option>
 			</select>
 		</td>
-
+		<td>
+			<input type="checkbox" name="ch_is_hide[<?php echo $i ?>]" value="1" <?php echo $row['ch_is_hide']?"checked":"" ?>>
+		</td>
 		<td><?php echo $s_mod ?>&nbsp;&nbsp;<?php echo $s_del ?></td>
 	</tr>
   

@@ -93,7 +93,8 @@ function get_character_list($side = '', $class = '', $state = '승인') {
 
 	$sql_common = "select *
 			from	{$g5['character_table']}
-			where	ch_state = '{$state}'
+			where	ch_state = '{$state}' and
+					ch_is_hide = '0'
 					{$sql_search}
 			order by ch_id asc";
 

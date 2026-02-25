@@ -1,0 +1,53 @@
+@charset "utf-8";
+
+.dungeonListWrap {display:block; position:relative; padding:20px; text-align:center;}
+.dungeonListWrap > ul > li {display:inline-block; vertical-align:top; position:relative; width:300px; margin:10px; max-width:30%;}
+
+@media all and (max-width:920px) {
+	.dungeonListWrap > ul > li {max-width:45%;}
+}
+@media all and (max-width:620px) {
+	.dungeonListWrap > ul > li {max-width:100%;}
+}
+
+.dg-item {display:block; position:relative; border-radius:10px; padding:30px 20px 80px; border:1px solid #000; background:no-repeat 50% 50% #000; background-size:auto 200%; min-height:400px; z-index:0; overflow:hidden;}
+.dg-item:before,
+.dg-item:after {content:""; display:block; position:absolute; left:0; right:0; background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%); z-index:-1;}
+.dg-item:before {top:0; bottom:30%; background:linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);}
+.dg-item:after {bottom:0; top:30%; background:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);}
+
+.dg-item .rank {display:block; position:relative; color:#f90042; text-align:center; line-height:1; font-weight:600;}
+.dg-item .rank strong {display:block; font-size:2.7em;}
+.dg-item .rank strong:after {content:"RANK"; display:block; font-weight:100; font-size:.65em;}
+.dg-item .mon-descript {font-size:13px; text-align:center; padding-top:20px;}
+.dg-item .mon-descript p {font-size:20px; font-weight:800; line-height:1.4em; margin-bottom:10px;}
+.dg-item .mon-descript > div { line-height:1.5em; min-height:6em;}
+
+.dg-item .bar {display:block; position:relative; background:#404040; font-size:11px; z-index:0; margin-top:20px; text-align:center;}
+.dg-item .bar > span {display:block; position:absolute; top:0; left:0; bottom:0; background:#8c0025; z-index:-1;}
+.dg-item .bar .txt span,
+.dg-item .bar .txt strong {font-weight:100; color:#fff; text-shadow: rgb(0, 0, 0) 1px 0px 0px, rgb(0, 0, 0) 0.540302px 0.841471px 0px, rgb(0, 0, 0) -0.416147px 0.909297px 0px, rgb(0, 0, 0) -0.989992px 0.14112px 0px, rgb(0, 0, 0) -0.653644px -0.756802px 0px, rgb(0, 0, 0) 0.283662px -0.958924px 0px, rgb(0, 0, 0) 0.96017px -0.279415px 0px;}
+.dg-item .bar .txt strong + span:before {content:" / ";}
+
+.dg-item .buffer-info {display:block; position:relative; text-align:right; background:#000; padding:5px; margin-top:5px;}
+.dg-item .buffer-info p {display:table; width:100%; table-layout:fixed;}
+.dg-item .buffer-info p > * {display:table-cell; vertical-align:middle; font-size:12px;}
+.dg-item .buffer-info p strong {width:8em; color:#f90042; text-align:left;}
+.dg-item .buffer-info p span {text-align:right;}
+
+.dg-item .gate-member-list {position:relative; padding-top:20px;}
+.dg-item .gate-member-list .tit {display:block; position:relative; text-align:center; padding-bottom:15px; margin-bottom:15px; font-size:15px; border-bottom:1px solid rgba(255,255,255,.2);}
+.dg-item .gate-member-list .tit p {display:block; position:relative; overflow:hidden;}
+.dg-item .gate-member-list ul {display:block; position:relative; overflow:hidden;}
+.dg-item .gate-member-list ul > li {display:table; width:100%; float:left; padding:5px 0; box-sizing:border-box;}
+.dg-item .gate-member-list ul > li > * {display:table-cell; vertical-align:middle;}
+.dg-item .gate-member-list .thumb {width:30px;}
+.dg-item .gate-member-list .thumb span {display:block; position:relative; height:30px; overflow:hidden; border-radius:100%;}
+.dg-item .gate-member-list .thumb span img {display:block; position:relative; width:100%; height:100%; object-fit:cover;}
+.dg-item .gate-member-list .name {padding-left:10px; text-align:left;}
+.dg-item .gate-member-list .name .state {display:block; font-size:12px; color:#f90042;}
+.dg-item .gate-member-list .name .state[data-state="E"] {color:#999;}
+.dg-item .gate-member-list .name strong {display:block; font-size:13px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:400;}
+
+.dg-item .control {display:block; position:absolute; left:0; right:0; bottom:0; padding:0; border-top:1px solid #fff; text-align:center;}
+.dg-item .control > button {display:block; position:relative; width:100%; height:60px; border:none; color:#fff; background:transparent;}

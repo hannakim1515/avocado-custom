@@ -1,0 +1,237 @@
+.log-area{
+    width:100%;
+    display:flex;
+    flex-direction:column-reverse;
+    justify-content:end;
+    align-items:center;
+    height:100%;
+    overflow:auto;
+    box-sizing:border-box;
+    background:var(--log-area-background);
+}
+
+.log-area *{
+    font-family:var(--log-area-font-family);
+    box-sizing:border-box;
+}
+
+.log-area li{
+    width:100%;
+    max-width:var(--log-area-max-width);
+    padding: 10px;
+}
+
+.log-area li.mmbsystem{
+    font-size:14px;
+    font-weight:900;
+    text-align:center;
+    
+}
+.log-area li.system, .log-area li .mmbsystem{
+    background:#00000070;
+    color:white;
+    text-align:center;
+    margin:10px;
+}
+.log-area li p{
+    color:var(--log-area-fontcolor);
+    padding: 0 10px;
+    text-align:right;
+}
+
+.log-area li p span{
+    margin: 0 2px;
+    font-weight:900;
+}
+
+.log-area li .log-title{
+    width:100%;
+    text-align:center;
+    color:white;
+    padding: 5px;
+    margin: 10px auto;
+    background:linear-gradient(to top, #000000aa,#888888aa);
+    max-width:var(--log-area-max-width);
+    border-radius: var(--log-area-log-title-border-radius);
+    -webkit-border-radius: var(--log-area-log-title-border-radius);
+    -moz-border-radius: var(--log-area-log-title-border-radius);
+    -ms-border-radius: var(--log-area-log-title-border-radius);
+    -o-border-radius: var(--log-area-log-title-border-radius);
+}
+
+.log-area li.ch .log-title{
+    background:var(--log-area-log-title-background-ch);
+    color:var(--log-area-log-title-fontcolor-ch);
+    border:var(--log-area-log-title-border-ch);
+}
+
+.log-area li.mo .log-title{
+    background:var(--log-area-log-title-background-mo);
+    color:var(--log-area-log-title-fontcolor-mo);
+    border:var(--log-area-log-title-border-mo);
+}
+.log-area li.system .log-title{
+    background:var(--log-area-log-title-system);
+    color:var(--log-area-log-title-fontcolor-system);
+    border:var(--log-area-log-title-border-system);
+}
+
+.log-area li .act-title{
+    display:block;
+    margin-right:5px;
+    margin-bottom:5px;
+    background:linear-gradient(to left, #000000aa,transparent);
+    border-radius:var(--log-area-act-title-border-radius);
+    -webkit-border-radius:var(--log-area-act-title-border-radius);
+    -moz-border-radius:var(--log-area-act-title-border-radius);
+    -ms-border-radius:var(--log-area-act-title-border-radius);
+    -o-border-radius:var(--log-area-act-title-border-radius);
+}
+
+.log-area li .act-title.skill{
+    background:var(--log-area-act-title-background-skill);
+    color:var(--log-area-act-title-fontcolor-skill);
+    border:var(--log-area-act-title-border-skill);
+}
+
+.log-area li .act-title.heal{
+    background:var(--log-area-act-title-background-heal);
+    color:var(--log-area-act-title-fontcolor-heal);
+    border:var(--log-area-act-title-border-heal);
+}
+
+.log-area li .act-title.atk{
+    background:var(--log-area-act-title-background-atk);
+    color:var(--log-area-act-title-fontcolor-atk);
+    border:var(--log-area-act-title-border-atk);
+}
+
+.log-area li .act-title.item{
+    background:var(--log-area-act-title-background-item);
+    color:var(--log-area-act-title-fontcolor-item);
+    border:var(--log-area-act-title-border-item);
+}
+
+.log-area li p span.retire{
+    display:block;
+    background:var(--log-area-act-title-background-retire);
+    color:var(--log-area-act-title-fontcolor-retire);
+    border:var(--log-area-act-title-border-retire);
+    margin: 5px 0;
+    padding-right:10px;
+    border-radius:var(--log-area-act-title-border-radius);
+    -webkit-border-radius:var(--log-area-act-title-border-radius);
+    -moz-border-radius:var(--log-area-act-title-border-radius);
+    -ms-border-radius:var(--log-area-act-title-border-radius);
+    -o-border-radius:var(--log-area-act-title-border-radius);
+}
+
+.log-area li .sk-img{
+    display:block;
+    text-align:center;
+    padding: 10px 0;
+}
+
+.log-area li .sk-info{
+    position:relative;
+    margin:30px auto 10px auto;
+    padding: 12px;
+    background-color:var(--log-area-skill-info-background);
+    border:var(--log-area-skill-info-border);
+    border-radius:var(--log-area-skill-info-border-radius);
+    -webkit-border-radius:var(--log-area-skill-info-border-radius);
+    -moz-border-radius:var(--log-area-skill-info-border-radius);
+    -ms-border-radius:var(--log-area-skill-info-border-radius);
+    -o-border-radius:var(--log-area-skill-info-border-radius);
+}
+
+.log-area li .sk-info .sc-name{
+    display:flex;
+    justify-content:right;
+    align-items:center;
+    position:absolute;
+    width:100%;
+    top:-15px;
+    left:0;
+    font-size:var(--log-area-skill-name-fontsize);
+    font-weight:900;
+    filter:var(--log-area-skill-name-shadow);
+    -webkit-filter:var(--log-area-skill-name-shadow);
+}
+
+.log-area li .sk-info .sc-name img{
+    display:var(--log-area-skill-cut);
+    background:var(--action-select-background);
+    border:var(--action-select-border);
+    max-width:var(--log-area-skill-icon-size);
+    max-height:var(--log-area-skill-icon-size);
+    padding: 1px;
+    margin-right:5px;
+    border-radius:5px;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    -ms-border-radius:5px;
+    -o-border-radius:5px;
+}
+
+.log-area li .sk-info .sk-content{
+    font-size:var(--log-area-skill-info-fontsize);
+    text-align:left;
+}
+
+.log-area li p span.cri{
+    color:var(--log-area-critical-fontcolor);
+    font-style:italic;
+    padding-right:8px;
+}
+
+.log-area li p span.dmg.atk,
+.log-area li p span.buff.minus{
+    color:var(--log-area-minus-fontcolor);
+}
+.log-area li p span.dmg.heal,
+.log-area li p span.buff.plus{
+    color:var(--log-area-plus-fontcolor);
+}
+.log-area li p span.turn{
+    color:var(--log-area-turn-fontcolor);
+}
+
+.log-area li p span:not(.retire):before{
+    content:"[";
+}
+
+.log-area li p span:not(.retire):after{
+    content:"]";
+}
+
+.log-area li p span.cri:before{
+    display:inline-block;
+    content:"crisis_alert";
+    font-family:"material";
+}
+.log-area li p span.cri:after{
+    content:"";
+}
+
+.log-area li p span.dmg.heal:after{
+    content:"] 회복";
+}
+
+.log-area li p span.buff.plus:after{
+    content:"] 증가";
+}
+
+.log-area li p span.buff.minus:after,
+.log-area li p span.dmg.atk:after
+{
+    content:"] 감소";
+}
+
+.log-area li p span.turn:after{
+    content:"] 턴간";
+}
+
+.log-area li p span.retire:after{
+    content:' 행동불능'
+}

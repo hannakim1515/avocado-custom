@@ -1,0 +1,62 @@
+@charset "utf-8";
+
+/*******************************
+	프로필 스킬 목록 스타일
+*******************************/
+
+.skill-list-box {display:block; position:relative; text-align:center; margin:10px 0; padding:10px; background:#000; border-radius:10px;}
+.skill-list-box .setting-control {padding-top:10px; margin-top:10px; border-top:1px solid rgba(255,255,255,.2); text-align:right;}
+
+/* 현재 셋팅돤 스킬 목록 */
+.skill-set-list {text-align:center;}
+.skill-set-list li {display:inline-block; position:relative; vertical-align:top; padding:3px; box-sizing:border-box; width:50px;}
+
+.skill-set-list .item {display:block; position:relative; z-index:0;}
+.skill-set-list .item .thumb {display:block; position:relative; width:100%; border:none; background:rgba(255,255,255,.3); overflow:hidden;}
+.skill-set-list .item .thumb:before {content:""; display:block; position:relative; padding-top:100%; z-index:-999;}
+.skill-set-list .item .thumb:after {content:""; display:block; position:absolute; top:0; left:0; right:0; bottom:0; background:url(../img/bak_slot.png) no-repeat 50% 50%; background-size:100% 100%; z-index:1;}
+.skill-set-list .item .thumb.lock:after {background-image:url(../img/bak_slot_lock.png);}
+.skill-set-list .item .thumb em {display:block; position:absolute; top:0; left:0; width:100%; height:100%; background:no-repeat 50% 50%; background-size:contain; z-index:0;}
+
+.skill-set-list .detail-layer {display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.2); backdrop-filter:blur(5px); z-index:9999;}
+.skill-set-list .detail-layer .pop {display:block; position:absolute; top:50%; left:50%; padding:15px 15px 50px 15px; background:rgba(0,0,0,.7); border:1px solid #000; border-radius:5px; transform:translate(-50%,-50%); -webkit-transform:translate(-50%,-50%); width:300px; max-width:90%; max-height:90%; box-sizing:border-box;
+	box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.5);
+}
+.skill-set-list .detail-layer .pop .control {display:block; position:absolute; left:0; right:0; bottom:0; text-align:center; padding:10px; border-top:1px solid rgba(255,255,255,.3);}
+.skill-set-list .detail-layer .tit {text-align:center; font-size:16px; color:#fff; margin:10px 0;}
+.skill-set-list .detail-layer .desc {font-size:12px;}
+.skill-set-list .detail-layer .desc .txt {padding:10px 0;}
+.skill-set-list .detail-layer .spec {margin:10px 0; padding:5px; background:rgba(255,255,255,.2); border-radius:5px;}
+.skill-set-list .detail-layer .spec > * {display:inline-block; vertical-align:middle; font-size:11px; padding:2px 10px; }
+
+
+/*******************************
+	스킬 설정 패널
+*******************************/
+
+.skill-conf-list {display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.2); backdrop-filter:blur(5px); z-index:9999;}
+.skill-conf-list .pop {display:block; position:absolute; top:50%; left:50%; width:400px; height:600px; max-width:90%; max-height:90%; padding:0 0 50px 0; background:rgba(0,0,0,.8); border:1px solid #000; border-radius:5px; transform:translate(-50%,-50%); -webkit-transform:translate(-50%,-50%); box-sizing:border-box;
+	box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.5);
+}
+.skill-conf-list .pop .setting-control {display:block; position:absolute; left:0; right:0; bottom:0; text-align:center; padding:10px; border-top:1px solid rgba(255,255,255,.3);}
+
+.skill-conf-list ul {display:block; position:relative; height:100%; overflow:auto; padding:5px 15px; box-sizing:border-box;}
+.skill-conf-list ul li + li {border-top:1px solid rgba(255,255,255,.2); padding-top:20px;}
+.skill-conf-list li {padding:15px 0;}
+
+.skill-conf-list .item {display:block; position:relative; padding-left:60px; min-height:60px;}
+.skill-conf-list .item .thumb {display:block; position:absolute; top:0; left:0; width:40px; height:40px; background:url(../img/bak_slot.png) no-repeat 50% 50% rgba(255,255,255,.3); background-size:contain;}
+.skill-conf-list .item .thumb em {display:block; position:absolute; top:0; left:0; width:100%; height:100%; background:no-repeat 50% 50%; background-size:contain;}
+
+.skill-conf-list .item .control {display:block; position:relative; text-align:right; margin-top:10px; padding:5px; background:rgba(255,255,255,.2); border-radius:5px;}
+.skill-conf-list .item .control button {display:inline-block; position:relative; height:25px; padding:0 10px; background:#333; color:#fff; border:none; border-radius:.4em;}
+
+.skill-conf-list .item .desc {text-align:left; font-size:12px; color:#fff;}
+.skill-conf-list .item .desc .name {font-size:14px; font-weight:800; color:#fff;}
+.skill-conf-list .item .desc .name em {display:inline-block; font-size:11px; font-weight:400; background:#fff; color:#000; border-radius:3px; vertical-align:middle; padding:2px 5px;}
+.skill-conf-list .item .desc .txt {padding:10px 0; color:#fff;}
+.skill-conf-list .item .desc .spec em {display:inline-block; vertical-align:middle; font-size:11px; color:#000; background:rgba(255,255,255,.8); border-radius:3px; padding:2px 4px;}

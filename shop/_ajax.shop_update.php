@@ -2,7 +2,7 @@
 include_once("./_common.php");
 
 if($character['ch_id'] && $character['ch_state'] == '승인') { 
-
+	$discount = get_npc_cost($config['cf_shop_npc'], $character['ch_id']);
 	$msg = "";
 	$item = sql_fetch("select * from {$g5['shop_table']} shop, {$g5['item_table']} item where shop.it_id = item.it_id and shop.sh_id = '{$sh_id}'");
 
@@ -23,6 +23,9 @@ if($character['ch_id'] && $character['ch_state'] == '승인') {
 		$is_able_buy = true;
 
 		if($item['sh_money']) {
+			// 상점 판매가 적용
+			$item['sh_money'] = floor($item['sh_money'] * $discount);
+
 			// 구매가격이 존재 시
 			if($member['mb_point'] < $item['sh_money']) {
 				// 소지금 부족

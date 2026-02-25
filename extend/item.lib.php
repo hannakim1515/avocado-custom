@@ -38,6 +38,7 @@ function delete_inventory($in_id, $is_del = 0) {
 	global $g5;
 	if($is_del == '0') {
 		sql_query("delete from {$g5['inventory_table']} where in_id = '{$in_id}'");
+		sql_query("delete from {$g5['k_ch_equip_table']} where in_id = '{$in_id}'");
 	}
 }
 
@@ -52,11 +53,11 @@ function insert_inventory($ch_id, $it_id, $item = null, $count = 1) {
 
 	if($ch['ch_id']) {
 		for($i=0; $i < $count; $i++) {
-			$inven_sql = " insert into {$g5['inventory_table']}
-					set ch_id = '{$ch['ch_id']}',
-						it_id = '{$item['it_id']}',
-						it_name = '{$item['it_name']}',
-						ch_name = '{$ch['ch_name']}'";
+			$inven_sql = " insert into {$g5[inventory_table]}
+					set ch_id = '{$ch[ch_id]}',
+						it_id = '{$item[it_id]}',
+						it_name = '{$item[it_name]}',
+						ch_name = '{$ch[ch_name]}'";
 			sql_query($inven_sql);
 		}
 	}

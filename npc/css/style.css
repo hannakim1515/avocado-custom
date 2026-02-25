@@ -1,0 +1,55 @@
+@charset "utf-8";
+
+/*********************************
+	기본 대화창
+*********************************/
+
+.npc-talk-area {display:block; position:relative;}
+.npc-talk-area .messages {display:block; position:relative; text-align:left; font-size:14px; line-height:1.5em; padding:20px 10px; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,.1);}
+.npc-talk-area .messages .in {min-height:106px;}
+.npc-talk-area .control {display:flex; flex-wrap:nowrap; font-size:14px; justify-content:space-between; align-items:center;}
+.npc-talk-area .control > * {flex-grow:1;}
+.npc-talk-area .control .state {width:6em;}
+.npc-talk-area .control .buttons {text-align:right;}
+.npc-talk-area .control .graph {display:block; padding:5px 0; text-align:left;}
+.npc-talk-area .control .graph .bar-frame {display:inline-block; position:relative; width:5em; font-size:20px; height:1.1em; white-space:nowrap; vertical-align:middle;}
+.npc-talk-area .control .graph .bar-frame > * {position:absolute; top:0; left:0; line-height:1.1em; z-index:0; color:rgba(255,255,255,.4);}
+.npc-talk-area .control .graph .bar-frame p {color:transparent; -webkit-text-fill-color:transparent; background-clip:text; -webkit-background-clip: text; background-repeat:no-repeat; background-size:100% auto;}
+.npc-talk-area .control .graph .bar-frame p.bar {z-index:1;}
+
+.npc-talk-area .control .graph .bar-frame p {background-image:var(--now-love-color);}
+.npc-talk-area .control .graph .bar-frame p.bar {background-image:var(--next-love-color);}
+
+.npc-talk-area .get-item {display:flex; align-items:center; border:1px solid rgba(255,255,255,.4); padding:5px; margin-bottom:20px;}
+.npc-talk-area .get-item > * {flex-grow:1; width:100%; word-break:keep-all;}
+.npc-talk-area .get-item .thumb {width:50px; padding:5px;}
+.npc-talk-area .get-item .thumb img {width:40px; height:40px; object-fit:container;}
+.npc-talk-area .get-item .item-con {padding:5px; font-size:12px;} 
+.npc-talk-area .get-item .title {font-size:14px; margin-bottom:5px;}
+
+/*********************************
+	인벤토리창
+*********************************/
+.npc-inventory {display:block; position:relative;}
+.npc-inventory .control {font-size:14px; text-align:right;}
+.npc-inventory .filter {display:block; position:relative;}
+.npc-inventory .filter input {display:block; position:relative; width:100%;}
+.npc-inventory .in {display:block; position:relative; height:100px; overflow:auto; border:1px solid rgba(255,255,255,.1); padding:10px; margin-bottom:20px;}
+.npc-inventory ul {display:flex; flex-wrap:wrap; justify-content:space-between;}
+.npc-inventory li {flex-grow:1;}
+.npc-inventory li label {display:block; position:relative;}
+.npc-inventory li label div { position:relative; padding:5px; margin:3px; font-size:13px;}
+.npc-inventory li label div:before {content:""; display:block; position:absolute; top:0; left:0; right:0; bottom:0; border:1px solid rgba(255,255,255,.4);}
+.npc-inventory li label div img {position:absolute; top:50%; left:5px; margin-top:-10px; width:20px; height:20px; object-fit:container;}
+.npc-inventory li label div span {margin-left:35px;}
+.npc-inventory li label input {position:absolute; top:0; left:0; visibility:hidden;}
+.npc-inventory li label input:checked + div:before {border:2px solid yellow;}
+
+/*********************************
+	NPC 레이아웃
+*********************************/
+
+.npcPageWrap {display:block; position:relative;}
+.npcPageWrap .__npcVisual {display:block; position:relative; height:90vh; z-index:0;}
+.npcPageWrap .__npcVisual .vis {position:relative; height:100%; background:no-repeat 50% 50%; background-size:contain;}
+.npcPageWrap .__npcDescript {position:absolute; left:0; right:0; bottom:0; z-index:1;}

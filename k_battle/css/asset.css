@@ -1,0 +1,303 @@
+@import url(./custom.css);
+@import url(./equip.css);
+@font-face {
+	font-family: 'material';
+	font-style: normal;
+	font-weight: 400;
+	src: url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
+}
+
+*{
+    box-sizing:border-box;
+}
+
+.asset-area {
+    display:flex;
+    flex-direction:column;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+    position: relative;
+    padding:10px;
+    max-width:600px;
+    margin:0 auto;
+}
+
+.asset-area .list-area{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+    width:100%;
+    max-width:800px;
+}
+
+.asset-list{
+    max-width:100%;
+    display:flex;
+    justify-content:start;
+    align-items:center;
+    padding: 5px;
+    box-sizing:border-box;
+}
+
+.asset-list.use{
+    height: 50px;
+    overflow-x:auto;
+}
+.asset-list li{
+    position:relative;
+    overflow:hidden;
+}
+.asset-list.use li{
+    background:var(--action-select-background);
+    border:var(--action-select-border);
+    border-radius:var(--action-select-border-radius);
+    -webkit-border-radius:var(--action-select-border-radius);
+    -moz-border-radius:var(--action-select-border-radius);
+    -ms-border-radius:var(--action-select-border-radius);
+    -o-border-radius:var(--action-select-border-radius);
+}
+.asset-list li.selected{
+    filter:drop-shadow(0px 0px 4px var(--ug-light-color));
+}
+.asset-list.use li.selected{
+     border:1px solid var(--ug-light-color);
+}
+.asset-list.use li:after{
+    content:'스킬';
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:linear-gradient(to top, #000000, transparent);
+    z-index:1;
+    display:flex;
+    justify-content:center;
+    align-items:end;
+    color:white;
+    font-size:11px;
+    pointer-events:none;
+    opacity:0;
+    transition-duration:.5s;
+    top:5px;
+    left:0;
+    z-index:1;
+}
+.asset-list.use li:hover:after{
+     opacity:1;
+     top:0;
+}
+.asset-list.has{
+    height:100%;
+    width:100%;
+    display:grid;
+    justify-content:space-around;
+    align-items:center;
+    grid-template-columns: repeat(auto-fill, minmax(36px, auto));
+    grid-template-rows: repeat(auto-fill, minmax(36px, auto));
+    grid-gap:2px;
+    overflow:auto;
+    background:#00000030;
+    border-radius: 5px;
+}
+
+.asset-area .info-area{
+    display:flex;
+    align-items:start;
+    justify-content:space-around;
+    text-align:center;
+    width:100%;
+    max-width:800px;
+    height:144px;
+    position:relative;
+}
+
+.asset-list li, .asset-info .asset-icon{
+    height:36px;
+    width:36px;
+    display:inline-flex;
+    justify-content: center;
+    align-items:center;
+    margin: 2px;
+    cursor:pointer;
+    position:relative;
+}
+
+.asset-list li img{
+    max-height:100%;
+}
+.asset-list .none{
+    background-color:black;
+    cursor:default;
+}
+
+.asset-info{
+    box-sizing:border-box;
+    width:100%;
+    overflow:hidden;
+    position:relative;
+    height:120px;
+    min-width: 330px;
+    padding-left: 10px;
+}
+
+.asset-info .ui-btn{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    padding:3px;
+    height:16px;
+}
+.asset-info .asset-mine{
+    display:inline-block;
+    position:absolute;
+    top:0px;
+    right:0px;
+}
+.asset-info .info-header input{
+    height:16px;
+    padding: 0 5px;
+}
+
+.asset-info .info-header {
+    display:flex;
+    justify-content:start;
+    align-items:end;
+    position:relative;
+}
+
+.asset-info .asset-name{
+    display:inline-block;
+    font-weight:900;
+    font-size:1.1em;
+    padding:5px; 
+    text-align:left;
+    line-height:1em;
+}
+.asset-info .asset-option{
+    text-align:left;
+}
+.asset-info .asset-option span{
+    margin-right:2px;
+    background-color:#00000060;
+    border-radius:3px;
+    font-size:10px;
+    line-height:12px;
+    font-weight:100;
+    color:white;
+    padding: 1px 3px;
+}
+.asset-info .asset-content{
+    overflow:auto;
+    height: 4em;
+    padding: 0px 10px;
+    margin-top:3px;
+    text-align:left;
+}
+.asset-info .asset-content input{
+    width:100%;
+    display:block;
+    height:24px;
+}
+.asset-info .info-footer{
+    position:absolute;
+    bottom:0px;
+    right:0px;
+    text-align:right;
+}
+.asset-info .info-footer p{
+    line-height:1em;
+}
+.asset-info .info-footer .sk-mp{
+    font-size:0.9em;
+    line-height:1.3em;
+    opacity:.8;
+}
+.asset-info .info-footer .sk-mp span{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    height:100%;
+    padding:0 1px;
+    line-height:1.3em;
+    background-color:#be934c;
+    border-radius:3px;
+    color:#ffffff;
+    margin-left:5px;
+    cursor:pointer;
+}
+.asset-info .info-footer .sk-mp span:before{
+    content:'mail';
+    font-family:"material";
+}
+.asset-info .info-footer .asset-content2{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:end;
+    align-items:center;
+    padding: 0;
+    font-size:0.9em;
+    opacity:.8;
+}
+.asset-info .info-footer .asset-content2:before{
+    content:"report";
+    font-family: 'material';
+    line-height:0.8em;
+    margin-right:2px;
+}
+
+#sk_img_view{
+    position:fixed;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    overflow:auto;
+    padding:20px;
+    width:100%;
+    height:100%;
+    background-color:#000000cc;
+    top:0;
+    left:0;
+    z-index:999;
+}
+#sk_img_view .theme-box{
+   text-align:center;
+   padding: 20px;
+}
+
+#sk_img_view form,
+#sk_img_view .theme-box {
+    width: 280px;
+}
+#sk_img_view form *{
+    width:100%;
+    margin: 2px 0;
+}
+#sk_img_view .ui-btn{
+    margin-top:20px;
+}
+.unit-skill li{
+    max-width:400px;
+    margin: 2px auto;
+    
+}
+
+@media all and (max-width:500px)  {
+    .info-area{
+        flex-direction:column;
+        justify-content:initial;
+        align-items:initial;
+        height:auto;
+    }
+    .asset-list.has{
+        height:84px;
+        width:100%;
+        max-width:initial;
+    }
+    .asset-info{
+        min-width:initial;
+        padding-left:0;
+        padding-top:10px;
+    }
+}

@@ -11,6 +11,8 @@ $status_fix = true;
 
 $resent_use_point = 0;
 
+$equip_bonus=get_k_equip_bonus($ch_id);
+
 if($member['mb_id']) { 
 	if($member['mb_id'] == $mb['mb_id']) { 
 		// 캐릭터 수정 상태
@@ -65,7 +67,9 @@ if($member['mb_id']) {
 	$resent_use_point += $sc['has'];
 	
 	$sub_text = "";
-	if($sc['drop']) $sub_text = "(".$sc['now'].")"; 
+	if($equip_bonus[$st['st_id']]){$sub_text.="+{$equip_bonus[$st['st_id']]}";}
+	if($sc['drop']) $sub_text .= "(".$sc['now'].")"; 
+
 ?>
 		<dl data-idx="<?=$st['st_id']?>" data-min="<?=$min_data?>" data-max="<?=$sc['max']?>" <?=$status_modify ? "class='ui-control'" : ""?>>
 		<? if($status_modify) { ?>

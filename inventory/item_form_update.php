@@ -22,7 +22,7 @@ $item_data_url = G5_DATA_URL."/item";
 $in = sql_fetch("select * from {$g5['inventory_table']} inven, {$g5['item_table']} item where inven.in_id = '{$in_id}' and inven.it_id = item.it_id and inven.ch_id = '{$ch_id}'");
 $it_id = $in['it_id'];
 
-if($in['it_type'] != '아이템추가') { 
+if($in['it_type'] != '아이템추가'&&$in['it_type'] != '커스텀장비제작(K)') { 
 	alert('올바른 아이템 정보가 아닙니다.');
 }
 
@@ -44,6 +44,10 @@ if ($img = $_FILES['it_img']['name']) {
 
 		$sql_common = " , it_img = '{$it_img}' ";
 	}
+}
+
+if($in['it_type']=="커스텀장비제작(K)"){
+	$sql_common .=" , it_type = '커스텀장비(K)'";
 }
 
 $sql_common = " it_name = '{$_POST['it_name']}',

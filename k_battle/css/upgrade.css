@@ -1,0 +1,192 @@
+@import url(./custom.css);
+@import url(./equip.css);
+@font-face {
+    font-family: 'main';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+*{
+    box-sizing:border-box;
+    font-family:'main';
+}
+.upgrade-area{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    padding: 20px;
+    margin:0 auto;
+    width:100%;
+    height:100%;
+    background:linear-gradient(to top, #000000, transparent);
+}
+.upgrade-area .slot-area,
+.upgrade-area #text-area,
+.upgrade-area #items{
+    width:100%;
+    max-width:400px;
+    margin: 0 auto;
+}
+
+.slot-area{
+    position:relative;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    padding-top:10px;
+    height: 150px;
+}
+
+.slot-area .slot,
+.slot-area .slot-img{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:44px;
+    height:44px;
+    cursor:pointer;
+    transition-duration:1s;
+    
+}
+.slot-area .slot-img{
+    background:var(--ug-item-background);
+    border:var(--ug-item-border);
+    border-radius:var(--ug-item-border-radius) ;
+    -webkit-border-radius:var(--ug-item-border-radius) ;
+    -moz-border-radius:var(--ug-item-border-radius) ;
+    -ms-border-radius:var(--ug-item-border-radius) ;
+    -o-border-radius:var(--ug-item-border-radius) ;
+    overflow:hidden;
+    
+}
+
+.slot-area .slot-img img{
+    z-index:1;
+}
+
+.slot-area span{
+    position:absolute;
+    font-size:var(--ug-item-name-fontsize);
+    color:var(--ug-item-name-fontcolor);
+    text-shadow: var(--ug-item-name-textshadow);
+}
+
+.slot-area .slot .title{
+    bottom:100%;
+}
+
+.slot-area .slot .name{
+    top:100%;
+    width: 200%;
+    text-align: center;
+}
+
+.slot-area .slot img{
+    max-height:100%;
+    max-width:100%;
+}
+
+.slot-area .slot:hover{
+    box-shadow:0px 0px 10px 4px var(--ug-light-color);
+    animation: none;
+}
+
+.upgrade-area #text-area{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    background:var(--ug-info-background);
+    font-size:var(--ug-info-fontsize);
+    color:var(--ug-info-fontcolor);
+    border-radius:var(--ug-info-border-radius);
+    -webkit-border-radius:var(--ug-info-border-radius);
+    -moz-border-radius:var(--ug-info-border-radius);
+    -ms-border-radius:var(--ug-info-border-radius);
+    -o-border-radius:var(--ug-info-border-radius);
+    text-align:center;
+    padding:10px 0;
+    margin:10px auto;
+    height: 100px;
+}
+
+#text-area .F{
+	text-shadow:0px 0px 4px var(--ug-fail-color);
+}
+#text-area .S{
+	text-shadow:0px 0px 4px var(--ug-success-color);
+}
+#text-area .plus{
+    text-shadow:0px 0px 4px var(--ug-upgrade-color);
+}
+
+#text-area .ui-btn{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#items ul{
+	height:70px;
+    overflow:auto;
+    display:grid;
+    justify-content:center;
+    align-items:center;
+    grid-template-columns:repeat(auto-fill,50px);
+    grid-template-rows:repeat(auto-fill,50px);
+    grid-gap:2px;
+    padding: 5px;
+}
+
+#items ul li{
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:44px;
+  height:44px;
+}
+
+#items ul li:hover img{
+    cursor:pointer;
+    filter:drop-shadow(0px 0px 4px var(--ug-light-color));
+    -webkit-filter:drop-shadow(0px 0px 4px var(--ug-light-color));
+}
+
+#items ul li.selected{
+     filter:drop-shadow(0px 0px 4px var(--ug-light-color));
+     -webkit-filter:drop-shadow(0px 0px 4px var(--ug-light-color));
+}
+#items ul p{
+    position:absolute;
+}
+
+.blink{
+    animation: blink 2s infinite;
+}
+
+@keyframes blink{
+    0% {
+    box-shadow:0px 0px 10px 4px var(--ug-light-color);
+    }
+    50% {
+    box-shadow:0px 0px 0px 0px var(--ug-light-color);
+    }
+    100% {
+    box-shadow:0px 0px 10px 4px var(--ug-light-color);
+    }
+}
+
+.white{
+    z-index:100;
+    background-color: var(--ug-fade-color);
+    width:100vw;
+    height:100vh;
+    position:fixed;
+    pointer-events:none;
+    top:0;
+    left:0;
+    opacity:0;
+}

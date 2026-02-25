@@ -31,7 +31,17 @@ if ($_POST['act_button'] == "선택수정") {
 							st_min = '{$_POST['st_min'][$k]}',
 							st_order = '{$_POST['st_order'][$k]}',
 							st_use_max = '{$_POST['st_use_max'][$k]}',
-							st_help = '{$st_help_str}'
+							st_help = '{$st_help_str}',
+							st_type1 = '{$_POST['st_type1'][$k]}',
+							st_type2 = '{$_POST['st_type2'][$k]}',
+							st_type3 = '{$_POST['st_type3'][$k]}',
+							st_type4 = '{$_POST['st_type4'][$k]}',
+							st_type5 = '{$_POST['st_type5'][$k]}',
+							st_type6 = '{$_POST['st_type6'][$k]}',
+							st_type7 = '{$_POST['st_type7'][$k]}',
+							st_type8 = '{$_POST['st_type8'][$k]}',
+							st_type9 = '{$_POST['st_type9'][$k]}',
+							st_type10 = '{$_POST['st_type10'][$k]}'
 					";
 			
 			$sql .= "   where st_id = '{$_POST['st_id'][$k]}' ";

@@ -98,6 +98,11 @@ $write_pages = get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['c
 				관심로그
 			</a>
 		</li>
+		<li>
+			<a href="./dungeon.php">
+				던전로그
+			</a>
+		</li>
 	</ul>
 </nav>
 

@@ -1,0 +1,538 @@
+@import url(../css/raid.default.css);
+
+/* ============================================
+   ê¸°ë³¸ ìŠ¤íƒ€ì¼
+   ============================================ */
+body {
+    height: auto;
+}
+body * {
+    box-sizing: border-box;
+    font-family: 'main';
+}
+
+/* ============================================
+   ì „ì²´ ë ˆì´ì•„ì›ƒ (.all-wrapper)
+   ============================================ */
+.all-wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow: hidden;
+}
+.all-wrapper:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: linear-gradient(to top, black, transparent, black);
+    pointer-events: none;
+}
+.all-wrapper .theme-box {
+    padding: initial;
+}
+
+/* ============================================
+   ì¢Œì¸¡/ìš°ì¸¡ ì˜ì—­ ê³µí†µ
+   ============================================ */
+.all-wrapper .right-area,
+.all-wrapper .left-area {
+    height: 100%;
+    padding: 3px;
+}
+
+/* ============================================
+   ì¢Œì¸¡ ì˜ì—­ (left-area)
+   ============================================ */
+.all-wrapper .left-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px;
+    width: 100%;
+    min-width: 340px;
+}
+
+.all-wrapper #ally-area,
+.all-wrapper #enemy-area,
+.all-wrapper #my-area {
+    width: 100%;
+    z-index: 1;
+}
+
+.all-wrapper #ally-inner,
+.all-wrapper #enemy-inner {
+    margin: auto;
+    width: 100%;
+}
+
+.all-wrapper #ally-area,
+.all-wrapper #enemy-area {
+    overflow: auto;
+    min-height: 140px;
+    max-height: 140px;
+    display: flex;
+}
+
+/* ============================================
+   ìœ ë‹› ë¦¬ìŠ¤íŠ¸ (.unit-list)
+   ============================================ */
+.all-wrapper .unit-list {
+    margin: 0 auto;
+    width: 90%;
+}
+.all-wrapper .unit-list li.retire {
+    filter: grayscale(1);
+}
+.all-wrapper .unit-list li.nowturn {
+    filter: drop-shadow(1px 1px 5px #ffcf78f5);
+}
+
+/* ìœ ë‹› ìƒíƒœ í‘œì‹œ */
+.all-wrapper .unit-list .unit-status {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    order: -1;
+    height: 10px;
+    grid-template-columns: repeat(5, 1fr);
+}
+.all-wrapper .unit-list.enemy:has(li:only-child) .unit-status {
+    margin-top: 3px;
+}
+.all-wrapper .unit-list:not(.enemy:has(li:only-child)) .unit-status.rm-buff div {
+    height: 8px;
+    font-size: 7px;
+    line-height: 8px;
+}
+.all-wrapper .unit-list:not(.enemy:has(li:only-child)) .unit-status.rm-buff .bf-inner {
+    font-size: 9px;
+    z-index: 2;
+    line-height: 10px;
+}
+.all-wrapper .unit-list:not(.enemy:has(li:only-child)) li .bf-inner {
+    transform: translateX(100%);
+    border-radius: 10px 10px 10px 0;
+}
+
+/* í„´ í‘œì‹œ ì•„ì´ì½˜ */
+.all-wrapper .unit-list .turn {
+    display: inline-block;
+    background-color: transparent;
+}
+.all-wrapper .unit-list .turn:before {
+    content: "remove";
+    color: white;
+    font-size: 9px;
+    line-height: 9px;
+}
+.all-wrapper .unit-list .turn.done:before {
+    content: "done";
+}
+.all-wrapper .unit-list li.nowturn .turn:before {
+    content: "hourglass_bottom";
+}
+
+/* ============================================
+   ì  ìœ ë‹› ë‹¨ë… í‘œì‹œ (ë³´ìŠ¤)
+   ============================================ */
+.all-wrapper .unit-list.enemy li:only-child {
+    width: 100%;
+}
+.all-wrapper .unit-list.enemy:has(li:only-child) {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    height: 140px;
+}
+.all-wrapper .unit-list.enemy:has(li:only-child) .unit-status {
+    display: grid;
+    justify-content: start;
+    align-items: center;
+    direction: rtl;
+    order: -1;
+    height: 10px;
+    grid-template-columns: repeat(5, 20px);
+    padding-top: 3px;
+}
+.all-wrapper .unit-list.enemy:has(li:only-child) .ar-info p {
+    height: 16px;
+    line-height: 16px;
+}
+.all-wrapper .unit-list.enemy:has(li:only-child) .ar-info .unit-hp span,
+.all-wrapper .unit-list.enemy:has(li:only-child) .ar-info .unit-mp span,
+.all-wrapper .unit-list.enemy:has(li:only-child) .ar-info .unit-mp i,
+.all-wrapper .unit-list.enemy:has(li:only-child) .ar-info .unit-hp i {
+    font-size: 12px;
+    line-height: 16px;
+    height: 16px;
+}
+.all-wrapper .unit-list.enemy:has(li:only-child) .ar-default .unit-name {
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+.all-wrapper .unit-list.enemy:has(li:only-child) .unit-thumb {
+    width: 80px;
+    height: 80px;
+}
+
+/* ============================================
+   ì¤‘ì•™ ì˜ì—­ (center-area)
+   ============================================ */
+.all-wrapper #center-area {
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    flex-wrap: wrap;
+}
+
+/* í„´ í‘œì‹œ ì˜ì—­ */
+.all-wrapper #center-area #turn-area {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    font-size: 30px;
+    font-weight: 900;
+    z-index: 1;
+    pointer-events: none;
+    height: 30px;
+    line-height: 30px;
+}
+.all-wrapper #center-area #turn-area #turn-inner:before {
+    content: 'Turn';
+}
+.all-wrapper #center-area #turn-area * {
+    font-family: "serif";
+    height: 100%;
+}
+
+/* ì œí•œì‹œê°„ í‘œì‹œ */
+#time-limit-area {
+    order: -1;
+    min-width: 60px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 900;
+    padding: 0 10px;
+    border-radius: 5px;
+    transition: color 0.3s;
+    margin-bottom: -5px;
+}
+#time-limit-area:before {
+    content: "hourglass_bottom";
+    font-family: "material";
+}
+#time-limit-area.urgent {
+    color: #ff4444dd;
+    animation: time-urgent-blink 0.5s infinite;
+}
+@keyframes time-urgent-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* ì‹œìŠ¤í…œ ë©”ì‹œì§€ */
+#system-msg {
+    font-size: 40px;
+    font-weight: 700;
+    font-family: "serif";
+    width: 100%;
+    text-align: center;
+    padding: 0 40px;
+    text-shadow: 0px 0px 8px #000000;
+    filter: drop-shadow(0px 0px 6px #ffffff);
+    line-height: 45px;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#system-msg.msg-out {
+    opacity: 0;
+    transform: translateY(-5px);
+}
+#system-msg.msg-in {
+    animation: msgFadeIn 0.4s ease;
+}
+@keyframes msgFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   ë‚´ ì˜ì—­ (my-area)
+   ============================================ */
+.all-wrapper #my-area #my-inner {
+    position: relative;
+    z-index: 1;
+    padding: 0 10px 5px 10px;
+}
+.all-wrapper #my-area #my-inner #my-info {
+    margin-top: 10px;
+}
+.all-wrapper #center-area #my-area.active:before {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 100px;
+    width: 100%;
+    background: linear-gradient(to top, #ffa500b3, transparent, transparent);
+    pointer-events: none;
+}
+.all-wrapper #center-area #my-area #action-info {
+    color: white;
+    background: #00000050;
+    backdrop-filter: blur(2px);
+}
+
+/* ë‚´ ì •ë³´ HP/MP ë°” */
+#my-info p:not(.rm-buff p) {
+    height: 16px;
+    line-height: calc(var(--unit-list-item-article-fontsize) + 1px);
+    font-size: var(--unit-list-item-article-fontsize);
+    overflow: hidden;
+    position: relative;
+}
+#my-info .unit-hp,
+#my-info .unit-mp {
+    background: var(--unit-info-bar-background);
+    border-radius: 2px;
+}
+#my-info .unit-hp span,
+#my-info .unit-mp span,
+#my-info .unit-mp i,
+#my-info .unit-hp i {
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    color: var(--unit-info-bar-fontcolor);
+    text-align: right;
+    padding-right: 5px;
+    font-size: 12px;
+    line-height: 16px;
+}
+#my-info .unit-hp span {
+    background: var(--unit-info-bar-background-hp);
+}
+#my-info .unit-mp span {
+    background: var(--unit-info-bar-background-mp);
+}
+
+/* í–‰ë™ ì„ íƒ */
+#action-select {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* ============================================
+   ìš°ì¸¡ ì˜ì—­ (right-area) - ë¡œê·¸
+   ============================================ */
+.all-wrapper .right-area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 340px;
+    width: 340px;
+    position: relative;
+    padding-top: 100px;
+}
+
+/* ë¡œê·¸ ì˜ì—­ */
+.all-wrapper #log-area {
+    display: flex;
+    justify-content: start;
+    align-items: end;
+    height: calc(100% - 120px);
+    width: 100%;
+    z-index: 1;
+}
+.all-wrapper #log-area .log-area {
+    background: transparent;
+    backdrop-filter: blur(2px);
+}
+.all-wrapper #log-area #log-inner {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    max-height: 100%;
+}
+
+/* ë¡œê·¸ ìž…ë ¥ ë²„íŠ¼ ì˜ì—­ */
+.all-wrapper .log_btn {
+    width: 100%;
+    height: 100px;
+    min-height: 120px;
+    z-index: 1;
+}
+.all-wrapper .log_btn textarea {
+    height: calc(100% - 25px);
+    background-color: transparent;
+    border: none;
+}
+.all-wrapper .log_btn .btn-area {
+    display: flex;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+}
+.all-wrapper .log_btn .btn-area .ui-btn {
+    height: 100%;
+    width: 100%;
+    color: white;
+    background-color: transparent;
+    border: 1px solid transparent;
+    font-family: "serif";
+}
+.all-wrapper .log_btn .btn-area .ui-btn:hover {
+    background-color: #ffffff11;
+}
+
+/* ì±„íŒ… ë©”ì‹œì§€ ìŠ¤íƒ€ì¼ */
+.log-area li.ch-msg {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.log-area li p.msg-prof {
+    text-align: left;
+    padding: 0;
+}
+.log-area li p.msg-prof span:before,
+.log-area li p.msg-prof span:after {
+    content: none;
+}
+.log-area li p.msg-prof img {
+    height: 20px;
+}
+.log-area li p.msg-prof .msg-name {
+    padding-right: 5px;
+}
+.log-area li p.msg-prof .msg-text {
+    display: block;
+    background-color: white;
+    color: black;
+    padding: 5px;
+    margin-top: 3px;
+    margin-left: 10px;
+    border-radius: 5px;
+    font-weight: 400;
+}
+
+/* ============================================
+   ë°˜ì‘í˜• (ëª¨ë°”ì¼)
+   ============================================ */
+@media all and (max-width: 785px) {
+    .all-wrapper {
+        display: block;
+    }
+    .all-wrapper .left-area {
+        height: calc(100% - 50px);
+    }
+    .all-wrapper .right-area {
+        height: 50px;
+        width: 100%;
+        max-width: initial;
+        z-index: 1;
+        padding-top: 0;
+    }
+    .all-wrapper #log-area {
+        position: fixed;
+        z-index: 0;
+        top: 140px;
+        left: 0;
+        height: calc(100% - 265px);
+        width: 100%;
+        max-width: initial;
+    }
+    .all-wrapper #log-area .log-area {
+        padding-bottom: 100px;
+    }
+    .all-wrapper #center-area #turn-area {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        font-size: 20px;
+        z-index: 10;
+    }
+    #time-limit-area {
+        font-size: 13px;
+        margin-bottom: -3px;
+    }
+    .all-wrapper #center-area #my-area {
+        z-index: 10;
+    }
+    .all-wrapper .log_btn {
+        min-height: 50px;
+        height: 50px;
+        display: flex;
+    }
+    .all-wrapper .log_btn textarea {
+        height: 50px;
+    }
+    .all-wrapper .log_btn .btn-area {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: center;
+        align-items: center;
+        height: 50px;
+        min-width: 100px;
+        padding: 2px;
+    }
+    .all-wrapper .log_btn .btn-area .ui-btn {
+        height: 100%;
+    }
+    .all-wrapper .log_btn .btn-area .ui-btn:first-child {
+        min-height: 70%;
+    }
+    .all-wrapper #ally-area,
+    .all-wrapper #enemy-area {
+        height: 60px;
+        min-height: 60px;
+    }
+    .all-wrapper #enemy-area {
+        margin-top: 15px;
+    }
+    .unit-list .ar-default {
+        height: 20px;
+    }
+    .unit-list .ar-default .unit-thumb {
+        display: none;
+    }
+    .all-wrapper #center-area {
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+    .all-wrapper .unit-list.enemy:has(li:only-child) {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        height: auto;
+    }
+}
