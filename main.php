@@ -26,6 +26,7 @@ if($main_content) {
 
 		<div id="main_twitter_box" class="theme-box">
 			<? include(G5_PATH."/templete/txt.twitter.php"); ?>
+			<?=latest( 'schedule2', '게시판아이디', 31 )?> 
 		</div>
 
 		<div id="main_image_box" class="theme-box">
