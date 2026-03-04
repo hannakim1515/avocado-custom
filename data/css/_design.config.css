@@ -2,7 +2,7 @@
 /***************************************************************
 	Design Manager Setting Style: 자동생성 CSS
 ---------------------------------------------------------------
-	- 최종 수정일 : 2026-02-24 13:33:27
+	- 최종 수정일 : 2026-03-04 12:08:12
 ***************************************************************/
 
 
@@ -14,7 +14,9 @@ a,
 
 @media all and (min-width: 1025px) { 
 	html.single:before	{
-		background-image: url('http://localhost/avocado/skin/member/basic/img/bak_admin_login_top_pattern.png');
+		background-color: #ffffff;
+		background-repeat: no-repeat;
+		background-size: cover;
 		}
 }
 
@@ -51,6 +53,9 @@ a,
 }
 
 
+#header,
+#footer	{ display: none !important; }
+#body	{ margin: 0 !important; }
 
 #body	{ margin-left: 200px; }
 #header	{
