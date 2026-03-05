@@ -1,17 +1,32 @@
 <?php
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
-?>
 
- <!-- 로딩 스크린 -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="loading-content">
-            <div class="loading-spinner"></div>
-            <div class="loading-text">Loading...</div>
-            <div class="loading-progress">
-                <div class="loading-progress-bar"></div>
-            </div>
-        </div>
-    </div> 
+// avo_character 테이블에서 랜덤하게 캐릭터 1명 추출 (ID와 전신이미지)
+$sql_char = " SELECT ch_id, ch_body, ch_name 
+               FROM avo_character 
+               WHERE ch_state = '승인' 
+               ORDER BY RAND() 
+               LIMIT 1 ";
+$char_row = sql_fetch($sql_char);
+
+// 추출된 캐릭터 정보 변수 담기
+$selected_ch_id = $char_row['ch_id'];   // 추출된 캐릭터의 고유 ID
+$char_img       = $char_row['ch_body']; // 추출된 캐릭터의 전신 이미지 URL
+
+// [단계 2] 위에서 뽑힌 캐릭터 ID를 기준으로 avo_article_value 테이블에서 'txt' 검색
+$sql_val = " SELECT av_value 
+              FROM avo_article_value 
+              WHERE ch_id = '{$selected_ch_id}' 
+                AND ar_code = 'txt' ";
+$val_row = sql_fetch($sql_val);
+
+// 추출된 한마디 변수 담기
+$char_talk = $val_row['av_value'];
+
+// [단계 3] 데이터가 없을 경우를 대비한 기본값 처리
+if (!$char_img)  $char_img  = "";
+if (!$char_talk) $char_talk = "등록된 한마디가 없습니다.";
+?>
 
     <!-- 메인 컨테이너 -->
     <div id="mainContent" class="main-container" style="display: none;">
@@ -20,24 +35,7 @@ if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
             <div class="header-left">
                 <div class="avatar"></div>
                 <div>
-                    <div class="header-title">지휘관</div>
-                    <div class="header-subtitle">Lv. 82</div>
                     <? include(G5_PATH."/templete/txt.outlogin.php"); ?>
-                </div>
-            </div>
-            
-            <div class="header-right">
-                <div class="currency-box">
-                    <div class="currency-icon emerald"></div>
-                    <span class="currency-value">99,999</span>
-                </div>
-                <div class="currency-box">
-                    <div class="currency-icon teal"></div>
-                    <span class="currency-value">32,545</span>
-                </div>
-                <div class="currency-box desktop-only">
-                    <div class="currency-icon cyan"></div>
-                    <span class="currency-value">198</span>
                 </div>
             </div>
         </header>
@@ -46,12 +44,11 @@ if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
         <div class="main-content">
             <!-- 중앙 캐릭터 섹션 -->
             <div class="character-section">
-                <!-- 말풍선 -->
                 <div id="speechBubble" class="speech-bubble">
                     <div class="speech-bubble-inner">
                         <div class="speech-overlay"></div>
                         <p class="speech-text">
-                            <span id="typedText"></span>
+                            <span id="typedText" data-msg="<?php echo htmlspecialchars($char_talk); ?>"></span>
                             <span id="cursor" class="cursor"></span>
                         </p>
                         <div class="speech-tail">
@@ -60,74 +57,12 @@ if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
                     </div>
                 </div>
 
-                <!-- 캐릭터 -->
                 <div class="character-container">
-                    <img src="https://i.imgur.com/MUMewZS.png" alt="Character" class="character-img">
+                    <img src="<?php echo $char_img; ?>" alt="<?php echo $row['ch_name']; ?>" class="character-img">
                 </div>
 
                 <!-- 장식 요소 -->
                 <div class="decoration-glow"></div>
-            </div>
-
-            <!-- 하단 메뉴 -->
-            <div class="side-menu">
-                <div class="menu-container">
-                    <button class="h-menu-item active" data-menu="home">
-                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                        </svg>
-                        <span class="menu-label">홈</span>
-                    </button>
-                    <button class="h-menu-item" data-menu="battle">
-                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-                        </svg>
-                        <span class="menu-label">전투</span>
-                    </button>
-                    <button class="h-menu-item" data-menu="story">
-                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                        </svg>
-                        <span class="menu-label">스토리</span>
-                    </button>
-                    <button class="h-menu-item" data-menu="characters">
-                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <span class="menu-label">캐릭터</span>
-                    </button>
-                    <button class="h-menu-item" data-menu="shop">
-                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 12 20 22 4 22 4 12"></polyline>
-                            <rect x="2" y="7" width="20" height="5"></rect>
-                            <line x1="12" y1="22" x2="12" y2="7"></line>
-                            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
-                            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
-                        </svg>
-                        <span class="menu-label">상점</span>
-                    </button>
-                    <button class="h-menu-item" data-menu="event">
-                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        <span class="menu-label">이벤트</span>
-                    </button>
-                    <button class="h-menu-item" data-menu="settings">
-                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <path d="M12 1v6m0 6v6m-6-6h6m6 0h-6m-2.8 8.2l4.2-4.2m0 0l4.2 4.2M4.93 4.93l4.24 4.24m0 0l4.24-4.24"></path>
-                        </svg>
-                        <span class="menu-label">설정</span>
-                    </button>
-                </div>
             </div>
 
             <!-- 데스크탑: 왼쪽 패널들 -->
@@ -374,26 +309,14 @@ if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
     <script>
         // 로딩 스크린
         window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.getElementById('loadingScreen').style.opacity = '0';
-                setTimeout(function() {
-                    document.getElementById('loadingScreen').style.display = 'none';
                     document.getElementById('mainContent').style.display = 'block';
                     initApp();
-                }, 500);
-            }, 2000);
+               
         });
 
         function initApp() {
-            // 타이핑 효과
-            const greetings = [
-                '어서와요 요한.',
-                '아~ 해보세요!',
-                '준비 됐어요?'
-            ];
-            
-            const greeting = greetings[Math.floor(Math.random() * greetings.length)];
             const typedText = document.getElementById('typedText');
+            const greeting = typedText.getAttribute('data-msg'); // PHP에서 넘어온 한마디
             const cursor = document.getElementById('cursor');
             const speechBubble = document.getElementById('speechBubble');
             
@@ -411,7 +334,7 @@ if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
                         clearInterval(typingInterval);
                     }
                 }, 80);
-            }, 500);
+        }, 500);
 
             // 진행률 바 애니메이션
             setTimeout(function() {

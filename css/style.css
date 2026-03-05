@@ -227,31 +227,6 @@ html.single .bgm-player {display:none !important;}
 #header .fix-layout {padding:0;}
 #logo img {max-width:225px;}
 
-/** 모바일 헤더 레이아웃 */
-@media all and (max-width:1024px)  {
-	body {width:100%;}
-	#logo {padding:0; z-index:0; top:auto; left:auto; transform:translateX(0) translateY(0); position:relative; text-align:center;}
-	#body {margin-left:0px; padding-top:50px;}
-	
-	/* 헤더 위치 */
-	#header .fix-layout {padding:0;}
-	#header {position:fixed; top:0; left:0; right:0; bottom:auto; z-index:999; width:auto; height:50px; overflow:visible;}
-
-	/* 메인메뉴 */
-	#gnb {position:fixed; top:0; right:-280px; bottom:0; width:280px; z-index:999; overflow-y:auto;}
-	#gnb_control_box {position:absolute; top:50%; margin-top:-20px; right:10px; width:40px; height:40px; border-radius:100%; text-align:center;}
-	#gnb_control_box:before {content:""; display:inline-block; width:0; height:100%; vertical-align:middle;}
-	#gnb_control_box img {display:inline-block; max-width:50%; max-height:50%; vertical-align:middle; margin-left:-12%; opacity:1;}
-
-	/* 메뉴 열고 닫기 */
-	#gnb_control_box,
-	#gnb_control_box *  {transition:all 0s ease; -webkit-transition:all 0s ease; -ms-transition:all 0s ease;}
-
-	/* 메뉴 열렸을 시 */
-	.open-gnb #gnb {right:0;}
-	.open-gnb #gnb_control_box {position:fixed; top:0; left:0; right:0; bottom:0; z-index:99; background:rgba(0, 0, 0, 0.5); border-radius:0; width:auto; height:auto;}
-	.open-gnb #gnb_control_box img {opacity:0;}
-}
 
 
 /**************************************************************
@@ -433,4 +408,116 @@ html.single .bgm-player {display:none !important;}
 @keyframes marquee  {
 	from    {transform:translate(0%);}
 	99%,to  {transform:translate(-100%);}
+}
+
+
+/* 커스텀 */
+
+
+
+/* 메뉴바(헤더) */
+@media all and (min-width: 1025px) {
+    .side-menu {
+        position: fixed;
+        top: 50%;
+        left: 20px;
+        transform: translateY(-50%);
+        z-index: 40;
+        width: auto;
+        padding: 0;
+    }
+
+    .menu-container {
+        display: flex;
+        flex-direction: column; /* 세로 정렬 */
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 24px 12px;
+        box-shadow: 4px 0 15px -3px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(229, 231, 235, 0.5);
+    }
+
+    /* PC에서 본문이 메뉴에 가려지지 않게 여백 추가 */
+    #body .fix-layout {
+        padding-left: 100px; 
+    }
+}
+
+/* 모바일 반응형 */
+@media all and (max-width: 1024px) {
+    .side-menu {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 40;
+        width: 100%;
+        padding: 0 16px;
+    }
+
+    .menu-container {
+        display: flex;
+        flex-direction: row; /* 가로 정렬 */
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        max-width: 100%;
+        overflow-x: auto;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 16px 16px 12px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(229, 231, 235, 0.5);
+    }
+
+    #body .fix-layout {
+        padding-left: 0;
+    }
+}
+
+/* 3. 공통 스타일 */
+.h-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--gray-700, #374151);
+    min-width: 56px;
+}
+
+.h-menu-item:hover {
+    transform: scale(1.1);
+    color: var(--gray-900, #111827);
+}
+
+.h-menu-item.active {
+    color: var(--emerald-500, #10b981);
+}
+
+.h-menu-item.active .menu-icon {
+    stroke-width: 2.5;
+}
+
+.menu-icon {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
+}
+
+.menu-label {
+    font-size: 12px;
+}
+
+/* 배경색 설정 */
+body {
+    background: linear-gradient(to bottom right, var(--gray-50), rgba(209, 250, 229, 0.3), rgba(204, 251, 241, 0.2)) !important;
 }

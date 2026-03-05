@@ -2,19 +2,16 @@
 /***************************************************************
 	Design Manager Setting Style: 자동생성 CSS
 ---------------------------------------------------------------
-	- 최종 수정일 : 2026-03-04 12:08:12
+	- 최종 수정일 : 2026-03-05 13:49:33
 ***************************************************************/
 
 
-body,
-.txt-default	{ color: #ffffff; }
 a,
 .txt-point	{ color: #29c7c9; }
 
 
 @media all and (min-width: 1025px) { 
 	html.single:before	{
-		background-color: #ffffff;
 		background-repeat: no-repeat;
 		background-size: cover;
 		}
@@ -22,17 +19,18 @@ a,
 
 @media all and (max-width: 1024px) {
 	html.single:before	{
-		background-image: url('http://localhost/avocado/skin/member/basic/img/bak_admin_login_top_pattern.png');
+		background-image: none;
 		}
 }
 
 
 @media all and (min-width: 1025px) { 
 	#header	{
-		background-color: rgba(0, 0, 0, .5);
+		background-color: rgba(0, 0, 0, 0);
 		}
 
 	#gnb	{
+		background-color: rgba(0, 0, 0, .0);
 		}
 
 	#gnb_control_box	{ display: none; }
@@ -41,10 +39,11 @@ a,
 @media all and (max-width: 1024px) {
 
 	#header	{
-		background-color: rgba(0, 0, 0, .5);
+		background-color: rgba(0, 0, 0, 0);
 		}
 
 	#gnb	{
+		background-color: rgba(0, 0, 0, .0);
 		}
 
 	#gnb_control_box	{
@@ -53,9 +52,6 @@ a,
 }
 
 
-#header,
-#footer	{ display: none !important; }
-#body	{ margin: 0 !important; }
 
 #body	{ margin-left: 200px; }
 #header	{
@@ -77,18 +73,17 @@ a,
 /*#gnb	{ float: right; }*/
 #gnb,
 #gnb *	{
-	color: #ffffff;
+	color: ;
 	font-size: 14px;
 }
 #gnb a:hover {
-	color: #29c7c9;
+	color: ;
 	font-size: 14px;
 }
 
 
 
 
-*::-webkit-scrollbar-track	{ background-color: #333333; }
 *::-webkit-scrollbar-thumb	{ background: #29c7c9; }
 
 * { outline-color: #29c7c9; }
@@ -96,9 +91,6 @@ a,
 ::-moz-selection	{ background:#29c7c9; }
 ::-webkit-selection	{ background:#29c7c9; }
 
-::selection	{ color:#333333; }
-::-moz-selection	{ color:#333333; }
-::-webkit-selection	{ color:#333333; }
 
 
 
@@ -170,7 +162,7 @@ a,
 
 
 .status-bar dd p	{
-	background: #ffffff;
+	background: ;
 }
 .status-bar dd p span	{
 	background: #29c7c9;
@@ -180,7 +172,7 @@ a,
 	background: #29c7c9;
 }
 .status-bar dd p i	{
-	color: #333333;
+	color: ;
 }
 
 
@@ -233,7 +225,7 @@ select:-webkit-autofill {
 
 
 
-.flex-control-paging a	{ background: #ffffff; }
+.flex-control-paging a	{ background: ; }
 .flex-control-paging a.flex-active	{ background: #29c7c9; }
 
 
@@ -257,7 +249,7 @@ select:-webkit-autofill {
 
 
 
-.timeline-Tweet:before { border-top-color: #333333; }
+.timeline-Tweet:before { border-top-color: ; }
 .TweetAuthor-name	{ color: #29c7c9; }
 
 
@@ -337,7 +329,7 @@ select:-webkit-autofill {
 .inventory-list a i	{
 	/*
 	background: #29c7c9;
-	color: #333333;
+	color: ;
 	*/
 
 	border: 1px solid #29c7c9;
