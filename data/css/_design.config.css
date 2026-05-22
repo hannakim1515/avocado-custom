@@ -2,7 +2,7 @@
 /***************************************************************
 	Design Manager Setting Style: 자동생성 CSS
 ---------------------------------------------------------------
-	- 최종 수정일 : 2026-03-05 13:49:33
+	- 최종 수정일 : 2026-05-22 12:56:25
 ***************************************************************/
 
 
@@ -12,6 +12,7 @@ a,
 
 @media all and (min-width: 1025px) { 
 	html.single:before	{
+		background-image: url('http://localhost/avocado/data/site/design_background.png');
 		background-repeat: no-repeat;
 		background-size: cover;
 		}
@@ -53,22 +54,22 @@ a,
 
 
 
-#body	{ margin-left: 200px; }
+
 #header	{
-	position: fixed;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	overflow-y: auto;
-	width: 200px;
-	
+	position: relative;
+	margin: 0;
+	padding: 0;
+	clear: both;
+	height: 50px;
 }
+#header .fix-layout	{ height: 100%; }
 #logo	{
-	padding:20px 0;
-	text-align: center;
+	display: block;
+	position: absolute;
+	top: 50%;
+	left: 0%;
+	transform: translateY(-50%);
 }
-
-
 
 /*#gnb	{ float: right; }*/
 #gnb,

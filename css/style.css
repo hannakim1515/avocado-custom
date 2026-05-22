@@ -413,50 +413,108 @@ html.single .bgm-player {display:none !important;}
 
 /* 커스텀 */
 
+#header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: auto !important;
+    width: 100% !important;
+    height: 70px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    clear: both;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+#header .fix-layout {
+    width: 100% !important;
+    max-width: none !important;
+    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#body {
+    width: 100% !important;
+    margin-left: 0 !important;
+    padding-top: 70px !important;
+    padding-left: 0 !important;
+    box-sizing: border-box;
+}
+
+#body .fix-layout {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+}
+
 
 
 /* 메뉴바(헤더) */
 @media all and (min-width: 1025px) {
     .side-menu {
-        position: fixed;
-        top: 50%;
-        left: 20px;
-        transform: translateY(-50%);
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        transform: none !important;
         z-index: 40;
-        width: auto;
-        padding: 0;
+        width: 100% !important;
+        height: 100%;
+        padding: 0 !important;
+        box-sizing: border-box;
     }
 
     .menu-container {
         display: flex;
-        flex-direction: column; /* 세로 정렬 */
+        flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: 20px;
+        gap: 32px;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        overflow-x: auto;
         background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 24px 12px;
-        box-shadow: 4px 0 15px -3px rgba(0, 0, 0, 0.1);
+        border-radius: 0;
+        padding: 0 24px;
+        box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(229, 231, 235, 0.5);
+        box-sizing: border-box;
     }
 
     /* PC에서 본문이 메뉴에 가려지지 않게 여백 추가 */
     #body .fix-layout {
-        padding-left: 100px; 
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        box-sizing: border-box;
     }
 }
 
 /* 모바일 반응형 */
 @media all and (max-width: 1024px) {
     .side-menu {
-        position: fixed;
-        bottom: 16px;
-        left: 50%;
-        transform: translateX(-50%);
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        transform: none !important;
         z-index: 40;
-        width: 100%;
-        padding: 0 16px;
+        width: 100% !important;
+        height: 100%;
+        padding: 0 !important;
+        box-sizing: border-box;
     }
 
     .menu-container {
@@ -469,10 +527,12 @@ html.single .bgm-player {display:none !important;}
         overflow-x: auto;
         background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(10px);
-        border-radius: 16px;
-        padding: 16px 16px 12px;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        border-radius: 0;
+        padding: 0 16px;
+        box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(229, 231, 235, 0.5);
+        box-sizing: border-box;
     }
 
     #body .fix-layout {

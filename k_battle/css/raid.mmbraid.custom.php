@@ -126,7 +126,7 @@
         if($log_css[4]){ echo "background:{$log_css[4]};";}
         if($log_css[5]){ echo "border-radius:{$log_css[5]};";}
         if($log_css[6]){ echo "color:{$log_css[6]};";}
-        if($log_css[7]){ echo "fons-size:{$log_css[7]};";}
+        if($log_css[7]){ echo "font-size:{$log_css[7]};";}
         ?>
     }
     .raid_admin .log-area{

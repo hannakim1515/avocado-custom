@@ -1,0 +1,84 @@
+@import "../default.css";
+.form-input,input[type=file],input[type=number],input[type=password],input[type=text],select,textarea{color:#000;background:#eee;border-color:#eee}
+
+#tab_list,*{box-sizing:border-box}
+#tab_list,.relation-member-list .state-modify .modify-box{display:block}
+#tab_list{position:relative;overflow:hidden;text-align:center;border:none}
+#tab_list ul{position:relative;z-index:1}
+#tab_list li{font-weight:600;padding:5px}
+#tab_list li a{color:#fff;opacity:.7}
+#tab_list li a.point,#tab_list li a:hover{opacity:1}
+#tab_list li a.point:before{content:"《"}
+#tab_list li a.point:after{content:"》"}
+
+.relation-member-list{position:relative;padding-top:10px}
+.relation-member-list>li{position:relative;border-radius:5px;padding-left:90px;min-height:80px;margin-bottom:30px}
+.relation-member-list .ui-thumb{position:absolute;top:0;border:1px solid #d2af9f;background-color:#ffffff8a;left:0;width:80px;height:80px;display:flex;justify-content:center;align-items:center;border-radius:10px;overflow:hidden}
+.relation-member-list .rm-name{font-size:14px;font-weight:600;padding-left:4px;color:#815947}
+.relation-member-list .memo{position:relative;line-height:1.2em;text-align:justify;min-height:60px;margin:0 auto;background-color:#fffc;padding:10px 10px 24px;border-radius:8px;border:1px solid #d2af9f}
+.relation-member-list .memo .poke_info{margin-top:5px;padding-top:4px;border-top:1px solid #d2af9f}
+.relation-member-list .memo .poke_info p{font-family:galmuri9;font-size:10px;line-height:12px;color:#815947}
+.relation-member-list .modify-box,.relation-member-list .state-modify .memo .ori-content{display:none}
+.relation-member-list .entry .ui-thumb{background-color:#d2af9f4d}
+
+.btn-modify.ui-btn,.memo-modify .ui-btn,.rm-name .ui-btn{display:flex;justify-content:center;align-items:center;padding:0;position:absolute;right:2px;top:0;border-color:transparent}
+.btn-modify.ui-btn,.link_area a,.memo-modify .ui-btn,.rm-name .ui-btn{height:16px;width:36px;font-family:galmuri9;font-size:10px;color:#815947;background-color:#f1d9ce}
+.memo-modify .ui-btn,.rm-name .ui-btn{color:#fff;background-color:#ab8f83}
+
+.link_area{position:absolute;bottom:4px;right:3px;text-align:right}
+.link_area a{display:inline-flex;justify-content:center;align-items:center;border-radius:4px;margin-right:1px}
+
+.tab-nav{text-align:center;padding:10px;margin-bottom:30px}
+.tab-nav button{font-size:14px;border:none;height:30px;padding:0 20px;margin:2px 0}
+
+#subpage{margin-top:20px;padding:20px;background-color:#fffc;backdrop-filter:blur(5px);border-radius:10px;min-height:400px}
+#subpage section{padding-bottom:50px}
+
+.mypageWrap .mypageInside #subpage :not(th):not(.ui-btn):not(.pg_current):not(li):not(i){color:#000}
+.mypage_subinner{padding-left:120px}
+nav#tab_list{position:Absolute;top:70px;left:0;border:none}
+.mypageWrap .mypageInside #subpage ul.tab_list{display:flex;flex-direction:column;border:none;text-align:left}
+.mypageWrap .mypageInside #subpage ul.tab_list li{background-color:var(--default-color);padding:10px 15px 10px 10px;width:115px}
+.mypageWrap .mypageInside #subpage ul.tab_list li a{color:var(--default-color-text)}
+.mypageWrap .mypageInside #subpage ul.tab_list li.on,.mypageWrap .mypageInside #subpage ul.tab_list li:hover{background-color:var(--point-color);color:var(--point-color-text)}
+.mypageWrap .mypageInside #subpage ul.tab_list li.on a,.mypageWrap .mypageInside #subpage ul.tab_list li:hover a{color:var(--point-color-text);opacity:1}
+.mypageWrap .mypageInside #subpage ul.tab_list li:first-child{border-radius:0 10px 0 0}
+.mypageWrap .mypageInside #subpage ul.tab_list li:last-child{border-radius:0 0 10px}
+.mypageWrap .mypageInside #subpage ul.tab_list img{max-height:16px;padding-right:5px}
+
+@media all and (max-width:640px) {
+    .tab-nav{padding:10px 0}
+    .tab-nav img{width:14px}
+    .tab-nav button{font-size:12px}
+}
+
+@media (max-width:500px) {
+    .relation-member-list .info{min-height:initial;margin-left:initial}
+}
+
+@media all and (max-width:520px) {
+    .profile-viewer .prof,.tab-nav{margin-left:-16px;margin-right:-16px}
+}
+
+@media all and (max-width:1024px) {
+    #submenu{margin:0 -10px}
+    #submenu li{padding:5px;font-size:12px}
+    #subpage{margin-left:0}
+    .mypage_subinner{padding-left:0}
+    nav#tab_list{position:relative;top:initial;left:initial}
+
+    .mypageWrap .mypageInside #subpage ul.tab_list{flex-direction:row}
+    .mypageWrap .mypageInside #subpage ul.tab_list li{padding:5px;width:100%}
+    .mypageWrap .mypageInside #subpage ul.tab_list li:first-child{border-radius:10px 0 0}
+    .mypageWrap .mypageInside #subpage ul.tab_list li:last-child{border-radius:0 10px 0 0}
+    .mypage_subinner .page-title:not(.tab-box .page-title){display:none}
+    
+    .tab-box .page-title{padding-top:20px}
+    .mypageWrap .mypageInside{padding:0}
+}
+
+@media all and (max-width:580px) {
+    .mypageWrap .mypageInside #subpage ul.tab_list li{text-align:center;font-size:12px}
+    .mypageWrap .mypageInside #subpage ul.tab_list li a{font-size:12px}
+    .mypageWrap .mypageInside #subpage ul.tab_list li img{display:none}
+}

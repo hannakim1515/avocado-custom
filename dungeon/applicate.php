@@ -18,6 +18,13 @@ if($state['no_member'] && $state['is_able']) {
 		// 최초 스탯 셋팅하기
 		$status_result = sql_query("select st_id from {$g5['status_config_table']}");
 		$status_sql = "";
+		$k_bridge_status = array();
+
+		// K 브릿지가 있으면 장비/패시브가 반영된 K 기준 최종 스탯을 먼저 준비한다.
+		if(function_exists('k_status_bridge_get_final_values')) {
+			$k_bridge_status = k_status_bridge_get_final_values($character['ch_id']);
+			if(!is_array($k_bridge_status)) $k_bridge_status = array();
+		}
 
 		for($i=0; $st = sql_fetch_array($status_result); $i++) { 
 			$check_firled = sql_query("SHOW COLUMNS FROM {$g5['dungeon_member_table']} LIKE 'st_id_{$st['st_id']}'");
@@ -36,8 +43,13 @@ if($state['no_member'] && $state['is_able']) {
 			// - 3. 길드 별 스탯 증감치 확인
 
 			// 기본 스탯 수치 정보
-			$has = get_status($character['ch_id'], $st['st_id']);
-			$has = $has['now'];
+			if(isset($k_bridge_status[$st['st_id']])) {
+				// 던전 컬럼명은 유지하고, 입장 시 저장되는 기준값만 K 계산 결과로 교체한다.
+				$add_status = (int)$k_bridge_status[$st['st_id']];
+			} else {
+				// K 브릿지를 사용할 수 없을 때는 기존 아보카도 계산식을 유지한다.
+				$has = get_status($character['ch_id'], $st['st_id']);
+				$has = $has['now'];
 
 			// 스킬 정보
 			$add_status = $has;
@@ -68,6 +80,8 @@ if($state['no_member'] && $state['is_able']) {
 			}
 
 			// --- 던전 버프 적용
+			}
+
 			if($ds['dg_status'] == $st['st_id']) {
 				if($ds['dg_status_type'] == '+') {
 					// 단순 포인트 더하기

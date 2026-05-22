@@ -1,0 +1,4 @@
+@import "../info/info.css";
+.partner-list{display:flex;justify-content:center;align-items:center;height:35px}
+.partner-list li{width:30px;display:flex;justify-content:center;align-items:center;margin:0}
+.partner-list li:first-child{width:35px}

@@ -1,0 +1,47 @@
+body{font-family:Pretendard,'Noto Sans KR',Arial,sans-serif;background:#f7faff}
+.flexbox-main{display:flex;gap:32px;align-items:start;justify-content:center;margin:0 auto;max-width:1000px;padding:20px;flex-wrap:wrap;color:#000}
+
+#skillList{width:300px;height:200px;overflow:auto;border-radius:10px;background-color:#fff}
+
+.skill-item{border:1px solid #d2d2d2;min-width:110px;cursor:pointer;padding:8px 8px 2px;transition:box-shadow .2s,border .2s;display:flex;align-items:center;background:#fff}
+.skill-item.selected{overflow:hidden;position:relative;border-color:#8d8dcb!important}
+.skill-item.selected:before{content:"";position:Absolute;width:35px;height:35px;background-color:#8585cc;display:block;top:calc(50% - 5px);right:-5px;transform:rotate(45deg) translateY(-50%)}
+.item-img{width:34px;height:34px;border-radius:8px;object-fit:cover;background:#eee;margin-right:8px}
+
+.skill-name{font-weight:700;font-size:1.04em}
+.skill-item.disabled{filter:grayscale(1) brightness(.7);cursor:not-allowed;pointer-events:none}
+.skill-color-1,.slot.skill-color-1{background:#fff7e2!important;border-color:#ffce73!important}
+.skill-color-2,.slot.skill-color-2{background:#e2fff2!important;border-color:#5ed79a!important}
+.skill-color-3,.slot.skill-color-3{background:#e2eaff!important;border-color:#7b9cff!important}
+.skill-color-4,.slot.skill-color-4{background:#ffe2ec!important;border-color:#ff81ae!important}
+.skill-detail-box{min-width:215px;width:300px;height:180px;margin-bottom:10px;margin-top:8px;border:1.5px solid #1976d255;border-radius:13px;background:#f6faff;box-shadow:0 2px 10px #2176d20d;padding:16px 14px 12px}
+
+.item-detail-name{font-weight:700;font-size:1.11em;margin-bottom:5px}
+.item-detail-value{color:#1976d2;margin-bottom:4px;font-size:.99em}
+.item-detail-content{color:#555;margin-bottom:8px;font-size:.97em}
+
+#skillConfirmBtn{background:#1976d2;color:#fff;border:none;border-radius:5px;padding:7px 18px;font-size:1.01em;cursor:pointer}
+#skillConfirmBtn:disabled{background:#ccc;color:#fff}
+
+.skill-slots-grid{height:200px;width:300px;padding:15px 0}
+.slots-grid-wrap{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:15px;max-width:300px}
+.slot{border:2.2px solid #d0d0ff;border-radius:13px;background:#f9faff;min-width:95px;min-height:76px;padding:10px 6px 11px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:1.02em;transition:box-shadow .14s,border .13s;cursor:pointer;outline:0;position:relative}
+.slot.selected{box-shadow:0 0 0 2.2px #1976d2cc;border-color:#1976d2;background:#e8f0fa}
+.acquired-name{font-size:1.05em;font-weight:600;color:#273173}
+
+#slotDetailBox{min-width:215px;max-width:370px}
+#slotDetailBox .item-detail-name{color:#164a82}
+#slotDetailMsg{color:#888;margin-top:7px;min-height:18px}
+#skillDetailAnnounce{color:#cf2626;font-size:.99em;margin-top:6px;min-height:17px}
+
+@media (max-width:700px) {
+  .flexbox-main{flex-direction:column;gap:18px;gap:0;align-items:center}
+  .skill-slots-grid{height:auto;padding:0}
+  #skillList{height:150px}
+  .slots-grid-wrap{margin:0 auto 12px;max-width:100%}
+  #slotDetailBox,.skill-detail-box{min-width:unset;max-width:100%}
+  #skillList,.flexbox-main,.flexbox-main div,.skill-detail-box,.slots-grid-wrap{width:100%}
+  .skill-detail-box{padding:10px;height:auto}
+  .slot{min-height:56px;min-width:initial}
+
+}

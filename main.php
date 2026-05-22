@@ -8,7 +8,6 @@ if(defined('G5_THEME_PATH')) {
 }
 include_once(G5_PATH.'/head.php');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/main.css">', 0);
-add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/hanna_main.css">', 0);
 include_once(G5_PATH."/intro.php");
 ?>
 
@@ -20,11 +19,11 @@ if($main_content) {
 	echo $main_content;
 } else { 
 
-	include_once(G5_PATH."/hanna_main.php");	
+	include_once(G5_PATH."/gpt_main.php");	
 ?>
 	
-
-	<!-- <div id="no_design_main">
+<!-- 
+	<div id="no_design_main">
 		<div id="main_visual_box">
 			<? include(G5_PATH."/templete/txt.visual.php"); ?>
 		</div>

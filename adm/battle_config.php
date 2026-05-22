@@ -36,6 +36,18 @@ for($i=0; $ex = sql_fetch_array($extra_result); $i++) {
 	$extra[] = $ex['ex_name'];
 }
 
+// K 전투 함수도 1:1 전투 설정에서 선택할 수 있게 같은 목록에 합쳐 둔다.
+if(!empty($g5['k_stat_table'])) {
+	$k_battle_result = sql_query("select sc_name from {$g5['k_stat_table']} where sc_category = 'battle' order by sc_id asc", false);
+	if($k_battle_result) {
+		for($i=0; $k_battle = sql_fetch_array($k_battle_result); $i++) {
+			if($k_battle['sc_name'] && !in_array($k_battle['sc_name'], $extra)) {
+				$extra[] = $k_battle['sc_name'];
+			}
+		}
+	}
+}
+
 
 ?>
 

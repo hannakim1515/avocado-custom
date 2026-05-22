@@ -1,0 +1,11 @@
+@import "../default.css";
+*{box-sizing:border-box}
+#background-inner,html.single:before,html:before{background:#f5f7f4!important}
+
+.menu,.menu li{display:flex;justify-content:center}
+.menu{align-items:center;background-color:var(--default-color)}
+.menu li{width:100%;height:40px;align-items:center;font-weight:800;font-size:14px}
+.menu li a{color:#000;display:block;width:100%;height:100%;display:flex;justify-content:center;align-items:center}
+.menu li.on,.menu li:hover{background-color:var(--point-color)}
+.menu li.on *,.menu li:hover *{color:var(--point-color-text)}
+p.warning{font-weight:600;text-align:center;padding:10px;color:#000}

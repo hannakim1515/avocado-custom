@@ -61,15 +61,18 @@ if(!sql_query(" DESC {$g5['battle_log_table']} ")) {
 $battle_config = array();
 
 // 배틀 기능 설정값 가져오기
+if (!function_exists('get_battle_config')) {
 function get_battle_config() {
 	global $g5;
 	$result = sql_fetch("select * from {$g5['battle_config_table']}");
 	return $result;
 }
+}
 
 // 전투 관련 수치 가져오기
 // $type = before : 선행자 / after : 후행자
-function get_battle_point($ch_id, $type, $pre_value=0, $last_value=0) {
+if (!function_exists('get_battle_point')) {
+function get_battle_point($ch_id, $type, $pre_value=0, $last_value=0, $target_ch_id=0) {
 	global $g5, $battle_config;
 
 	if(!$battle_config['bc_id']) {
@@ -79,10 +82,18 @@ function get_battle_point($ch_id, $type, $pre_value=0, $last_value=0) {
 	if($type != 'before' && $type != 'after') {
 		$type = '';
 	}
+	$result = null;
 
 	// 선/후행자의 값이 있을 경우 계산이 돌아간다.
 	if($type != "" && $battle_config['bc_'.$type]) {
-		$result = get_status_extra($battle_config['bc_'.$type], $ch_id, $prev_value, $last_value);
+		// K 전투 함수명이 설정값과 일치하면 K 장비/패시브 기준 공식으로 먼저 계산한다.
+		if(function_exists('k_status_bridge_get_battle_point')) {
+			$result = k_status_bridge_get_battle_point($battle_config['bc_'.$type], $ch_id, $target_ch_id, $last_value);
+		}
+
+		if(!is_array($result)) {
+			$result = get_status_extra($battle_config['bc_'.$type], $ch_id, $pre_value, $last_value);
+		}
 	} else {
 		$result = null;
 	}
@@ -97,7 +108,9 @@ function get_battle_point($ch_id, $type, $pre_value=0, $last_value=0) {
 
 // 전투 결과 가져오기
 // ch_id : 선행자의 캐릭터 값 / ch_value : 선행자의 결과값 / re_ch_id : 후행자의 캐릭터 값 / re_ch_value : 후행자의 결과값
-function get_battle_result($ch_id, $ch_value, $re_ch_id, $re_ch_value) {
+}
+if (!function_exists('k_status_bridge_get_battle_result')) {
+function k_status_bridge_get_battle_result($ch_id, $ch_value, $re_ch_id, $re_ch_value) {
 	global $g5, $battle_config, $config;
 
 	if(!$battle_config['bc_id']) {
@@ -153,43 +166,73 @@ function get_battle_result($ch_id, $ch_value, $re_ch_id, $re_ch_value) {
 
 		if($win_change_str && strstr($battle_config['bc_damage_proc'], "패자")) {
 			// 패자한테만 대미지 적용
-			$b = 0;
-			$a = 0;
+			$b = null;
+			$a = null;
 
 			if($battle_config['bc_damage_before']) {
-				$b = get_status_extra($battle_config['bc_damage_before'], ${$win_change_str."id"});
-				$b = $b['value'];
+				// K 전투 함수가 있으면 승자 공격값도 K 공식으로 계산하고, 없으면 기존 연동코드를 유지한다.
+				if(function_exists('k_status_bridge_get_battle_value')) {
+					$b = k_status_bridge_get_battle_value($battle_config['bc_damage_before'], ${$win_change_str."id"}, ${$lose_change_str."id"});
+				}
+				if($b === null) {
+					$b = get_status_extra($battle_config['bc_damage_before'], ${$win_change_str."id"});
+					$b = $b['value'];
+				}
 			}
 
 			if($battle_config['bc_damage_after']) {
-				$a = get_status_extra($battle_config['bc_damage_after'], ${$lose_change_str."id"});
-				$a = $a['value'];
+				// K 전투 함수가 있으면 패자 방어값도 K 공식으로 계산하고, 없으면 기존 연동코드를 유지한다.
+				if(function_exists('k_status_bridge_get_battle_value')) {
+					$a = k_status_bridge_get_battle_value($battle_config['bc_damage_after'], ${$lose_change_str."id"}, ${$win_change_str."id"});
+				}
+				if($a === null) {
+					$a = get_status_extra($battle_config['bc_damage_after'], ${$lose_change_str."id"});
+					$a = $a['value'];
+				}
 			}
 			
 			${$lose_change_str."damage"} = ($b - $a < 0 ? 0 : $b - $a);
 			${$lose_change_str."damage"} += $damage_basic;
 		} else if((!$win_change_str && strstr($battle_config['bc_damage_proc'], "비김")) ||  strstr($battle_config['bc_damage_proc'], "양쪽")) {
 			// 양쪽 모두에 대미지 적용
-			$b1 = 0;
-			$a1 = 0;
+			$b1 = null;
+			$a1 = null;
 
-			$b2 = 0;
-			$a2 = 0;
+			$b2 = null;
+			$a2 = null;
 
 			if($battle_config['bc_damage_before']) {
-				$b1 = get_status_extra($battle_config['bc_damage_before'], $ch_id);
-				$b1 = $b1['value'];
+				// 양쪽 피해 계산도 K 함수명이 있으면 서로를 target으로 넘겨 계산한다.
+				if(function_exists('k_status_bridge_get_battle_value')) {
+					$b1 = k_status_bridge_get_battle_value($battle_config['bc_damage_before'], $ch_id, $re_ch_id);
+					$b2 = k_status_bridge_get_battle_value($battle_config['bc_damage_before'], $re_ch_id, $ch_id);
+				}
 
-				$b2 = get_status_extra($battle_config['bc_damage_before'], $re_ch_id);
-				$b2 = $b2['value'];
+				if($b1 === null) {
+					$b1 = get_status_extra($battle_config['bc_damage_before'], $ch_id);
+					$b1 = $b1['value'];
+				}
+				if($b2 === null) {
+					$b2 = get_status_extra($battle_config['bc_damage_before'], $re_ch_id);
+					$b2 = $b2['value'];
+				}
 			}
 
 			if($battle_config['bc_damage_after']) {
-				$a1 = get_status_extra($battle_config['bc_damage_after'], $re_ch_id);
-				$a1 = $a1['value'];
+				// 방어 계열도 K 함수가 있으면 공격자/대상 방향을 유지해서 계산한다.
+				if(function_exists('k_status_bridge_get_battle_value')) {
+					$a1 = k_status_bridge_get_battle_value($battle_config['bc_damage_after'], $re_ch_id, $ch_id);
+					$a2 = k_status_bridge_get_battle_value($battle_config['bc_damage_after'], $ch_id, $re_ch_id);
+				}
 
-				$a2 = get_status_extra($battle_config['bc_damage_after'], $ch_id);
-				$a2 = $a2['value'];
+				if($a1 === null) {
+					$a1 = get_status_extra($battle_config['bc_damage_after'], $re_ch_id);
+					$a1 = $a1['value'];
+				}
+				if($a2 === null) {
+					$a2 = get_status_extra($battle_config['bc_damage_after'], $ch_id);
+					$a2 = $a2['value'];
+				}
 			}
 			
 			$ch_damage = ($b2 - $a2 < 0 ? 0 : $b2 - $a2);
@@ -303,11 +346,20 @@ function get_battle_result($ch_id, $ch_value, $re_ch_id, $re_ch_value) {
 }
 
 // 캐릭터 소유주 ID 가져오기
+}
+if (!function_exists('get_battle_result')) {
+function get_battle_result($ch_id, $ch_value, $re_ch_id, $re_ch_value) {
+	// 기존 프로젝트에 같은 이름의 전투 함수가 없을 때만 호환용 이름을 제공한다.
+	return k_status_bridge_get_battle_result($ch_id, $ch_value, $re_ch_id, $re_ch_value);
+}
+}
+if (!function_exists('get_character_simple_info_battle')) {
 function get_character_simple_info_battle($ch_id)
 {
 	global $g5;
 	$character = sql_fetch("select mb_id, ch_name from {$g5['character_table']} where ch_id ='{$ch_id}'");
 	return $character;
+}
 }
 
 

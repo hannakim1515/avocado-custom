@@ -1,0 +1,70 @@
+/* 전체 레이아웃 */
+
+#body .fix-layout {
+    padding-left: 0px !important; 
+}
+@media (max-width: 1024px) {
+    #body {
+        margin-left : 0px !important;     
+    }
+
+
+}
+
+
+.story-board-container { display: flex; background: #121418; border: 1px solid #333; min-height: 800px; color: #fff; margin: 20px 0; }
+
+/* 사이드바 */
+.story-sidebar { width: 220px; border-right: 1px solid #333; background: #1a1d23; display: flex; flex-direction: column; }
+.sidebar-header { padding: 15px; font-size: 12px; color: #666; text-align: center; border-bottom: 1px solid #252a31; }
+.keyword-list { flex: 1; overflow-y: auto; }
+.keyword-item { width: 100%; padding: 12px 20px; text-align: left; background: none; border: none; border-bottom: 1px solid #252a31; color: #999; cursor: pointer; font-size: 14px; }
+.keyword-item:hover { background: #252a31; }
+.keyword-item.active { background: #252a31; color: #10b981; border-left: 3px solid #10b981; font-weight: bold; }
+
+/* 본문 영역 */
+.story-content-wrapper { flex: 1; padding: 40px; background: #000; position: relative; }
+.detail-header { border-bottom: 1px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
+.title-row { display: flex; justify-content: space-between; align-items: center; }
+.keyword-title { font-size: 22px; color: #fff; margin: 0; }
+.chapter-info { font-size: 11px; color: #10b981; margin-top: 5px; font-weight: bold; }
+.detail-body { line-height: 1.8; font-size: 14px; color: #ccc; min-height: 150px; }
+
+/* 힌트 및 버튼 */
+.detail-hint { margin-top: 40px; text-align: right; font-size: 13px; }
+.hint-label { color: #ff4d4d; font-weight: bold; margin-right: 10px; }
+.hint-text { color: #888; }
+.btn-write { display: block; padding: 15px; background: #252a31; color: #fff; text-align: center; text-decoration: none; font-size: 13px; }
+.btn-write:hover { background: #10b981; }
+.btn-edit { font-size: 11px; color: #555; text-decoration: none; border: 1px solid #333; padding: 2px 6px; }
+
+
+.btn-group { display: flex; gap: 5px; }
+
+.btn-edit, .btn-del { 
+    font-size: 11px; 
+    text-decoration: none; 
+    padding: 3px 8px; 
+    border-radius: 3px; 
+    transition: 0.2s;
+}
+
+.btn-edit { 
+    color: #aaa; 
+    border: 1px solid #444; 
+}
+.btn-edit:hover { 
+    background: #10b981; 
+    color: #fff; 
+    border-color: #10b981; 
+}
+
+.btn-del { 
+    color: #ff4d4d; 
+    border: 1px solid #444; 
+}
+.btn-del:hover { 
+    background: #ff4d4d; 
+    color: #fff; 
+    border-color: #ff4d4d; 
+}
