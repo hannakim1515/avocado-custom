@@ -2,10 +2,6 @@
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css">', 0);
 
-if($board['bo_use_chick'] && $w == '') { 
-	goto_url(G5_HTTP_BBS_URL.'/board.php?bo_table='.$bo_table.$qstr);
-}
-
 $is_error = false;
 $option = '';
 $option_hidden = '';
@@ -108,16 +104,7 @@ if(!$is_error) {
 		$is_category = true;
 	}
 
-	$image_url = $board_skin_url."/img/no_image.png";
 	if($w == 'u') { 
-		if($write['wr_type'] == 'URL') {
-			$image_url = $write['wr_url'];
-			$img_data = "width : ".$write['wr_width']."px / height : ".$write['wr_height']."px";
-		} else if($file[0]['file']) { 
-			$image_url = $file[0]['path']."/".$file[0]['file'];
-			$img_data = "width : ".$file[0]['wr_width']."px / height : ".$file[0]['wr_height']."px";
-		}
-
 		if($write['wr_subject'] == "--|UPLOADING|--")	{
 			$write['wr_subject'] = $character['ch_name'];
 			if(!$write['wr_subject']) $write['wr_subject'] = 'GUEST';
@@ -133,6 +120,14 @@ if(!$is_error) {
 	$re_ch = array();
 	for($i = 0; $row = sql_fetch_array($re_ch_result); $i++) {
 		$re_ch[$i] = $row;
+	}
+
+	$make_item = array();
+	if($character['ch_id']) {
+		$make_result = sql_query("select inven.in_id, it.it_id, it.it_name, it.it_img from {$g5['inventory_table']} inven, {$g5['item_table']} it where inven.ch_id = '{$character['ch_id']}' and it.it_use_recepi = 1 and inven.it_id = it.it_id order by it.it_name asc, inven.in_id asc");
+		for($i = 0; $row = sql_fetch_array($make_result); $i++) {
+			$make_item[] = $row;
+		}
 	}
 
 	?>
@@ -155,37 +150,9 @@ if(!$is_error) {
 			<input type="hidden" name="wr_subject" value="<?=$write['wr_subject']?>" />
 			<input type="hidden" name="wr_width" id="wr_width" value="<?php echo $write['wr_width']; ?>">
 			<input type="hidden" name="wr_height" id="wr_height" value="<?php echo $write['wr_height']; ?>">
+			<input type="hidden" name="action" value="H">
 			<?php echo $option_hidden; ?>
-			
-			<!-- LOG 등록 부분 -->
-			<div id="view_image" class="theme-box">
-				<span><?=$img_data?></span>
-				<em id="view_image_loading">...LOADING...</em>
-				<? if($image_url) { ?>
-				<img src="<?=$image_url?>" id="prev_view_image" />
-				<? } ?>
-			</div>
 
-			<dl>
-				<dt>
-					<select name="wr_type" onchange="fn_log_type(this.value);">
-						<option value="UPLOAD" <?=$write['wr_type'] == "UPLOAD" ? "selected" : ""?>>UPLOAD</option>
-						<option value="URL" <?=$write['wr_type'] == "URL" ? "selected" : ""?>>URL</option>
-					</select>
-				</dt>
-				<dd>
-					<div id="add_UPLOAD" <?=$write['wr_type'] == "URL" ? "style='display: none;'" : ""?>>
-						<input type="file" id="wr_file" name="bf_file[]" title="로그등록 :  용량 <?php echo $upload_max_filesize ?> 이하만 업로드 가능" class="frm_file frm_input view_image_area" />
-						<?php if($w == 'u' && $file[0]['file']) { ?>
-							<input type="checkbox" id="bf_file_del0" name="bf_file_del[0]" value="1"> <label for="bf_file_del0"><?php echo $file[0]['source'].'('.$file[0]['size'].')';  ?> 로그 삭제</label>
-						<?php } ?>
-					</div>
-					<div id="add_URL" <?=$write['wr_type'] != "URL" ? "style='display: none;'" : ""?>>
-						<input type="text" name="wr_url" value="<?=$write['wr_url']?>" title="이미지 링크를 가져와 주시길 바랍니다." id="wr_url" class="frm_input view_image_area" placeholder="이미지 링크 입력"/>
-					</div>
-				</dd>
-			</dl>
-			
 			<div class="theme-box">
 			<?php if ($is_category) { ?>
 				<ul id="board_category">
@@ -193,197 +160,56 @@ if(!$is_error) {
 				</ul>
 			<?php } ?>
 
-			<? if(!$write['wr_log'] && $character['ch_state']=='승인') { ?>
 				<div id="board_action" class="inner">
-					<dl>
-						<dt>
-							<label for="action"><i class="icon act"></i>Action</label>
-						</dt>
-						<dd>
-							<select name="action" id="action">
-								<option value="">일반행동</option>
-							<? if($is_able_search) { ?>
-								<option value="S">탐색</option>
-							<? } ?>
-							<? if($config['cf_5']) { ?>
-								<option value="H">조합</option>
-							<? } ?>
-							</select>
-						</dd>
-					</dl>
-
-					<div class="comment-data" id="action_Z">
-					<?
-						// 다이스 관련 입력
-					?>
-						<dl>
-							<dt style="font-size: 12px;">다이스 개수</dt>
-							<dd>
-								<input type="text" name="dice_count" id="dice_count" value="" style="width: 50px;"/> 개 굴립니다.
-							</dd>
-						</dl>
-						
+					<div class="mmb-craft-box">
+						<h3>조합대</h3>
+						<p>재료 슬롯을 클릭해 아이템을 선택하세요.</p>
+						<div class="mmb-craft-slots">
+						<? for($slot_i = 1; $slot_i <= 3; $slot_i++) { ?>
+							<div class="mmb-craft-slot-wrap">
+								<button type="button" class="mmb-craft-slot" data-slot="<?=$slot_i?>" aria-label="재료 <?=$slot_i?> 선택">
+									<span class="mmb-craft-empty">ITEM <?=$slot_i?></span>
+									<img src="" alt="" />
+								</button>
+								<strong>재료 <?=$slot_i?></strong>
+								<select name="make_<?=$slot_i?>" id="make_<?=$slot_i?>" class="make-item mmb-craft-select" tabindex="-1" aria-hidden="true">
+									<option value="" data-name="" data-img="">재료 선택</option>
+								<? for($make_i = 0; $make_i < count($make_item); $make_i++) {
+									$re_row = $make_item[$make_i];
+									$item_img = $re_row['it_img'] ? $re_row['it_img'] : get_item_img($re_row['it_id']);
+								?>
+									<option value="<?=$re_row['in_id']?>" data-name="<?=get_text($re_row['it_name'])?>" data-img="<?=$item_img?>">
+										<?=$re_row['it_name']?>
+									</option>
+								<? } ?>
+								</select>
+							</div>
+						<? } ?>
+						</div>
 					</div>
 
-					<div class="comment-data" id="action_H">
-					<?
-						// 조합 커멘드 관련 입력
-					?>
-						<dl>
-							<dt>ITEM 1</dt>
-							<dd>
-								<select name="make_1" id="make_1" class="make-imtem">
-									<option value="">재료 선택</option>
-						<?
-							$re_result = sql_query("select * from {$g5['inventory_table']} inven, {$g5['item_table']} it where inven.ch_id = '{$character['ch_id']}' and it.it_use_recepi = 1 and inven.it_id = it.it_id");
-							for($i=0; $re_row = sql_fetch_array($re_result); $i++) { 
-						?>
-									<option value="<?=$re_row['in_id']?>">
-										<?=$re_row['it_name']?>
-									</option>
-						<?
-							} ?>
-								</select>
-							</dd>
-						</dl>
-						<dl>
-							<dt>ITEM 2</dt>
-							<dd>
-								<select name="make_2" id="make_2" class="make-imtem">
-									<option value="">재료 선택</option>
-						<?
-							$re_result = sql_query("select * from {$g5['inventory_table']} inven, {$g5['item_table']} it where inven.ch_id = '{$character['ch_id']}' and it.it_use_recepi = 1 and inven.it_id = it.it_id");
-							for($i=0; $re_row = sql_fetch_array($re_result); $i++) { 
-						?>
-									<option value="<?=$re_row['in_id']?>">
-										<?=$re_row['it_name']?>
-									</option>
-						<?
-							} ?>
-								</select>
-							</dd>
-						</dl>
-						<dl>
-							<dt>ITEM 3</dt>
-							<dd>
-								<select name="make_3" id="make_3" class="make-imtem">
-									<option value="">재료 선택</option>
-						<?
-							$re_result = sql_query("select * from {$g5['inventory_table']} inven, {$g5['item_table']} it where inven.ch_id = '{$character['ch_id']}' and it.it_use_recepi = 1 and inven.it_id = it.it_id");
-							for($i=0; $re_row = sql_fetch_array($re_result); $i++) { 
-						?>
-									<option value="<?=$re_row['in_id']?>">
-										<?=$re_row['it_name']?>
-									</option>
-						<?
-							} ?>
-								</select>
-							</dd>
-						</dl>
+					<div class="mmb-craft-picker" aria-hidden="true">
+						<div class="mmb-craft-picker-panel">
+							<div class="mmb-craft-picker-head">
+								<strong>재료 선택</strong>
+								<button type="button" class="mmb-craft-close" aria-label="닫기">×</button>
+							</div>
+							<input type="text" class="mmb-craft-search" placeholder="아이템 이름 검색">
+							<ul class="mmb-craft-list">
+							<? for($make_i = 0; $make_i < count($make_item); $make_i++) {
+								$re_row = $make_item[$make_i];
+								$item_img = $re_row['it_img'] ? $re_row['it_img'] : get_item_img($re_row['it_id']);
+							?>
+								<li>
+									<button type="button" class="mmb-craft-option" data-value="<?=$re_row['in_id']?>" data-name="<?=get_text($re_row['it_name'])?>" data-img="<?=$item_img?>">
+										<span class="thumb"><? if($item_img) { ?><img src="<?=$item_img?>" alt=""><? } ?></span>
+										<span class="name"><?=get_text($re_row['it_name'])?></span>
+									</button>
+								</li>
+							<? } ?>
+							</ul>
+						</div>
 					</div>
-					
-				</div>
-			<? } ?>
-
-				<div class="inner">
-
-				<? if(!$write['wr_item_log'] && $character['ch_state']=='승인' && count($mmb_item) > 0) { ?>
-					<dl>
-						<dt>
-							<label for="use_item"><i class="icon item"></i>Item</label>
-						</dt>
-						<dd>
-							<select name="use_item">
-								<option value="">사용할 아이템 선택</option>
-							<?
-								for($i=0; $i < count($mmb_item); $i++) { ?>
-								<option value="<?=$mmb_item[$i]['in_id']?>"><?=$mmb_item[$i]['it_name']?></option>
-							<? } ?>
-							</select>
-						</dd>
-					</dl>
-				<? } ?>
-					<!-- 일반 커맨드 -->
-					<?
-						/******************************************************
-						* :: 주사위의 경우, 한번 굴린 데이터가 남아 있을 시 수정 불가
-						* :: 이때, 다른 카테고리의 선택을 할 수 없다.
-						*******************************************************/
-					?>
-					<dl>
-						<dt>
-							<i class="icon gear"></i>Option
-						</dt>
-						<dd>
-							<fieldset>
-					<? if(!$write['wr_dice1']) { ?>
-								<input type="checkbox" id="game" name="game" value="dice" /> <label for="game">일반주사위</label>
-					<? } else { 
-					?>
-								<img src="<?=$board_skin_url?>/img/d<?=$write['wr_dice1']?>.png" />
-								<img src="<?=$board_skin_url?>/img/d<?=$write['wr_dice2']?>.png" />
-					<? } ?>
-							</fieldset>
-					<? if($is_member) { ?>
-							<fieldset>
-								<input type="checkbox" id="wr_secret" name="wr_secret" value="1" <?=$write['wr_secret'] ? "checked" : ""?>/>
-								<label for="wr_secret">멤버공개</label>
-							</fieldset>
-							<fieldset>
-								<input type="checkbox" id="wr_adult" name="wr_adult" value="1" <?=$write['wr_adult'] ? "checked" : ""?>/>
-								<label for="wr_adult">19금</label>
-							</fieldset>
-					<? } ?>
-							<fieldset>
-								<input type="checkbox" id="wr_wide" name="wr_wide" value="1" <?=$write['wr_wide'] ? "checked" : ""?>/>
-								<label for="wr_wide">리플창 아래로</label>
-							</fieldset>
-							<fieldset>
-								<input type="checkbox" id="wr_plip" name="wr_plip" value="1" <?=$write['wr_plip'] ? "checked" : ""?>/>
-								<label for="wr_plip">로그접기 (<?=$board['bo_gallery_height']?>px 이상은 자동으로 접힙니다.)</label>
-							</fieldset>
-							<? if($board['bo_use_noname'] && $is_member) { ?>
-							<fieldset>
-								<input type="checkbox" id="wr_noname" name="wr_noname" value="1" <?=$write['wr_noname'] ? "checked" : ""?>/>
-								<label for="wr_noname">익명</label>
-							</fieldset>
-							<? } ?>
-						</dd>
-					</dl>
-					
-					<?php if ($is_name) { ?>
-					<dl>
-						<dt>
-							<label for="wr_name">이름</label>
-						</dt>
-						<dd>
-							<input type="text" name="wr_name" value="<?php echo $name ?>" id="wr_name" required class="frm_input required" size="10" maxlength="20">
-						</dd>
-					</dl>
-					<?php } ?>
-
-					<?php if ($is_password) { ?>
-					<dl>
-						<dt>
-							<label for="wr_password">비밀번호</label>
-						</dt>
-						<dd>
-							<input type="password" name="wr_password" id="wr_password" value="<?=$_COOKIE['MMB_PW']?>" class="frm_input" maxlength="20">
-						</dd>
-					</dl>
-					<?php } ?>
-
-					<?php for ($i=1; $is_link && $i<=G5_LINK_COUNT; $i++) { ?>
-					<dl>
-						<dt>
-							<label for="wr_link<?php echo $i ?>"><i class="icon link"></i>Link #<?php echo $i ?></label>
-						</dt>
-						<dd>
-							<input type="text" name="wr_link<?php echo $i ?>" value="<?php if($w=="u"){echo$write['wr_link'.$i];} ?>" id="wr_link<?php echo $i ?>" class="frm_input" size="50">
-						</dd>
-					</dl>
-					<?php } ?>
-					
 				</div>
 			</div>
 			
@@ -394,19 +220,17 @@ if(!$is_error) {
 				<!-- 최소/최대 글자 수 사용 시 -->
 				<p id="char_count_desc">이 게시판은 최소 <strong><?php echo $write_min; ?></strong>글자 이상, 최대 <strong><?php echo $write_max; ?></strong>글자 이하까지 글을 쓰실 수 있습니다.</p>
 				<?php } ?>
-				<div id="editor-container" style="margin-top:10px;"></div>
-				<textarea id="wr_content" name="wr_content" style="display:none;"><?php echo $content; ?></textarea>
+				<textarea id="wr_content" name="wr_content" class="mmb-craft-note" placeholder="조합에 남길 짧은 글을 작성해 주세요."><?php echo $content; ?></textarea>
 				<?php if($write_min || $write_max) { ?>
 				<!-- 최소/최대 글자 수 사용 시 -->
 				<div id="char_count_wrap"><span id="char_count"></span>글자</div>
 				<?php } ?>
-				<p class="ui-btn help">해시태그 : #해시태그내용 / 로그링크 : @로그번호 / 멤버알람 : [[닉네임]]</p>
 			</div>
 			
 			<hr class="padding" />
 
 			<div class="txt-center">
-				<button type="submit" id="btn_submit" accesskey="s" class="ui-btn">COMMENT</button>
+				<button type="submit" id="btn_submit" accesskey="s" class="ui-btn">조합하기</button>
 				<button type="button" onclick="location.href='./board.php?bo_table=<?=$bo_table?>';" class="ui-btn">LIST</button>
 			</div>
 			</form>
@@ -446,10 +270,11 @@ if(!$is_error) {
 
 	function fwrite_submit(f)
 	{
-		// 1. Toast UI 에디터의 내용을 가져와서 textarea에 넣기
-    	const contentData = editor.getHTML(); 
-    	f.wr_content.value = contentData;
-		<?php echo $editor_js; // 에디터 사용시 자바스크립트에서 내용을 폼필드로 넣어주며 내용이 입력되었는지 검사함   ?>
+		if(!f.wr_content.value) {
+			alert("내용을 입력해 주십시오.");
+			f.wr_content.focus();
+			return false;
+		}
 
 		var subject = "";
 		var content = "";
@@ -498,170 +323,19 @@ if(!$is_error) {
 			}
 		}
 
-// 이미지 필수체크 기능
-/* <? if($w == '') { ?>
-		if(f.wr_type.value == 'UPLOAD') {
-			if(document.getElementById('wr_file').value == '') { 
-				alert("업로드할 로그를 등록해 주시길 바랍니다.");
-				return false;
-			}
-		} else if(f.wr_type.value == 'URL') { 
-			if(document.getElementById('wr_url').value == '') { 
-				alert("등록할 로그 URL을 입력해 주시길 바랍니다.");
+		if(f.action && f.action.value == 'H') {
+			if(!f.make_1.value || !f.make_2.value || !f.make_3.value) {
+				alert("조합 재료 3개를 모두 선택해 주세요.");
 				return false;
 			}
 		}
-<? } ?> */
+
 		document.getElementById("btn_submit").disabled = "disabled";
 		return true;
-	}
-
-
-	$('.view_image_area').on('change', function() {
-		var image = $(this).val();
-		var type = $(this).attr('type');
-
-		if(type == 'file') {
-			$('#wr_homepage').val('');
-			previewImage(this,'view_image');
-		} else {
-			$('#wr_file').replaceWith( $('#wr_file').clone(true) );
-
-			checkImage(image, complete, '', 'view_image');
-		}
-	});
-
-	function reset_image(previewId) {
-		var preview = document.getElementById(previewId);
-		var prevImg = document.getElementById("prev_" + previewId); //이전에 미리보기가 있다면 삭제
-		if (prevImg) {
-			preview.removeChild(prevImg);
-		}
-
-		$('#wr_width').val('');
-		$('#wr_height').val('');
-
-		$('#view_image > span').text("");
-	}
-
-	function previewImage(targetObj, previewId) {
-		var preview = document.getElementById(previewId); //div id   
-		var ua = window.navigator.userAgent;
-		var files = targetObj.files;
-
-		$('#view_image_loading').show();
-
-		reset_image(previewId);
-
-		for ( var i = 0; i < files.length; i++) {
-
-			var file = files[i];
-
-			var imageType = /image.*/; //이미지 파일일경우만.. 뿌려준다.
-			if (!file.type.match(imageType)) {
-				continue;
-			}
-
-			var img = document.createElement("img");
-			img.id = "prev_" + previewId;
-			img.classList.add("obj");
-			img.file = file;
-
-			if (window.FileReader) { // FireFox, Chrome, Opera 확인.
-				var reader = new FileReader();
-				reader.onloadend = (function(aImg) {
-					return function(e) {
-						aImg.src = e.target.result;
-						complete('S', aImg.width, aImg.height);
-						$('#view_image_loading').hide();
-						preview.appendChild(img);
-					};
-				})(img);
-				reader.readAsDataURL(file);
-			} else { // safari is not supported FileReader
-				//alert('not supported FileReader');
-				if (!document.getElementById("sfr_preview_error_"
-						+ previewId)) {
-					var info = document.createElement("p");
-					info.id = "sfr_preview_error_" + previewId;
-					info.innerHTML = "not supported FileReader";
-					preview.insertBefore(info, null);
-				}
-			}
-		}
-		
-		if(i > 0) { 
-			
-			//preview.style.background="none";
-		} else {
-			complete('F');
-		}
-	}
-
-
-	function checkImage(url, callback, timeout, previewId) {
-		timeout = timeout || 5000;
-		
-		$('#view_image_loading').show();
-
-		var timedOut = false, timer;
-		var img = new Image();
-		var preview = document.getElementById(previewId);
-
-		reset_image(previewId);
-
-		img.onerror = img.onabort = function() {
-			if (!timedOut) {
-				clearTimeout(timer);
-				callback("F");
-			}
-		};
-		img.onload = function() {
-			if (!timedOut) {
-				clearTimeout(timer);
-				img.id = "prev_" + previewId;
-				img.classList.add("obj");
-				callback("S", img.width, img.height);
-				preview.appendChild(img);
-				$('#view_image_loading').hide();
-			}
-		};
-		img.src = url;
-
-		timer = setTimeout(function() {
-			timedOut = true;
-			callback("F");
-		}, timeout); 
-	}
-
-	function complete(message, w, h) {
-		if(message == 'S') { 
-			$('#wr_width').val(w);
-			$('#wr_height').val(h);
-			$('#view_image > span').text("width : " + w + "px / height : " + h + "px");
-		} else { 
-			$('#view_image > span').text("");
-		}
-	}
-
-	function fn_log_type(type) { 
-		$('#add_'+type).siblings().hide();
-		$('#add_'+type).show();
-
-		$('#wr_url').val('');
-		$('#wr_file').replaceWith( $('#wr_file').clone(true) );
-
-		reset_image('view_image');
 	}
 </script>
 
 <script>
-$('#action').on('change', function() {
-	var view_idx = $(this).val();
-	$('.comment-data').removeClass('on');
-	$('#action_' + view_idx).addClass('on');
-});
-
 $('.change-thumb').on('change', function() {
 	var select_item = $(this).find('option:selected');
 
@@ -675,37 +349,122 @@ $('.change-thumb').on('change', function() {
 	}
 });
 
+var craftSlot = null;
 
-$('#fwrite select').change(function() {
-	$('#fwrite select').find("option").attr('disabled', false);
-	$('#fwrite select').each(function() {
+function refreshCraftSlots() {
+	$('.mmb-craft-select').each(function() {
+		var slot = $(this).closest('.mmb-craft-slot-wrap').find('.mmb-craft-slot');
+		var selected = $(this).find('option:selected');
+		var itemName = selected.data('name');
+		var itemImg = selected.data('img');
+
+		if($(this).val()) {
+			slot.addClass('is-selected');
+			slot.find('.mmb-craft-empty').text(itemName);
+			if(itemImg) {
+				slot.find('img').attr('src', itemImg).attr('alt', itemName).show();
+			} else {
+				slot.find('img').attr('src', '').attr('alt', '').hide();
+			}
+		} else {
+			slot.removeClass('is-selected');
+			slot.find('.mmb-craft-empty').text('ITEM ' + slot.data('slot'));
+			slot.find('img').attr('src', '').attr('alt', '').hide();
+		}
+	});
+}
+
+function refreshCraftDisabledOptions() {
+	var selectedValues = [];
+
+	$('.mmb-craft-select').each(function() {
+		if($(this).val()) {
+			selectedValues.push($(this).val());
+		}
+	});
+
+	$('.mmb-craft-select option, .mmb-craft-option').prop('disabled', false).removeClass('is-disabled');
+
+	$('.mmb-craft-select').each(function() {
+		var current = $(this).val();
+		for(var i = 0; i < selectedValues.length; i++) {
+			if(selectedValues[i] && selectedValues[i] !== current) {
+				$(this).find('option[value="' + selectedValues[i] + '"]').prop('disabled', true);
+			}
+		}
+	});
+
+	$('.mmb-craft-option').each(function() {
+		var value = String($(this).data('value'));
+		if(selectedValues.indexOf(value) > -1 && (!craftSlot || craftSlot.find('select').val() !== value)) {
+			$(this).prop('disabled', true).addClass('is-disabled');
+		}
+	});
+}
+
+function openCraftPicker(slotWrap) {
+	craftSlot = slotWrap;
+	$('.mmb-craft-search').val('');
+	$('.mmb-craft-list li').show();
+	refreshCraftDisabledOptions();
+	$('.mmb-craft-picker').addClass('is-open').attr('aria-hidden', 'false');
+	setTimeout(function() {
+		$('.mmb-craft-search').focus();
+	}, 50);
+}
+
+function closeCraftPicker() {
+	$('.mmb-craft-picker').removeClass('is-open').attr('aria-hidden', 'true');
+	craftSlot = null;
+}
+
+$('.mmb-craft-slot').on('click', function() {
+	openCraftPicker($(this).closest('.mmb-craft-slot-wrap'));
+});
+
+$('.mmb-craft-close, .mmb-craft-picker').on('click', function(e) {
+	if(e.target === this) {
+		closeCraftPicker();
+	}
+});
+
+$('.mmb-craft-search').on('input', function() {
+	var keyword = $(this).val().toLowerCase();
+	$('.mmb-craft-list li').each(function() {
+		var name = String($(this).find('.mmb-craft-option').data('name')).toLowerCase();
+		$(this).toggle(name.indexOf(keyword) > -1);
+	});
+});
+
+$('.mmb-craft-option').on('click', function() {
+	if(!craftSlot || $(this).prop('disabled')) {
+		return;
+	}
+
+	var select = craftSlot.find('.mmb-craft-select');
+	select.val($(this).data('value')).trigger('change');
+	closeCraftPicker();
+});
+
+$('.mmb-craft-select').on('change', function() {
+	refreshCraftSlots();
+	refreshCraftDisabledOptions();
+});
+
+$('.make-item').change(function() {
+	$('.make-item').find("option").attr('disabled', false);
+	$('.make-item').each(function() {
 		if($(this).val()) { 
-			$('#fwrite select').not(this).find("option[value="+ $(this).val() + "]").attr('disabled', true);
+			$('.make-item').not(this).find("option[value="+ $(this).val() + "]").attr('disabled', true);
 		}
 	});
 });
 
-
-</script>
-
-<script>
-// 에디터 초기화
-const editor = new toastui.Editor({
-    el: document.querySelector('#editor-container'),
-    height: '400px',
-    initialEditType: 'wysiwyg',
-    previewStyle: 'vertical',
-    theme: 'dark', // head.sub.php에 다크테마 CSS를 넣었을 경우
-    initialValue: document.querySelector('#wr_content').value,
-    language: 'ko-KR',
-    toolbarItems: [
-        ['heading', 'bold', 'italic', 'strike'],
-        ['hr', 'quote'],
-        ['ul', 'ol', 'task', 'indent', 'outdent'],
-        ['table', 'image', 'link'],
-        ['code', 'codeblock']
-    ]
+$(function() {
+	refreshCraftSlots();
+	refreshCraftDisabledOptions();
 });
+
 </script>
 
 <? } ?>

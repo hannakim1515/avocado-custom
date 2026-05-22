@@ -453,131 +453,14 @@ html.single .bgm-player {display:none !important;}
     box-sizing: border-box;
 }
 
-
-
-/* 메뉴바(헤더) */
-@media all and (min-width: 1025px) {
-    .side-menu {
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        bottom: auto !important;
-        transform: none !important;
-        z-index: 40;
-        width: 100% !important;
-        height: 100%;
-        padding: 0 !important;
-        box-sizing: border-box;
-    }
-
-    .menu-container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 32px;
-        width: 100%;
-        height: 100%;
-        max-width: 100%;
-        overflow-x: auto;
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        border-radius: 0;
-        padding: 0 24px;
-        box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(229, 231, 235, 0.5);
-        box-sizing: border-box;
-    }
-
-    /* PC에서 본문이 메뉴에 가려지지 않게 여백 추가 */
-    #body .fix-layout {
-        width: 100% !important;
-        max-width: none !important;
-        margin: 0 !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        box-sizing: border-box;
-    }
-}
-
-/* 모바일 반응형 */
-@media all and (max-width: 1024px) {
-    .side-menu {
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        bottom: auto !important;
-        transform: none !important;
-        z-index: 40;
-        width: 100% !important;
-        height: 100%;
-        padding: 0 !important;
-        box-sizing: border-box;
-    }
-
-    .menu-container {
-        display: flex;
-        flex-direction: row; /* 가로 정렬 */
-        align-items: center;
-        justify-content: center;
-        gap: 32px;
-        max-width: 100%;
-        overflow-x: auto;
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        height: 100%;
-        border-radius: 0;
-        padding: 0 16px;
-        box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(229, 231, 235, 0.5);
-        box-sizing: border-box;
-    }
-
-    #body .fix-layout {
-        padding-left: 0;
-    }
-}
-
-/* 3. 공통 스타일 */
-.h-menu-item {
+.re-header {
+    width: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 6px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--gray-700, #374151);
-    min-width: 56px;
-}
-
-.h-menu-item:hover {
-    transform: scale(1.1);
-    color: var(--gray-900, #111827);
-}
-
-.h-menu-item.active {
-    color: var(--emerald-500, #10b981);
-}
-
-.h-menu-item.active .menu-icon {
-    stroke-width: 2.5;
-}
-
-.menu-icon {
-    width: 24px;
-    height: 24px;
-    stroke-width: 2;
-}
-
-.menu-label {
-    font-size: 12px;
-}
-
-/* 배경색 설정 */
-body {
-    background: linear-gradient(to bottom right, var(--gray-50), rgba(209, 250, 229, 0.3), rgba(204, 251, 241, 0.2)) !important;
+    justify-content: space-between;
+    gap: 32px;
+    min-height: 70px;
+    padding: 0 24px;
+    background: var(--re-surface);
+    border: 1px solid var(--re-border);
 }

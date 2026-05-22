@@ -33,7 +33,7 @@ if($i==1) {
 									<?=$ch['ch_name']?>
 								</option>
 						<? } ?>
-							<select>
+							</select>
 							<input type="submit" value="변경" class="ui-btn"/>
 						</form>
 					</td>

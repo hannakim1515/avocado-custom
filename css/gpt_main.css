@@ -1,76 +1,60 @@
 @charset "utf-8";
 
 :root {
-    --pearje-bg: #10151c;
-    --pearje-surface: #151b24;
-    --pearje-surface-soft: #1b222d;
-    --pearje-border: #303947;
-    --pearje-text: #f1f3f5;
-    --pearje-muted: #a8b0bc;
-    --pearje-accent: #d8c28b;
+    --re-surface: #151b24;
+    --re-surface-soft: #1b222d;
+    --re-border: #303947;
+    --re-text: #f1f3f5;
+    --re-muted: #a8b0bc;
+    --re-accent: #d8c28b;
 }
 
 html,
 body {
-    background: var(--pearje-bg);
-    color: var(--pearje-text);
+    background: var(--re-bg);
+    color: var(--re-text);
 }
 
-.pearje-page,
-.pearje-page * {
+.re-page,
+.re-page * {
     box-sizing: border-box;
 }
 
-.pearje-page {
+.re-page {
     position: relative;
     min-height: 100vh;
     padding: 32px 24px 48px;
-    color: var(--pearje-text);
+    color: var(--re-text);
     overflow-x: hidden;
 }
 
-.pearje-bg,
-.pearje-slide-bg,
-.pearje-feature-light {
+.re-bg,
+.re-slide-bg,
+.re-feature-light {
     display: none;
 }
 
-.pearje-header,
-.pearje-main,
-.pearje-footer {
-    width: min(1760px, 100%);
-    margin: 0 auto;
-}
 
-.pearje-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 32px;
-    min-height: 70px;
-    padding: 0 24px;
-    background: var(--pearje-surface);
-    border: 1px solid var(--pearje-border);
-}
 
-.pearje-brand,
-.pearje-footer-brand {
+
+.re-brand,
+.re-footer-brand {
     display: flex;
     align-items: center;
     gap: 12px;
     flex: 0 0 auto;
 }
 
-.pearje-brand-mark {
+.re-brand-mark {
     display: grid;
     place-items: center;
     width: 34px;
     height: 34px;
-    border: 1px solid var(--pearje-border);
-    color: var(--pearje-accent);
+    border: 1px solid var(--re-border);
+    color: var(--re-accent);
 }
 
-.pearje-nav {
+.re-nav {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,18 +62,18 @@ body {
     flex: 1 1 auto;
 }
 
-.pearje-nav a,
-.pearje-footer a {
-    color: var(--pearje-text);
+.re-nav a,
+.re-footer a {
+    color: var(--re-text);
     text-decoration: none;
 }
 
-.pearje-nav a:hover,
-.pearje-footer a:hover {
-    color: var(--pearje-accent);
+.re-nav a:hover,
+.re-footer a:hover {
+    color: var(--re-accent);
 }
 
-.pearje-tools {
+.re-tools {
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -97,122 +81,221 @@ body {
     flex: 0 0 auto;
 }
 
-.pearje-main {
+.re-main {
     padding-top: 32px;
 }
 
-.pearje-hero {
+.re-hero {
     display: grid;
-    grid-template-columns: 270px minmax(0, 1fr) 520px;
+    grid-template-columns: 270px minmax(0, 1fr);
     gap: 32px;
     align-items: start;
 }
 
-.pearje-panel,
-.pearje-title-area,
-.pearje-slide,
-.pearje-feature,
-.pearje-event-banner {
-    background: var(--pearje-surface);
-    border: 1px solid var(--pearje-border);
+.re-panel,
+.re-title-area,
+.re-feature,
+.re-event-banner {
+    background: var(--re-surface);
+    border: 1px solid var(--re-border);
 }
 
-.pearje-panel {
+.re-panel {
     position: relative;
     overflow: hidden;
 }
 
-.pearje-panel-inner {
+.re-panel.re-login {
+    min-height: 420px;
+}
+
+.re-panel-inner {
     padding: 28px;
 }
 
-.pearje-login h2 {
+.re-login h2 {
     margin: 0 0 20px;
-    color: var(--pearje-muted);
+    color: var(--re-muted);
     text-align: center;
 }
 
-.pearje-input {
+.re-login-logo {
+    margin: 0 0 22px;
+    text-align: center;
+    height: 120px;
+}
+
+.re-login-logo img {
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
+}
+
+.re-input {
     display: block;
     width: 100%;
     height: 42px;
     padding: 0 14px;
     margin-bottom: 12px;
-    background: var(--pearje-bg);
-    border: 1px solid var(--pearje-border);
-    color: var(--pearje-text);
+    background: var(--re-bg);
+    border: 1px solid var(--re-border);
+    color: var(--re-text);
 }
 
-.pearje-save-id {
+.re-save-id {
     display: flex;
     align-items: center;
     gap: 8px;
     margin: 4px 0 14px;
-    color: var(--pearje-muted);
+    color: var(--re-muted);
 }
 
-.pearje-login-btn,
-.pearje-enter-btn,
-.pearje-event-banner a {
+.re-login-btn,
+.re-enter-btn,
+.re-event-banner a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: 42px;
     padding: 0 24px;
-    background: var(--pearje-surface-soft);
-    border: 1px solid var(--pearje-border);
-    color: var(--pearje-text);
+    background: var(--re-surface-soft);
+    border: 1px solid var(--re-border);
+    color: var(--re-text);
     text-decoration: none;
     cursor: pointer;
 }
 
-.pearje-login-btn:hover,
-.pearje-enter-btn:hover,
-.pearje-event-banner a:hover {
-    border-color: var(--pearje-accent);
-    color: var(--pearje-accent);
+.re-login-btn:hover,
+.re-enter-btn:hover,
+.re-event-banner a:hover {
+    border-color: var(--re-accent);
+    color: var(--re-accent);
 }
 
-.pearje-login-btn {
+.re-login-btn {
     width: 100%;
 }
 
-.pearje-login-links {
+.re-login-links {
     margin-top: 15px;
-    color: var(--pearje-muted);
+    color: var(--re-muted);
     text-align: center;
     font-size: 12px;
 }
 
-.pearje-login-links a {
-    color: var(--pearje-muted);
+.re-login-links a {
+    color: var(--re-muted);
     text-decoration: none;
 }
 
-.pearje-login-links span {
+.re-login-links span {
     margin: 0 6px;
 }
 
-.pearje-member-box {
+.re-member-box {
     text-align: center;
 }
 
-.pearje-member-name {
+.re-member-profile {
+    margin-bottom: 18px;
+}
+
+.re-character-thumb,
+.re-character-empty {
+    display: block;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 12px;
+    overflow: hidden;
+    background: var(--re-surface-soft);
+    border: 1px solid var(--re-border);
+    color: var(--re-muted);
+    text-decoration: none;
+}
+
+.re-character-thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.re-character-thumb span,
+.re-character-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.re-character-name {
+    margin: 0;
+    color: var(--re-accent);
+    font-weight: 600;
+}
+
+.re-member-name {
     margin: 0 0 16px;
 }
 
-.pearje-admin-link {
+.re-member-links {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.re-member-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 6px;
+    background: var(--re-surface-soft);
+    border: 1px solid var(--re-border);
+    color: var(--re-text);
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.re-member-links li + li a {
+    border-left: 0;
+}
+
+.re-member-links a:hover {
+    color: var(--re-accent);
+}
+
+.re-member-links i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    margin-left: 5px;
+    padding: 0 5px;
+    background: var(--re-accent);
+    color: var(--re-bg);
+    font-style: normal;
+    font-size: 11px;
+}
+
+.re-admin-link {
     display: inline-block;
     margin-left: 8px;
     padding: 3px 8px;
-    border: 1px solid var(--pearje-border);
-    color: var(--pearje-accent);
+    border: 1px solid var(--re-border);
+    color: var(--re-accent);
     font-size: 11px;
     text-decoration: none;
     vertical-align: middle;
 }
 
-.pearje-title-area {
+.re-title-area {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -221,31 +304,26 @@ body {
     text-align: center;
 }
 
-.pearje-title-badge {
-    margin: 0 auto 20px;
-    color: var(--pearje-accent);
-}
-
-.pearje-title-area h1 {
+.re-title-area h1 {
     margin: 0;
     font-size: clamp(42px, 4.2vw, 78px);
     line-height: 1.05;
 }
 
-.pearje-sub-en,
-.pearje-sub-ko {
+.re-sub-en,
+.re-sub-ko {
     margin: 18px 0 0;
-    color: var(--pearje-muted);
+    color: var(--re-muted);
 }
 
-.pearje-title-line {
+.re-title-line {
     width: min(420px, 80%);
     height: 1px;
     margin: 18px auto 0;
-    background: var(--pearje-border);
+    background: var(--re-border);
 }
 
-.pearje-enter-btn {
+.re-enter-btn {
     width: fit-content;
     min-height: 58px;
     margin: 28px auto 0;
@@ -253,109 +331,62 @@ body {
     font-size: 26px;
 }
 
-.pearje-slide {
-    min-height: 300px;
-}
-
-.pearje-slide-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 300px;
-    padding: 34px;
-}
-
-.pearje-slide-content span {
-    width: fit-content;
-    margin-bottom: 18px;
-    color: var(--pearje-muted);
-}
-
-.pearje-slide-content h2 {
-    margin: 0;
-    font-size: 42px;
-}
-
-.pearje-slide-content p {
-    max-width: 320px;
-    margin: 14px 0 0;
-    color: var(--pearje-muted);
-    line-height: 1.9;
-}
-
-.pearje-slide-dots {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 28px;
-}
-
-.pearje-slide-dots i {
-    width: 8px;
-    height: 8px;
-    background: var(--pearje-border);
-}
-
-.pearje-slide-dots i.active {
-    background: var(--pearje-accent);
-}
-
-.pearje-features {
+.re-features {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 22px;
     margin-top: 40px;
 }
 
-.pearje-feature {
+.re-feature {
     display: block;
     position: relative;
     min-height: 180px;
     padding: 24px 16px;
-    color: var(--pearje-text);
+    color: var(--re-text);
     text-align: center;
     text-decoration: none;
 }
 
-.pearje-feature:hover {
-    border-color: var(--pearje-accent);
+.re-feature:hover {
+    border-color: var(--re-accent);
 }
 
-.pearje-feature-icon {
+.re-feature-icon {
     display: grid;
     place-items: center;
     width: 64px;
     height: 64px;
     margin: 0 auto 14px;
-    border: 1px solid var(--pearje-border);
-    color: var(--pearje-accent);
+    border: 1px solid var(--re-border);
+    color: var(--re-accent);
 }
 
-.pearje-feature strong,
-.pearje-feature em {
+.re-feature strong,
+.re-feature em {
     display: block;
 }
 
-.pearje-feature strong {
+.re-feature strong {
     font-size: 28px;
 }
 
-.pearje-feature em {
+.re-feature em {
     margin-top: 8px;
-    color: var(--pearje-muted);
+    color: var(--re-muted);
     font-style: normal;
     font-size: 13px;
     line-height: 1.7;
 }
 
-.pearje-bottom {
+.re-bottom {
     display: grid;
     grid-template-columns: 1.05fr 1.65fr;
     gap: 22px;
     margin-top: 34px;
 }
 
-.pearje-section-head {
+.re-section-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -363,76 +394,76 @@ body {
     margin-bottom: 18px;
 }
 
-.pearje-section-head h2 {
+.re-section-head h2 {
     margin: 0;
 }
 
-.pearje-section-head a {
-    color: var(--pearje-muted);
+.re-section-head a {
+    color: var(--re-muted);
     text-decoration: none;
 }
 
-.pearje-notice ul {
+.re-notice ul {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.pearje-notice li {
+.re-notice li {
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 0 0 13px;
     margin-bottom: 13px;
-    border-bottom: 1px solid var(--pearje-border);
+    border-bottom: 1px solid var(--re-border);
 }
 
-.pearje-notice li span {
+.re-notice li span {
     width: 58px;
     flex: 0 0 auto;
-    color: var(--pearje-muted);
+    color: var(--re-muted);
 }
 
-.pearje-notice li a {
+.re-notice li a {
     min-width: 0;
     flex: 1 1 auto;
     overflow: hidden;
-    color: var(--pearje-text);
+    color: var(--re-text);
     text-overflow: ellipsis;
     white-space: nowrap;
     text-decoration: none;
 }
 
-.pearje-notice li b {
-    color: var(--pearje-accent);
+.re-notice li b {
+    color: var(--re-accent);
 }
 
-.pearje-event-banner {
+.re-event-banner {
     min-height: 178px;
     padding: 28px;
-    background: var(--pearje-surface-soft);
+    background: var(--re-surface-soft);
 }
 
-.pearje-event-banner p {
+.re-event-banner p {
     margin: 0;
-    color: var(--pearje-muted);
+    color: var(--re-muted);
 }
 
-.pearje-event-banner strong,
-.pearje-event-banner span {
+.re-event-banner strong,
+.re-event-banner span {
     display: block;
     margin-top: 10px;
 }
 
-.pearje-event-banner span {
-    color: var(--pearje-muted);
+.re-event-banner span {
+    color: var(--re-muted);
 }
 
-.pearje-event-banner strong {
+.re-event-banner strong {
     font-size: 44px;
 }
 
-.pearje-event-banner a {
+.re-event-banner a {
     width: fit-content;
     min-height: 38px;
     margin-top: 20px;
@@ -440,30 +471,30 @@ body {
 }
 
 @media (max-width: 1480px) {
-    .pearje-hero {
+    .re-hero {
         grid-template-columns: 250px minmax(0, 1fr);
     }
 
-    .pearje-slide {
+    .re-slide {
         grid-column: 1 / -1;
     }
 
-    .pearje-features {
+    .re-features {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 960px) {
-    .pearje-page {
+    .re-page {
         padding: 24px 14px 30px;
     }
 
-    .pearje-header {
+    .re-header {
         flex-wrap: wrap;
         gap: 14px;
     }
 
-    .pearje-nav {
+    .re-nav {
         order: 3;
         width: 100%;
         display: grid;
@@ -471,63 +502,63 @@ body {
         gap: 8px;
     }
 
-    .pearje-nav a {
+    .re-nav a {
         text-align: center;
     }
 
-    .pearje-hero,
-    .pearje-bottom {
+    .re-hero,
+    .re-bottom {
         grid-template-columns: 1fr;
     }
 
-    .pearje-title-area {
+    .re-title-area {
         order: -2;
         min-height: 350px;
     }
 
-    .pearje-enter-btn {
+    .re-enter-btn {
         min-height: 48px;
         padding: 0 32px;
         font-size: 20px;
     }
 
-    .pearje-slide-content h2 {
+    .re-slide-content h2 {
         font-size: 32px;
     }
 
-    .pearje-login .pearje-panel-inner {
+    .re-login .re-panel-inner {
         padding: 24px;
     }
 
-    .pearje-features {
+    .re-features {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .pearje-footer {
+    .re-footer {
         flex-direction: column;
         align-items: flex-start;
     }
 }
 
 @media (max-width: 560px) {
-    .pearje-nav,
-    .pearje-features {
+    .re-nav,
+    .re-features {
         grid-template-columns: 1fr;
     }
 
-    .pearje-tools {
+    .re-tools {
         display: none;
     }
 
-    .pearje-feature {
+    .re-feature {
         min-height: 150px;
     }
 
-    .pearje-feature strong {
+    .re-feature strong {
         font-size: 24px;
     }
 
-    .pearje-event-banner strong {
+    .re-event-banner strong {
         font-size: 34px;
     }
 }

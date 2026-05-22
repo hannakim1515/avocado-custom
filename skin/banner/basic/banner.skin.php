@@ -51,10 +51,10 @@ if (count($banner) > 0) {
 
 	</div>
 	<div class="control">
-		<button type="button" class="swiper-button-prev nav txt-default"></button>
-		<button type="button" class="swiper-button-next nav txt-default"></button>
+		<button type="button" class="swiper-button-prev nav txt-default" aria-label="이전 슬라이드"><span aria-hidden="true">‹</span></button>
+		<div class="swiper-pagination"></div>
+		<button type="button" class="swiper-button-next nav txt-default" aria-label="다음 슬라이드"><span aria-hidden="true">›</span></button>
 	</div>
-	<div class="swiper-pagination"></div>
 </div>
 
 <script src="<?=G5_JS_URL?>/swiper.js"></script>
@@ -84,12 +84,13 @@ if($('.ban-basic.siwperslider').find('li').length > 1) {
 		effect: effect,
 		<? if($control) { ?>
 		navigation: {
-			nextEl: ".ban-basic.siwperslider .swiper-button-prev",
-			prevEl: ".ban-basic.siwperslider .swiper-button-next",
+			nextEl: ".ban-basic.siwperslider .swiper-button-next",
+			prevEl: ".ban-basic.siwperslider .swiper-button-prev",
 		},
 		<? } ?>
 		pagination: {
-			el: ".ban-basic.siwperslider .swiper-pagination"
+			el: ".ban-basic.siwperslider .swiper-pagination",
+			clickable: true
 		}
 	});
 }

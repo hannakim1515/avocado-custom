@@ -80,6 +80,11 @@ if (defined('G5_IS_ADMIN')) {
 		echo '<link rel="stylesheet" href="'.G5_DATA_URL.'/css/_design.config.css" type="text/css" />';
 	}
 	echo '<link rel="stylesheet" href="'.G5_CSS_URL.'/style.css" type="text/css">'.PHP_EOL;
+	if(defined('_MYPAGE_')) {
+		$mypage_css_file = G5_PATH.'/'.G5_CSS_DIR.'/mypage.css';
+		$mypage_css_ver = is_file($mypage_css_file) ? filemtime($mypage_css_file) : G5_CSS_VER;
+		echo '<link rel="stylesheet" href="'.G5_CSS_URL.'/mypage.css?ver='.$mypage_css_ver.'" type="text/css">'.PHP_EOL;
+	}
 }
 ?>
 

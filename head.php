@@ -36,19 +36,19 @@ $nav_items = [
 
 <header id="header">
     <div class="fix-layout">
-        <div class="pearje-header">
-            <div class="pearje-brand">
-                <span class="pearje-brand-mark">✶</span>
+        <div class="re-header">
+            <div class="re-brand">
+                <span class="re-brand-mark">✶</span>
                 <span>페어제 자캐커뮤</span>
             </div>
 
-            <nav class="pearje-nav" aria-label="메인 메뉴">
+            <nav class="re-nav" aria-label="메인 메뉴">
                 <?php foreach ($nav_items as $item) { ?>
                     <a href="<?php echo $item['href']; ?>"><?php echo get_text($item['label']); ?></a>
                 <?php } ?>
             </nav>
 
-            <div class="pearje-tools">
+            <div class="re-tools">
                 <?php include(G5_PATH."/templete/txt.bgm.php"); ?>
             </div>
         </div>
