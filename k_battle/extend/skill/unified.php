@@ -9,24 +9,33 @@ if (isset($sk['si_code']) && $sk['si_code'] === 'unified_evade') {
     foreach ((array)$target as $target_row) {
         $rm_id = isset($target_row['rm_id']) ? (int)$target_row['rm_id'] : 0;
         if ($rm_id <= 0) continue;
-        sql_query("INSERT INTO {$battle_table}_buff
-            SET si_code = 'unified_evade', sc_id = 0, bf_value = 0,
-                cs_id = '".(int)$sk['cs_id']."', turn_left = '{$turn}',
-                rm_id = '{$rm_id}', ra_id = '".sql_escape_string($ra_id)."'", false);
+        $effect_skill = $sk;
+        $effect_skill['sk_turn'] = $turn;
+        $effect_skill['target_sc'] = 0;
+        insert_k_buff($rm_id, $effect_skill, 0, $ra_id);
         $sk_effect .= '<p><span class="name">'.h($target_row['unit_name']).'</span>의 회피가 '.$turn.'턴 동안 유지됩니다.</p>';
     }
 }
 
 if (isset($sk['si_code']) && $sk['si_code'] === 'unified_guard') {
     $turn = max(1, (int)$sk['sk_turn']);
-    $rate = min(90, max(0, (int)$bonus));
     foreach ((array)$target as $target_row) {
         $rm_id = isset($target_row['rm_id']) ? (int)$target_row['rm_id'] : 0;
         if ($rm_id <= 0) continue;
-        sql_query("INSERT INTO {$battle_table}_buff
-            SET si_code = 'unified_guard', sc_id = 0, bf_value = '{$rate}',
-                cs_id = '".(int)$sk['cs_id']."', turn_left = '{$turn}',
-                rm_id = '{$rm_id}', ra_id = '".sql_escape_string($ra_id)."'", false);
+        $rate = (int)$bonus;
+        if (!empty($sk['unified_def_code']) && function_exists('unified_status_extra_value_from_types')) {
+            $modifier = unified_status_extra_value_from_types($sk['unified_def_code'], function($type) use ($target_row) {
+                return unified_combat_unit_type_value($target_row, $type);
+            });
+            $modifier_value = isset($modifier['value']) ? (int)$modifier['value'] : 0;
+            if (isset($sk['unified_def_type']) && $sk['unified_def_type'] === '-') $rate -= $modifier_value;
+            else $rate += $modifier_value;
+        }
+        $rate = min(90, max(0, $rate));
+        $effect_skill = $sk;
+        $effect_skill['sk_turn'] = $turn;
+        $effect_skill['target_sc'] = 0;
+        insert_k_buff($rm_id, $effect_skill, $rate, $ra_id);
         $sk_effect .= '<p><span class="name">'.h($target_row['unit_name']).'</span>의 받는 피해가 '.$turn.'턴 동안 '.$rate.'% 감소합니다.</p>';
     }
 }

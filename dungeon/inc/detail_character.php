@@ -28,8 +28,19 @@ for($i=0; $rows = sql_fetch_array($status_result); $i++) {
 					$code_buff[$b['st_code']]+=$b['dl_value'];
 				break;
 				case "스탯강화" :
-					if(!$status_buff[$b['st_id']]) $status_buff[$b['st_id']] = 0;
-					$status_buff[$status_config[$b['st_id']]['st_name']]+=$b['dl_value'];
+					$status_name = isset($status_config[$b['st_id']]['st_name']) ? $status_config[$b['st_id']]['st_name'] : '스탯#'.$b['st_id'];
+					if(!isset($status_buff[$status_name])) {
+						$status_buff[$status_name] = array('flat' => 0, 'percent' => 0, 'final' => array());
+					}
+					$effect_type = isset($b['dl_effect_type']) ? $b['dl_effect_type'] : 'flat';
+					if($effect_type === 'percent') {
+						$status_buff[$status_name]['percent'] += (int)$b['dl_value'];
+					} else if($effect_type === 'final') {
+						/* 최종 배율은 로그에 100배 정수로 보관한다. */
+						$status_buff[$status_name]['final'][] = ((int)$b['dl_value'] / 100);
+					} else {
+						$status_buff[$status_name]['flat'] += (int)$b['dl_value'];
+					}
 				break;
 			}
 		}
@@ -59,10 +70,14 @@ for($i=0; $rows = sql_fetch_array($status_result); $i++) {
 											if($value < 0) $value = "-".$value;
 											echo "<span data-buff='{$key}' title='{$key}'><em>{$key}</em> <i>{$value}</i></span>";
 										}
-										foreach($status_buff as $key => $value) {
-											if($value > 0) $value = "+".$value;
-											if($value < 0) $value = "-".$value;
-											echo "<span data-buff='{$key}' title='{$key}'><em>{$key}</em> <i>{$value}</i></span>";
+										foreach($status_buff as $key => $layers) {
+											$values = array();
+											if(!empty($layers['flat'])) $values[] = ($layers['flat'] > 0 ? '+' : '').$layers['flat'];
+											if(!empty($layers['percent'])) $values[] = ($layers['percent'] > 0 ? '+' : '').$layers['percent'].'%';
+											if(!empty($layers['final'])) {
+												foreach($layers['final'] as $multiplier) $values[] = '×'.rtrim(rtrim(number_format($multiplier, 2, '.', ''), '0'), '.');
+											}
+											if($values) echo "<span data-buff='{$key}' title='{$key}'><em>{$key}</em> <i>".implode(' / ', $values)."</i></span>";
 										}
 									?>
 							</div>

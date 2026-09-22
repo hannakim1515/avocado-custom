@@ -4,6 +4,10 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 // 광역 공격 처리 부분
 $m_log_comment = "{$ds['dg_w_attack_comment']}&&&&";
 
+// 이 include는 일반 공격과 별도 요청 경로로 실행되므로, 일반 공격에서만
+// 초기화되던 적 공격 버프 값을 여기서도 읽어 로그/피해 계산이 끊기지 않게 한다.
+$buff_attack = get_status_buffer_enermy($ds_id, "공격");
+
 for($i=0; $i < count($dm_list); $i++) {
 	$re_dm = $dm_list[$i];
 	$damage = rand($ds['dg_w_attack_min'], $ds['dg_w_attack_max']);

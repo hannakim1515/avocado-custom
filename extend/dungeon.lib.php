@@ -154,6 +154,7 @@ if(!sql_query(" DESC {$g5['dungeon_log_table']} ")) {
 		`st_id` int(11) NOT NULL default '0',
 		`st_code` varchar(255) NOT NULL default '',
 		`st_enermy` varchar(255) NOT NULL default '',
+		`dl_effect_type` varchar(12) NOT NULL default 'flat',
 
 		`dl_value` int(11) NOT NULL default '0',
 		
@@ -164,6 +165,10 @@ if(!sql_query(" DESC {$g5['dungeon_log_table']} ")) {
 
 		PRIMARY KEY (`dl_id`)
 	) ", false);
+}
+$check_field = sql_fetch("SHOW COLUMNS FROM {$g5['dungeon_log_table']} LIKE 'dl_effect_type'");
+if(!$check_field) {
+	sql_query("ALTER TABLE `{$g5['dungeon_log_table']}` ADD `dl_effect_type` varchar(12) NOT NULL default 'flat' AFTER `st_enermy`", false);
 }
 
 $use_dungeon_map = ($config['cf_dungeon_open'] && $config['cf_dungeon_map']) ? true : false;
@@ -549,11 +554,21 @@ function get_status_dungeon_total($st_type, $ds_id, $ch_id, $dm = null) {
 
 	$filed = get_status_type_filed($st_type);
 	$result = sql_query("select st_id from {$g5['status_config_table']} st where {$filed} = 1");
+	$active_effects = function_exists('unified_dungeon_stat_bonuses') ? unified_dungeon_stat_bonuses($ds_id, $ch_id) : array();
 	$total = 0;
 	for($i=0; $row = sql_fetch_array($result); $i++) {
-		$temp_val = ($dm['st_id_'.$row['st_id']] + $dm['st_id_'.$row['st_id'].'_mod'] - $dm['st_id_'.$row['st_id'].'_use']);
-		$buff_state = get_status_buffer_state($ds_id, $ch_id, $row['st_id']);
-		$temp_val = $temp_val + $buff_state;
+		$st_id = (int)$row['st_id'];
+		$base_val = ($dm['st_id_'.$st_id] + $dm['st_id_'.$st_id.'_mod'] - $dm['st_id_'.$st_id.'_use']);
+		if(function_exists('unified_active_effect_value')) {
+			$temp_val = unified_active_effect_value(
+				$base_val,
+				isset($active_effects['flat'][$st_id]) ? $active_effects['flat'][$st_id] : 0,
+				isset($active_effects['percent'][$st_id]) ? $active_effects['percent'][$st_id] : 0,
+				isset($active_effects['final'][$st_id]) ? $active_effects['final'][$st_id] : array()
+			);
+		} else {
+			$temp_val = $base_val + get_status_buffer_state($ds_id, $ch_id, $st_id);
+		}
 		$total += $temp_val;
 	}
 	return $total;
@@ -676,7 +691,7 @@ function unified_dungeon_basic_attack_result($ds_id, $ds, $ch_id, $dm, $code_nam
 
 function get_status_buffer_state($ds_id, $ch_id, $st_id) {
 	global $g5;
-	$result = sql_fetch("select SUM(dl_value) as total from {$g5['dungeon_log_table']} where ds_id = '{$ds_id}' and ch_id = '{$ch_id}' and st_id = '{$st_id}' and dl_cate = '효과' and dl_function='스탯강화' and dl_keep_limit > 0");
+	$result = sql_fetch("select SUM(dl_value) as total from {$g5['dungeon_log_table']} where ds_id = '{$ds_id}' and ch_id = '{$ch_id}' and st_id = '{$st_id}' and dl_cate = '효과' and dl_function='스탯강화' and (dl_effect_type = 'flat' or dl_effect_type = '') and dl_keep_limit > 0");
 	return $result['total'];
 }
 
@@ -748,6 +763,33 @@ function insert_dungeon_log($category, $dungeon_state, $user, $skill, $value, $i
 	$st_id = $skill['sk_mod_st_id'];
 	$st_code = $skill['sk_mod_code'];
 	$st_enermy = $skill['sk_mod_enermy'];
+	$dl_effect_type = 'flat';
+	if($category == "효과" && $dl_function == '스탯강화') {
+		$temp_effect_type = isset($skill['sk_effect_type']) ? $skill['sk_effect_type'] : 'flat';
+		if(in_array($temp_effect_type, array('flat', 'percent', 'final'))) $dl_effect_type = $temp_effect_type;
+		/* 정수 dl_value에는 최종 배율을 100배로 보관해 1.5 같은 값을 잃지 않는다. */
+		if($dl_effect_type == 'final') $value = intval(round(((float)$value) * 100));
+	}
+
+	/* 지속 효과는 현재 활성 행만 전투 입력으로 쓴다. 같은 보유 스킬이 같은
+	 * 대상에게 다시 적용되면 행을 추가로 쌓지 않고 지속시간을 갱신하며, 더 큰
+	 * 절대값만 채택한다. 서로 다른 sh_id는 별도 행으로 남아 합산된다. */
+	if($category == "효과" && intval($dl_keep_limit) > 0 && intval($ds_id) > 0) {
+		$effect = sql_fetch("select dl_id, dl_value, dl_keep_limit from {$g5['dungeon_log_table']}
+			where ds_id = '{$ds_id}' and ch_id = '{$ch_id}' and dl_cate = '효과'
+			and dl_function = '{$dl_function}' and dl_effect_type = '{$dl_effect_type}' and sk_id = '{$sk_id}' and sh_id = '{$sh_id}'
+			and st_id = '{$st_id}' and st_code = '{$st_code}' and st_enermy = '{$st_enermy}'
+			and dl_keep_limit > 0 order by dl_id desc limit 1");
+		if($effect['dl_id']) {
+			$current_value = intval($effect['dl_value']);
+			$new_value = intval($value);
+			$apply_value = abs($new_value) > abs($current_value) ? $new_value : $current_value;
+			$keep_limit = max(intval($effect['dl_keep_limit']), intval($dl_keep_limit));
+			sql_query("update {$g5['dungeon_log_table']} set dl_value = '{$apply_value}', dl_keep_limit = '{$keep_limit}',
+				dl_is_ciritical = '{$is_cri}', dl_datetime = '".date('Y-m-d H:i:s')."' where dl_id = '{$effect['dl_id']}'");
+			return;
+		}
+	}
 
 	
 	if($dl_is_turn && $ch_id > 0) { // 유지턴수 감소 처리
@@ -773,6 +815,7 @@ function insert_dungeon_log($category, $dungeon_state, $user, $skill, $value, $i
 				st_id		= '{$st_id}',
 				st_code		= '{$st_code}',
 				st_enermy	= '{$st_enermy}',
+				dl_effect_type	= '{$dl_effect_type}',
 
 				dl_value	= '{$value}',
 				dl_log		= '{$log}',

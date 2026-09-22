@@ -47,7 +47,7 @@ $s_index = 0;
 switch($sh['sk_target']) {
 	case "자신" :
 		if($sh['sk_def_code']) {
-			$mod_code = get_status_dungeon($sh['sk_status_code'], $ds_id, $character['ch_id'], $dm);
+			$mod_code = get_status_dungeon($sh['sk_def_code'], $ds_id, $character['ch_id'], $dm);
 			switch($sh['sk_def_type']) {
 				case "+" : 
 					$last_value = $last_value + $mod_code['value'];
@@ -77,7 +77,7 @@ switch($sh['sk_target']) {
 		}
 
 		if($sh['sk_def_code']) {
-			$mod_code = get_status_dungeon($sh['sk_status_code'], $ds_id, $re_dm['ch_id'], $re_dm);
+			$mod_code = get_status_dungeon($sh['sk_def_code'], $ds_id, $re_dm['ch_id'], $re_dm);
 			switch($sh['sk_def_type']) {
 				case "+" : 
 					$last_value = $last_value + $mod_code['value'];
@@ -105,7 +105,7 @@ switch($sh['sk_target']) {
 			$last_value = $default_vaule;
 
 			if($sh['sk_def_code']) {
-				$mod_code = get_status_dungeon($sh['sk_status_code'], $ds_id, $re_dm['ch_id'], $re_dm);
+				$mod_code = get_status_dungeon($sh['sk_def_code'], $ds_id, $re_dm['ch_id'], $re_dm);
 				switch($sh['sk_def_type']) {
 					case "+" : 
 						$last_value = $last_value + $mod_code['value'];
@@ -131,7 +131,7 @@ switch($sh['sk_target']) {
 		$re_dm = get_dungeon_character($ds_id, $re_ch);
 
 		if($sh['sk_def_code']) {
-			$mod_code = get_status_dungeon($sh['sk_status_code'], $ds_id, $re_dm['ch_id'], $re_dm);
+			$mod_code = get_status_dungeon($sh['sk_def_code'], $ds_id, $re_dm['ch_id'], $re_dm);
 			switch($sh['sk_def_type']) {
 				case "+" : 
 					$last_value = $last_value + $mod_code['value'];
@@ -161,7 +161,7 @@ switch($sh['sk_target']) {
 			if($re_dm['ch_id'] == $character['ch_id']) continue;
 
 			if($sh['sk_def_code']) {
-				$mod_code = get_status_dungeon($sh['sk_status_code'], $ds_id, $re_dm['ch_id'], $re_dm);
+				$mod_code = get_status_dungeon($sh['sk_def_code'], $ds_id, $re_dm['ch_id'], $re_dm);
 				switch($sh['sk_def_type']) {
 					case "+" : 
 						$last_value = $last_value + $mod_code['value'];

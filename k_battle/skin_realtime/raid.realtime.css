@@ -537,9 +537,7 @@ body * {
     }
 }
 
-/* ================================================================
-   A/K 통합 실시간 레이드 UI
-================================================================ */
+/* 이전 통합 작업에서 덧붙인 레이드 UI 오버라이드 비활성화 시작
 :root {--ak-raid-bg:#08101f; --ak-raid-panel:rgba(13,25,47,.82); --ak-raid-panel-2:rgba(24,42,73,.88); --ak-raid-line:rgba(150,191,239,.24); --ak-raid-text:#eff6ff; --ak-raid-muted:#a9bad2; --ak-raid-accent:#49d6c7; --ak-raid-gold:#ffca70; --ak-raid-danger:#ff617f;}
 .all-wrapper {position:relative; display:grid; grid-template-columns:minmax(0,1fr) minmax(310px,360px); gap:14px; align-items:stretch; min-height:100vh; height:100dvh; padding:14px; background-color:var(--ak-raid-bg); isolation:isolate;}
 .all-wrapper:before {content:""; position:absolute; inset:0; z-index:-1; background:radial-gradient(circle at 50% 0,rgba(61,109,167,.32),transparent 44%),linear-gradient(180deg,rgba(5,10,22,.3),rgba(5,10,22,.93));}
@@ -599,3 +597,4 @@ body * {
 .log-area li p span.dmg.guard:after {content:'] 감소';}
 @media all and (max-width:980px) {.all-wrapper {grid-template-columns:1fr; height:auto; min-height:100dvh; overflow:auto; padding:8px;}.all-wrapper .left-area {min-height:720px;}.all-wrapper .right-area {height:340px;}.all-wrapper #log-area {height:calc(100% - 96px);}.all-wrapper #center-area #turn-area {position:fixed; z-index:20;}.all-wrapper #ally-area,.all-wrapper #enemy-area {min-height:120px;max-height:120px;}.all-wrapper .right-area {width:auto;}.all-wrapper #center-area {min-height:380px;}}
 @media all and (max-width:560px) {.all-wrapper .left-area {padding:6px; min-height:680px;}.all-wrapper .unit-list {width:100%;gap:4px;}.all-wrapper .unit-list li {width:132px;}.all-wrapper #ally-area,.all-wrapper #enemy-area {min-height:106px;max-height:106px;}.all-wrapper #my-area #my-inner {padding:8px;}#action-select {gap:4px;}#action-select li {min-width:48px;height:31px;padding:0 7px;font-size:11px;}.all-wrapper #center-area #turn-area {top:8px;right:8px;}.all-wrapper .right-area {height:300px;}}
+레이드 UI 오버라이드 비활성화 끝 */

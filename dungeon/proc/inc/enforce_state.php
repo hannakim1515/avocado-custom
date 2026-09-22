@@ -20,7 +20,13 @@ if($sh['sk_status_code']) {
 	$default_vaule = $default_code['value'];
 }
 // 2. 레벨 별 변동수치를 가져옵니다.
-if($sh['sl_set_value']) {
+$effect_type = isset($sh['sk_effect_type']) ? $sh['sk_effect_type'] : 'flat';
+if(!in_array($effect_type, array('flat', 'percent', 'final'))) $effect_type = 'flat';
+if($sh['sk_function'] == '스탯강화' && $effect_type == 'final') {
+	/* 최종 배율은 기준 스탯을 다시 곱한 절대값이 아니라 레벨별 수치 자체다.
+	 * 예: 레벨 설정값 1.5 = 해당 대상 스탯 ×1.5 */
+	$default_vaule = is_numeric($sh['sl_set_value']) ? (float)$sh['sl_set_value'] : 0;
+} else if($sh['sl_set_value']) {
 	switch($sh['sk_value_type']) {
 		case "+" : 
 			$default_vaule = $default_vaule + $sh['sl_set_value'];
@@ -30,7 +36,7 @@ if($sh['sl_set_value']) {
 		break;
 	}
 }
-$default_vaule = intval($default_vaule);
+if($effect_type != 'final') $default_vaule = intval($default_vaule);
 
 $last_value = $default_vaule;
 
@@ -47,7 +53,7 @@ $s_index = 0;
 switch($sh['sk_target']) {
 	case "자신" :
 		if($sh['sk_def_code']) {
-			$mod_code = get_status_dungeon($sh['sk_status_code'], $ds_id, $character['ch_id'], $dm);
+			$mod_code = get_status_dungeon($sh['sk_def_code'], $ds_id, $character['ch_id'], $dm);
 			switch($sh['sk_def_type']) {
 				case "+" : 
 					$last_value = $last_value + $mod_code['value'];
@@ -77,7 +83,7 @@ switch($sh['sk_target']) {
 		}
 
 		if($sh['sk_def_code']) {
-			$mod_code = get_status_dungeon($sh['sk_status_code'], $ds_id, $re_dm['ch_id'], $re_dm);
+			$mod_code = get_status_dungeon($sh['sk_def_code'], $ds_id, $re_dm['ch_id'], $re_dm);
 			switch($sh['sk_def_type']) {
 				case "+" : 
 					$last_value = $last_value + $mod_code['value'];
@@ -105,7 +111,7 @@ switch($sh['sk_target']) {
 			$last_value = $default_vaule;
 
 			if($sh['sk_def_code']) {
-				$mod_code = get_status_dungeon($sh['sk_status_code'], $ds_id, $re_dm['ch_id'], $re_dm);
+				$mod_code = get_status_dungeon($sh['sk_def_code'], $ds_id, $re_dm['ch_id'], $re_dm);
 				switch($sh['sk_def_type']) {
 					case "+" : 
 						$last_value = $last_value + $mod_code['value'];
@@ -131,7 +137,7 @@ switch($sh['sk_target']) {
 		$re_dm = get_dungeon_character($ds_id, $re_ch);
 
 		if($sh['sk_def_code']) {
-			$mod_code = get_status_dungeon($sh['sk_status_code'], $ds_id, $re_dm['ch_id'], $re_dm);
+			$mod_code = get_status_dungeon($sh['sk_def_code'], $ds_id, $re_dm['ch_id'], $re_dm);
 			switch($sh['sk_def_type']) {
 				case "+" : 
 					$last_value = $last_value + $mod_code['value'];
@@ -161,7 +167,7 @@ switch($sh['sk_target']) {
 			if($re_dm['ch_id'] == $character['ch_id']) continue;
 
 			if($sh['sk_def_code']) {
-				$mod_code = get_status_dungeon($sh['sk_status_code'], $ds_id, $re_dm['ch_id'], $re_dm);
+				$mod_code = get_status_dungeon($sh['sk_def_code'], $ds_id, $re_dm['ch_id'], $re_dm);
 				switch($sh['sk_def_type']) {
 					case "+" : 
 						$last_value = $last_value + $mod_code['value'];

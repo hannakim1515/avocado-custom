@@ -10,16 +10,16 @@ $skill_name = $sh['sh_name'] ? $sh['sh_name'] : $sh['sk_name'];
 $log = "<p class='txt-skill-info'><strong>{$skill_name}</strong> 스킬을 사용했습니다.</p>";
 $log .= "<p class='txt-skill-info ty2'>{$sh['sk_descript']}</p>";
 
-$rate = 0;
+$base_rate = 0;
 if($sh['sk_status_code']) {
 	$code = get_status_dungeon($sh['sk_status_code'], $ds_id, $character['ch_id'], $dm);
-	$rate = intval($code['value']);
+	$base_rate = intval($code['value']);
 }
 if($sh['sl_set_value']) {
-	if($sh['sk_value_type'] == 'x' && $rate > 0) $rate = intval($rate * $sh['sl_set_value']);
-	else $rate += intval($sh['sl_set_value']);
+	if($sh['sk_value_type'] == 'x' && $base_rate > 0) $base_rate = intval($base_rate * $sh['sl_set_value']);
+	else $base_rate += intval($sh['sl_set_value']);
 }
-$rate = min(90, max(0, $rate));
+$base_rate = min(90, max(0, $base_rate));
 
 $targets = array();
 switch($sh['sk_target']) {
@@ -41,13 +41,29 @@ switch($sh['sk_target']) {
 	break;
 }
 
-insert_dungeon_log("스킬", $ds, $dm, $sh, 0, 0, $log);
+$guard_targets = array();
+$log .= "<p class='txt-skill-result'>받는 피해 감소 효과를 적용합니다.</p>";
 $guard_skill = $sh;
 $guard_skill['sk_keep_limit'] = max(1, intval($sh['sk_keep_limit']));
 for($i=0; $i<count($targets); $i++) {
 	if(empty($targets[$i]['dm_id'])) continue;
-	insert_dungeon_log("효과", $ds, $targets[$i], $guard_skill, $rate, 0, "");
-	$log_target = $targets[$i]['ch_name'];
-	sql_query("update {$g5['dungeon_member_table']} set dm_comment = '방어: {$rate}% 피해 감소' where dm_id = '{$targets[$i]['dm_id']}'");
+	$rate = $base_rate;
+	if($sh['sk_def_code']) {
+		$mod_code = get_status_dungeon($sh['sk_def_code'], $ds_id, $targets[$i]['ch_id'], $targets[$i]);
+		if($sh['sk_def_type'] == '-') $rate -= intval($mod_code['value']);
+		else if($sh['sk_def_type'] == '+') $rate += intval($mod_code['value']);
+	}
+	$rate = min(90, max(0, $rate));
+	$guard_targets[] = array('target' => $targets[$i], 'rate' => $rate);
+	$log .= "<p class='txt-skill-result'><strong>{$targets[$i]['ch_name']}</strong>의 받는 피해 <em>{$rate}% 감소</em></p>";
+}
+
+/* 행동 본문은 한 번만 남기고, 지속 효과 행은 기존처럼 화면 로그에서 제외한다. */
+insert_dungeon_log("스킬", $ds, $dm, $sh, $base_rate, 0, $log);
+for($i=0; $i<count($guard_targets); $i++) {
+	$target = $guard_targets[$i]['target'];
+	$rate = $guard_targets[$i]['rate'];
+	insert_dungeon_log("효과", $ds, $target, $guard_skill, $rate, 0, "");
+	sql_query("update {$g5['dungeon_member_table']} set dm_comment = '방어: {$rate}% 피해 감소' where dm_id = '{$target['dm_id']}'");
 }
 ?>

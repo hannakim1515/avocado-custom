@@ -121,9 +121,9 @@ function use_k_guard($unit, $ra_id='0', $msg='', $option='', $system='')
 
     $guard = function_exists('unified_battle_action_value') ? unified_battle_action_value('guard', $unit) : array('value' => 0);
     $rate = min(90, max(0, ses($guard, 'value', 0, 'int')));
-    sql_query("INSERT INTO {$battle_table}_buff
-        SET si_code = 'unified_guard', sc_id = 0, bf_value = '{$rate}', cs_id = 0,
-            turn_left = 1, rm_id = '{$rm_id}', ra_id = '".sql_escape_string($ra_id)."'", false);
+    insert_k_buff($rm_id, array(
+        'si_code' => 'unified_guard', 'target_sc' => 0, 'cs_id' => 0, 'sk_turn' => 1
+    ), $rate, $ra_id);
 
     $unit_name = h(ses($unit, 'unit_name', ''));
     $msg .= '<p class="act-title guard">방어</p><p><span class="name">'.$unit_name.'</span>의 받는 피해가 <span class="dmg guard">'.$rate.'</span>% 감소합니다.</p>';
@@ -329,23 +329,34 @@ function insert_k_buff($target, $sk, $bonus, $ra_id=0)//버프삽입
     $ra_id  = (string)$ra_id;
     $bonus  = (int)$bonus;
 
-    $sql = '';
-    $check = array();
+    $code = sql_real_escape_string(ses($sk, 'si_code', ''));
+    $effect_type = ses($sk, 'unified_effect_type', 'flat');
+    if ($code === 'buff' && $effect_type === 'percent') $code = 'unified_buff_percent';
+    elseif ($code === 'buff' && $effect_type === 'final') $code = 'unified_buff_final';
+    $target_sc = ses($sk, 'target_sc', 0, 'int');
+    $cs_id = ses($sk, 'cs_id', 0, 'int');
+    $turn = ses($sk, 'sk_turn', 0, 'int');
+    /* 지속효과가 아닌 스킬을 레이드에서 임의로 1턴 버프로 바꾸지 않는다.
+     * 방어/회피 같은 기본 행동은 호출부가 명시적으로 1턴을 전달한다. */
+    if ($target <= 0 || $code === '' || $turn <= 0) return false;
 
-    if (!empty($sk['si_code']) && $sk['si_code'] === 'buff') {
-        $check = sql_fetch("
-            SELECT bf_id
-            FROM {$battle_table}_buff
-            WHERE cs_id = '".(int)$sk['cs_id']."'
-              AND rm_id = '{$target}'
-            LIMIT 1
-        ");
-    }
+    /* 같은 캐시 스킬/대상은 별도 중첩이 아니라 기간 갱신이다. 새 값이 더 강할
+     * 때만 바꾸므로 기존 효과는 원본 스냅샷 + 활성 효과 목록으로만 재계산된다. */
+    $check = sql_fetch("
+        SELECT bf_id, bf_value, turn_left
+        FROM {$battle_table}_buff
+        WHERE cs_id = '{$cs_id}' AND si_code = '{$code}' AND sc_id = '{$target_sc}'
+          AND rm_id = '{$target}' AND ra_id = '".sql_real_escape_string($ra_id)."'
+          AND turn_left > 0
+        ORDER BY bf_id DESC LIMIT 1
+    ", false);
 
     if (!empty($check['bf_id'])) {
+        $current_bonus = (int)$check['bf_value'];
+        $applied_bonus = abs($bonus) > abs($current_bonus) ? $bonus : $current_bonus;
         $sql = "
             UPDATE {$battle_table}_buff
-            SET turn_left = turn_left + ".(int)$sk['sk_turn']."
+            SET bf_value = '{$applied_bonus}', turn_left = GREATEST(turn_left, '{$turn}')
             WHERE bf_id = ".(int)$check['bf_id']."
         ";
     } else {
@@ -353,13 +364,13 @@ function insert_k_buff($target, $sk, $bonus, $ra_id=0)//버프삽입
             INSERT INTO {$battle_table}_buff
                 (si_code, sc_id, bf_value, cs_id, turn_left, rm_id, ra_id)
             VALUES
-                ('".sql_real_escape_string($sk['si_code'])."',
-                 '".(int)$sk['target_sc']."',
+                ('{$code}',
+                 '{$target_sc}',
                  '{$bonus}',
-                 '".(int)$sk['cs_id']."',
-                 '".(int)$sk['sk_turn']."',
+                 '{$cs_id}',
+                 '{$turn}',
                  '{$target}',
-                 '{$ra_id}')
+                 '".sql_real_escape_string($ra_id)."')
         ";
     }
     sql_query($sql);
@@ -689,7 +700,7 @@ function get_k_dot($ra_id=0, $type='atk', $msg='', $option='')//도트처리
         SELECT SUM(bf_value) AS bf_value, rm_id
         FROM {$battle_table}_buff
         WHERE ra_id = '".sql_real_escape_string($ra_id)."'
-          AND si_code <> 'buff'
+          AND si_code = '{$type}'
           AND bf_value {$equal} 0
           AND turn_left > 0
         GROUP BY rm_id

@@ -58,7 +58,7 @@ if ($time_limit > 0 && $time_start > 0) {
 ?>
 
 <style>
-    @import url('<?php echo G5_URL?>/k_battle/skin_realtime/raid.realtime.css?v=unified-20260922');
+    @import url('<?php echo G5_URL?>/k_battle/skin_realtime/raid.realtime.css');
 </style>
 
 <div class="all-wrapper" <?php if($ra['ra_bg_img']){ echo "style=\"background-image:url('".h($ra['ra_bg_img'])."')\""; } ?>>
@@ -124,26 +124,30 @@ if ($time_limit > 0 && $time_start > 0) {
                 $bf_list = sql_query("SELECT * FROM {$battle_table}_buff WHERE bf_value > 0 AND turn_left > 0 AND rm_id = '".ses($rm, 'rm_id', 0, 'int')."'");
                 while ($row = sql_fetch_array($bf_list)) {
                     $buff_code = ses($row, 'si_code', '');
-                    $name = $buff_code === 'buff'
+                    $is_stat_buff = in_array($buff_code, array('buff', 'unified_buff_percent', 'unified_buff_final'), true);
+                    $name = $is_stat_buff
                         ? (ses($sc_list, $row['sc_id'], ''))
                         : ($buff_code === 'unified_guard' ? '방어' : ses($kb_cf, 'hp_name', ''));
                     $name = h($name);
                     $val  = ses($row, 'bf_value', 0, 'int');
                     $turn = ses($row, 'turn_left', 0, 'int');
-                    $buff_html .= "<span>{$name} +{$val} | 남은 턴 {$turn}</span>";
+                    $value_text = $buff_code === 'unified_buff_percent' ? '+'.$val.'%' : ($buff_code === 'unified_buff_final' ? '×'.rtrim(rtrim(number_format($val / 100, 2, '.', ''), '0'), '.') : '+'.$val);
+                    $buff_html .= "<span>{$name} {$value_text} | 남은 턴 {$turn}</span>";
                     $buff_cnt++;
                 }
                 // 디버프
                 $bf_list = sql_query("SELECT * FROM {$battle_table}_buff WHERE bf_value < 0 AND turn_left > 0 AND rm_id = '".ses($rm, 'rm_id', 0, 'int')."'");
                 while ($row = sql_fetch_array($bf_list)) {
                     $buff_code = ses($row, 'si_code', '');
-                    $name = $buff_code === 'buff'
+                    $is_stat_buff = in_array($buff_code, array('buff', 'unified_buff_percent', 'unified_buff_final'), true);
+                    $name = $is_stat_buff
                         ? (ses($sc_list, $row['sc_id'], ''))
                         : ($buff_code === 'unified_guard' ? '방어' : ses($kb_cf, 'hp_name', ''));
                     $name = h($name);
                     $val  = ses($row, 'bf_value', 0, 'int');
                     $turn = ses($row, 'turn_left', 0, 'int');
-                    $debuff_html .= "<span>{$name} {$val} | 남은 턴 {$turn}</span>";
+                    $value_text = $buff_code === 'unified_buff_percent' ? $val.'%' : ($buff_code === 'unified_buff_final' ? '×'.rtrim(rtrim(number_format($val / 100, 2, '.', ''), '0'), '.') : $val);
+                    $debuff_html .= "<span>{$name} {$value_text} | 남은 턴 {$turn}</span>";
                     $debuff_cnt++;
                 }
             ?>

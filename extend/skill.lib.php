@@ -27,6 +27,7 @@ if(!sql_query(" DESC {$g5['skill_table']} ")) {
 		`sk_mod_code` varchar(255) NOT NULL default '',
 		`sk_mod_enermy` varchar(255) NOT NULL default '',
 		`sk_mod_type` varchar(255) NOT NULL default '',
+		`sk_effect_type` varchar(12) NOT NULL default 'flat',
 		`sk_def_type` varchar(255) NOT NULL default '',
 		`sk_def_code` varchar(255) NOT NULL default '',
 		`sk_def_enermy` varchar(255) NOT NULL default '',

@@ -282,7 +282,7 @@ function unified_a_passive_modifiers($ch_id)
 
     /* A 패시브만 최종 스탯에 반영한다. K 캐시 스킬은 절대 다시 합산하지 않는다. */
     $query = sql_query(
-        "SELECT sk.sk_mod_st_id, sk.sk_mod_type, SUM(sl.sl_set_value * 1) AS total
+        "SELECT sk.sk_mod_st_id, sk.sk_mod_type, sl.sl_set_value
          FROM {$has_table} sh
          INNER JOIN {$skill_table} sk ON sk.sk_id = sh.sk_id
          INNER JOIN {$level_table} sl ON sl.sk_id = sk.sk_id AND sl.sl_level = sh.sh_level
@@ -290,7 +290,7 @@ function unified_a_passive_modifiers($ch_id)
            AND sh.sh_use = 1
            AND sk.sk_type = '패시브'
            AND sk.sk_function = '스탯강화'
-         GROUP BY sk.sk_mod_st_id, sk.sk_mod_type",
+         ORDER BY sk.sk_mod_st_id ASC, sh.sh_id ASC",
         false
     );
     if ($query) while ($row = sql_fetch_array($query)) {
@@ -298,7 +298,7 @@ function unified_a_passive_modifiers($ch_id)
         if ($st_id <= 0) continue;
         if (!isset($cache['a_passive'][$ch_id][$st_id])) $cache['a_passive'][$ch_id][$st_id] = array('+' => 0, '-' => 0, 'x' => array());
         $type = isset($row['sk_mod_type']) ? $row['sk_mod_type'] : '';
-        $total = isset($row['total']) ? (float)$row['total'] : 0;
+        $total = isset($row['sl_set_value']) ? (float)$row['sl_set_value'] : 0;
         if ($type === '+' || $type === '-') $cache['a_passive'][$ch_id][$st_id][$type] += $total;
         elseif ($type === 'x') $cache['a_passive'][$ch_id][$st_id]['x'][] = $total;
     }
@@ -496,25 +496,58 @@ function unified_stat_raw_total_by_type($status_type, $ch_id)
     return max(0, (int)$total);
 }
 
+/* DB별 효과 수집과 분리한 공통 최종값 계산. percent는 가산 합계이며 final은
+ * 이미 버프된 현재값이 아니라 동일 기준값에만 적용한다. */
+function unified_active_effect_value($base, $flat = 0, $percent = 0, $final_multipliers = array())
+{
+    $value = (float)$base + (float)$flat;
+    $value *= 1 + ((float)$percent / 100);
+    if (is_array($final_multipliers)) {
+        foreach ($final_multipliers as $multiplier) {
+            $value *= (float)$multiplier;
+        }
+    }
+    return max(0, (int)round($value));
+}
+
 function unified_dungeon_stat_bonuses($ds_id, $ch_id)
 {
     global $g5;
-    $result = array();
+    $result = array('flat' => array(), 'percent' => array(), 'final' => array());
     $ds_id = (int)$ds_id;
     $ch_id = (int)$ch_id;
     if ($ds_id <= 0 || $ch_id <= 0 || empty($g5['dungeon_log_table']) || !unified_table_exists($g5['dungeon_log_table'])) return $result;
 
-    /* 스탯마다 SUM을 실행하지 않고 현재 효과를 한 번에 집계한다. */
+    /* 한 행동 안에서는 동일 대상의 활성 효과가 바뀌지 않는다. 여러 연동 코드가
+     * 같은 스탯을 요청해도 dungeon_log를 다시 읽지 않도록 요청 범위에서만 보관한다. */
+    static $cache = array();
+    $cache_key = $ds_id.'|'.$ch_id;
+    if (isset($cache[$cache_key])) return $cache[$cache_key];
+
+    /* 스탯마다 SUM을 실행하지 않고 현재 효과를 한 번에 읽는다. final은 순서를
+     * 보존해 특수 배율만 별도로 적용하고, 일반 percent는 같은 층에서 합산한다. */
     $query = sql_query(
-        "SELECT st_id, SUM(dl_value) AS total
+        "SELECT st_id, dl_value, dl_effect_type
          FROM {$g5['dungeon_log_table']}
          WHERE ds_id = '{$ds_id}' AND ch_id = '{$ch_id}'
            AND dl_cate = '효과' AND dl_function = '스탯강화' AND dl_keep_limit > 0
-         GROUP BY st_id",
+         ORDER BY dl_id ASC",
         false
     );
-    if ($query) while ($row = sql_fetch_array($query)) $result[(int)$row['st_id']] = (int)$row['total'];
-    return $result;
+    if ($query) while ($row = sql_fetch_array($query)) {
+        $st_id = (int)$row['st_id'];
+        if ($st_id <= 0) continue;
+        $type = isset($row['dl_effect_type']) ? $row['dl_effect_type'] : 'flat';
+        if ($type === 'percent') {
+            $result['percent'][$st_id] = (isset($result['percent'][$st_id]) ? (int)$result['percent'][$st_id] : 0) + (int)$row['dl_value'];
+        } elseif ($type === 'final') {
+            if (!isset($result['final'][$st_id])) $result['final'][$st_id] = array();
+            $result['final'][$st_id][] = (float)$row['dl_value'] / 100;
+        } else {
+            $result['flat'][$st_id] = (isset($result['flat'][$st_id]) ? (int)$result['flat'][$st_id] : 0) + (int)$row['dl_value'];
+        }
+    }
+    return $cache[$cache_key] = $result;
 }
 
 function unified_dungeon_k_stat_value($ds_id, $ch_id, $dm, $k_sc_id)
@@ -526,8 +559,12 @@ function unified_dungeon_k_stat_value($ds_id, $ch_id, $dm, $k_sc_id)
     foreach (unified_status_config_rows() as $row) {
         $st_id = (int)$row['st_id'];
         $base = (int)$dm['st_id_'.$st_id] + (int)$dm['st_id_'.$st_id.'_mod'] - (int)$dm['st_id_'.$st_id.'_use'];
-        $base += isset($buffs[$st_id]) ? (int)$buffs[$st_id] : 0;
-        $base_stats[$st_id] = max(0, $base);
+        $base_stats[$st_id] = unified_active_effect_value(
+            $base,
+            isset($buffs['flat'][$st_id]) ? $buffs['flat'][$st_id] : 0,
+            isset($buffs['percent'][$st_id]) ? $buffs['percent'][$st_id] : 0,
+            isset($buffs['final'][$st_id]) ? $buffs['final'][$st_id] : array()
+        );
     }
 
     /*
@@ -756,10 +793,15 @@ function unified_combat_action_code($action)
 function unified_status_extra_value_from_types($code_name, $type_value)
 {
     global $g5;
+    static $definitions = array();
     $result = array('value' => 0, 'cri' => 0);
     $table = isset($g5['status_extra_table']) ? $g5['status_extra_table'] : G5_TABLE_PREFIX.'status_extra';
     if ($code_name === '' || !unified_table_exists($table) || !is_callable($type_value)) return $result;
-    $ex = sql_fetch("SELECT * FROM {$table} WHERE ex_name = '".sql_escape_string($code_name)."' LIMIT 1", false);
+    $cache_key = (string)$table.'|'.(string)$code_name;
+    if (!array_key_exists($cache_key, $definitions)) {
+        $definitions[$cache_key] = sql_fetch("SELECT * FROM {$table} WHERE ex_name = '".sql_escape_string($code_name)."' LIMIT 1", false);
+    }
+    $ex = $definitions[$cache_key];
     if (empty($ex['ex_id'])) return $result;
 
     $min = (int)$ex['ex_main_min'];
@@ -802,6 +844,12 @@ function unified_combat_unit_type_value($unit, $status_type)
     $k_sc_id = unified_k_stat_id_for_type($status_type);
     $slot = $k_sc_id > 0 ? unified_k_stat_slot_column($k_sc_id) : '';
     if ($slot !== '' && array_key_exists($slot, $unit)) return max(0, (int)$unit[$slot]);
+
+    /* 레이드 중에는 realtime_unit의 슬롯이 유일한 스탯 입력이다. 연결표가 빠진
+     * 타입을 A 원본에서 다시 계산하면 입장 시점 스냅샷 정책과 턴당 조회 제한이
+     * 깨지므로 0으로 반환해 설정 누락이 즉시 드러나게 한다. */
+    if (array_key_exists('rm_id', $unit)) return 0;
+
     if ($unit_type === 'ch') return unified_stat_raw_total_by_type($status_type, $unit_id);
     if ($unit_type === 'mo') return unified_monster_total_by_type($unit_id, $status_type);
     return 0;

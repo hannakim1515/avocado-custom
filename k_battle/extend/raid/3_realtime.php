@@ -23,21 +23,9 @@ function get_k_unit_list_simple($ra_id = 0, $select = '*', $where = '', $order =
         if ($buff) {
             // 합산값과 상세 목록을 한 번에 조회
             $buff_data = get_k_buff($row['rm_id'], true);
-            $sum_data = ses($buff_data, 'sum', array(), 'array');
+            $layers = ses($buff_data, 'layers', array(), 'array');
             $row['buff_list'] = ses($buff_data, 'list', array('buff' => array(), 'debuff' => array()), 'array');
-
-            if (is_array($sum_data)) {
-                foreach ($sum_data as $key => $value) {
-                    $plus_key = "{$key}_buff";
-                    $base     = ses($row, $key, 0, 'int');
-
-                    $row[$key] = $base + (int)$value;
-                    if ($row[$key] < 0) {
-                        $row[$key] = 0;
-                    }
-                    $row[$plus_key] = (int)$value;
-                }
-            }
+            $row = apply_k_buff_layers($row, $layers);
         } else {
             $row['buff_list'] = array('buff' => array(), 'debuff' => array());
         }

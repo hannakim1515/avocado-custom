@@ -34,8 +34,14 @@ function unified_skill_prepare_schema()
     if ($prepared) return;
     $prepared = true;
 
+    $a_skill = isset($g5['skill_table']) ? $g5['skill_table'] : G5_TABLE_PREFIX.'skill';
     $skill = isset($g5['k_skill_table']) ? $g5['k_skill_table'] : G5_TABLE_PREFIX.'k_battle_skill';
     $has = isset($g5['k_ch_skill_table']) ? $g5['k_ch_skill_table'] : G5_TABLE_PREFIX.'k_battle_skill_ch';
+    /* sk_value_type은 기본수식의 레벨 결합 방식, sk_mod_type은 결과의
+     * 부호/배율이다. 활성 스탯 효과의 세 종류만 별도로 보존한다. */
+    if (unified_skill_table_exists($a_skill) && !unified_skill_column_exists($a_skill, 'sk_effect_type')) {
+        sql_query("ALTER TABLE {$a_skill} ADD sk_effect_type varchar(12) NOT NULL DEFAULT 'flat' AFTER sk_mod_type", false);
+    }
     if (unified_skill_table_exists($skill) && !unified_skill_column_exists($skill, 'unified_a_sk_id')) {
         sql_query("ALTER TABLE {$skill} ADD unified_a_sk_id int(11) NOT NULL DEFAULT '0', ADD KEY idx_unified_a_sk_id (unified_a_sk_id)", false);
     }
@@ -58,7 +64,14 @@ function unified_skill_prepare_battle_snapshot($battle_table)
         'unified_value'   => "float NOT NULL DEFAULT '0'",
         'unified_mp'      => "int(11) NOT NULL DEFAULT '0'",
         'unified_turn'    => "int(11) NOT NULL DEFAULT '0'",
-        'unified_cool'    => "int(11) NOT NULL DEFAULT '0'"
+        'unified_cool'    => "int(11) NOT NULL DEFAULT '0'",
+        /* 회복 결과수정은 대상의 레이드 유닛 스냅샷으로 계산한다. 코드/연산자는
+         * 입장 시 함께 고정해, 행동 중 A 스킬 정의를 다시 읽지 않는다. */
+        'unified_def_code' => "varchar(255) NOT NULL DEFAULT ''",
+        'unified_def_type' => "char(1) NOT NULL DEFAULT '+'",
+        'unified_def_enermy' => "varchar(20) NOT NULL DEFAULT ''",
+        'unified_mod_type' => "char(1) NOT NULL DEFAULT ''",
+        'unified_effect_type' => "varchar(12) NOT NULL DEFAULT 'flat'"
     );
     foreach ($columns as $column => $definition) {
         if (!unified_skill_column_exists($table, $column)) {
@@ -141,7 +154,15 @@ function unified_skill_k_stat_for_basic_stat($st_id)
 function unified_skill_k_target_stat($skill)
 {
     $function = isset($skill['sk_function']) ? $skill['sk_function'] : '';
-    if ($function === '스탯강화') return unified_skill_k_stat_for_basic_stat(isset($skill['sk_mod_st_id']) ? $skill['sk_mod_st_id'] : 0);
+    if ($function === '스탯강화') {
+        $target_stat = unified_skill_k_stat_for_basic_stat(isset($skill['sk_mod_st_id']) ? $skill['sk_mod_st_id'] : 0);
+        /* 적 대상 강화/약화는 A의 sk_mod_enermy(체력·공격·방어)를 같은 통합
+         * 타입 슬롯에 연결한다. 연결표가 없으면 0으로 남겨 기존 동작을 보존한다. */
+        if ($target_stat <= 0 && !empty($skill['sk_mod_enermy']) && function_exists('unified_k_stat_id_for_type')) {
+            $target_stat = (int)unified_k_stat_id_for_type($skill['sk_mod_enermy']);
+        }
+        return $target_stat;
+    }
     if ($function === '연동코드강화' && function_exists('unified_k_stat_id_for_type')) {
         return (int)unified_k_stat_id_for_type(unified_skill_status_type_for_code(isset($skill['sk_mod_code']) ? $skill['sk_mod_code'] : ''));
     }
@@ -207,7 +228,7 @@ function unified_skill_compile_all()
 function unified_skill_raid_snapshot($ch_id, $sh_id)
 {
     global $g5, $kb_cf;
-    $result = array('a_sk_id' => 0, 'value' => 0, 'mp' => 0, 'turn' => 0, 'cool' => 0);
+    $result = array('a_sk_id' => 0, 'value' => 0, 'mp' => 0, 'turn' => 0, 'cool' => 0, 'def_code' => '', 'def_type' => '+', 'def_enermy' => '', 'mod_type' => '', 'effect_type' => 'flat');
     $ch_id = (int)$ch_id;
     $sh_id = (int)$sh_id;
     if ($ch_id <= 0 || $sh_id <= 0) return $result;
@@ -234,7 +255,12 @@ function unified_skill_raid_snapshot($ch_id, $sh_id)
         $value = isset($extra['value']) ? (float)$extra['value'] : 0;
     }
     $level_value = (isset($row['sl_set_value']) && is_numeric($row['sl_set_value'])) ? (float)$row['sl_set_value'] : 0;
-    if ($value > 0 && isset($row['sk_value_type']) && $row['sk_value_type'] === 'x') $value *= $level_value;
+    $effect_type = $function === '스탯강화' && isset($row['sk_effect_type']) ? $row['sk_effect_type'] : 'flat';
+    if (!in_array($effect_type, array('flat', 'percent', 'final'), true)) $effect_type = 'flat';
+    /* 최종 배율은 기본수식의 결과값이 아니라 레벨별 설정값 그 자체다.
+     * 따라서 관리자가 1.5를 입력하면 어느 기준 스탯에도 일관되게 ×1.5가 된다. */
+    if ($function === '스탯강화' && $effect_type === 'final') $value = $level_value;
+    elseif ($value > 0 && isset($row['sk_value_type']) && $row['sk_value_type'] === 'x') $value *= $level_value;
     else $value += $level_value;
 
     $mp = 0;
@@ -247,6 +273,20 @@ function unified_skill_raid_snapshot($ch_id, $sh_id)
     $result['mp'] = $mp;
     $result['turn'] = max(0, (int)$row['sk_keep_limit']);
     $result['cool'] = max(0, (int)$row['sk_limit']);
+    if (in_array($function, array('스탯회복', '방어', '스탯강화', '연동코드강화'), true) && !empty($row['sk_def_code']) && in_array($row['sk_def_type'], array('+', '-'), true)) {
+        $result['def_code'] = trim((string)$row['sk_def_code']);
+        $result['def_type'] = $row['sk_def_type'];
+    }
+    if (in_array($function, array('공격', '스탯강화', '연동코드강화'), true) && !empty($row['sk_def_enermy']) && in_array($row['sk_def_enermy'], array('체력', '공격', '방어'), true)) {
+        $result['def_enermy'] = $row['sk_def_enermy'];
+        $result['def_type'] = in_array($row['sk_def_type'], array('+', '-'), true) ? $row['sk_def_type'] : '+';
+    }
+    if (in_array($function, array('스탯회복', '스탯강화', '연동코드강화'), true) && isset($row['sk_mod_type']) && $row['sk_mod_type'] === '-') {
+        $result['mod_type'] = '-';
+    }
+    if ($function === '스탯강화') {
+        $result['effect_type'] = $effect_type;
+    }
     return $result;
 }
 

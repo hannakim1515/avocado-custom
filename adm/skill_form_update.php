@@ -28,6 +28,15 @@ if ($img = $_FILES['sk_img_file']['name']) {
 	$sk_img = $skill_data_url."/".$image_name;
 }
 
+$sk_effect_type = isset($sk_effect_type) ? $sk_effect_type : 'flat';
+if (!in_array($sk_effect_type, array('flat', 'percent', 'final'), true)) $sk_effect_type = 'flat';
+if ($sk_function !== '스탯강화') $sk_effect_type = 'flat';
+/* sk_effect_type은 전투 중 지속효과의 계층이다. 패시브는 기존 A 영구 스탯
+ * 계산(sk_mod_type)을 그대로 사용하므로 이 선택값을 원본 의미로 쓰지 않는다. */
+if ($sk_type === '패시브') $sk_effect_type = 'flat';
+if ($sk_effect_type === 'final') $sk_mod_type = 'x';
+elseif ($sk_mod_type === 'x' && $sk_type !== '패시브') $sk_mod_type = '+';
+
 $sql_common = " sk_cate			= '{$sk_cate}',
 				sk_type			= '{$sk_type}',
 				sk_name			= '{$sk_name}',
@@ -43,6 +52,7 @@ $sql_common = " sk_cate			= '{$sk_cate}',
 				sk_mod_code		= '{$sk_mod_code}',
 				sk_mod_enermy	= '{$sk_mod_enermy}',
 				sk_mod_type		= '{$sk_mod_type}',
+				sk_effect_type	= '{$sk_effect_type}',
 				sk_def_type		= '{$sk_def_type}',
 				sk_def_code		= '{$sk_def_code}',
 				sk_def_enermy	= '{$sk_def_enermy}',

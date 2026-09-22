@@ -895,8 +895,9 @@ function get_k_buff($rm_id, $detail = false)//버프 불러오기 ($detail=true�
           AND rm_id = '{$rm_id}'
     ");
 
-    // 합산용 임시 배열
-    $sum_data = array();
+    /* realtime_unit의 st_N은 절대 덮어쓰지 않는다. 활성 효과를 계층별로
+     * 수집해 호출 지점에서 동일 기준값으로 재계산한다. */
+    $layers = array('flat' => array(), 'percent' => array(), 'final' => array());
 
     while ($row = sql_fetch_array($q)) {
         $sc_id = (int)$row['sc_id'];
@@ -904,15 +905,23 @@ function get_k_buff($rm_id, $detail = false)//버프 불러오기 ($detail=true�
         $bf_value = (int)$row['bf_value'];
         $turn_left = (int)$row['turn_left'];
 
-        // 스탯 버프만 합산 (si_code = 'buff')
-        if ($si_code === 'buff' && isset($k_unit_stat[$sc_id])) {
+        $effect_type = '';
+        if ($si_code === 'buff') $effect_type = 'flat';
+        elseif ($si_code === 'unified_buff_percent') $effect_type = 'percent';
+        elseif ($si_code === 'unified_buff_final') $effect_type = 'final';
+        if ($effect_type !== '' && isset($k_unit_stat[$sc_id])) {
             $key = $k_unit_stat[$sc_id];
-            $sum_data[$key] = ses($sum_data, $key, 0, 'int') + $bf_value;
+            if ($effect_type === 'final') {
+                if (!isset($layers['final'][$key])) $layers['final'][$key] = array();
+                $layers['final'][$key][] = (float)$bf_value / 100;
+            } else {
+                $layers[$effect_type][$key] = ses($layers[$effect_type], $key, 0, 'int') + $bf_value;
+            }
         }
 
         // 상세 목록 ($detail=true일 때만)
         if ($detail) {
-            if ($si_code === 'buff') {
+            if ($effect_type !== '') {
                 $name = ses($sc_names, $sc_id, '');
             } elseif ($si_code === 'unified_guard') {
                 $name = '방어';
@@ -922,11 +931,12 @@ function get_k_buff($rm_id, $detail = false)//버프 불러오기 ($detail=true�
 
             $item = array(
                 'name' => $name,
-                'value' => $bf_value,
+                'value' => $effect_type === 'final' ? ((float)$bf_value / 100) : $bf_value,
+                'effect_type' => $effect_type,
                 'turn' => $turn_left
             );
 
-            if ($bf_value > 0) {
+            if ($bf_value > 0 || $effect_type === 'final') {
                 $buff_list['buff'][] = $item;
             } else {
                 $buff_list['debuff'][] = $item;
@@ -934,17 +944,40 @@ function get_k_buff($rm_id, $detail = false)//버프 불러오기 ($detail=true�
         }
     }
 
-    $result = $sum_data;
+    $result = $layers;
 
     // $detail=true면 합산값과 상세 목록 모두 반환
     if ($detail) {
         return array(
-            'sum' => $result,
+            'layers' => $result,
             'list' => $buff_list
         );
     }
 
     return $result;
+}
+
+function apply_k_buff_layers($unit, $layers)
+{
+    if (!is_array($unit) || !is_array($layers)) return $unit;
+    $keys = array();
+    foreach (array('flat', 'percent', 'final') as $type) {
+        if (!empty($layers[$type]) && is_array($layers[$type])) {
+            foreach ($layers[$type] as $key => $unused) $keys[$key] = true;
+        }
+    }
+    foreach (array_keys($keys) as $key) {
+        $base = ses($unit, $key, 0, 'int');
+        $flat = isset($layers['flat'][$key]) ? (int)$layers['flat'][$key] : 0;
+        $percent = isset($layers['percent'][$key]) ? (int)$layers['percent'][$key] : 0;
+        $final = isset($layers['final'][$key]) ? $layers['final'][$key] : array();
+        $value = function_exists('unified_active_effect_value')
+            ? unified_active_effect_value($base, $flat, $percent, $final)
+            : max(0, (int)round(($base + $flat) * (1 + ($percent / 100))));
+        $unit[$key] = $value;
+        $unit[$key.'_buff'] = $value - $base;
+    }
+    return $unit;
 }
 function get_k_unit($rm_id, $unit_type, $select = "*", $id_type = 'rm_id')
 {
@@ -982,17 +1015,7 @@ function get_k_unit($rm_id, $unit_type, $select = "*", $id_type = 'rm_id')
 
     $result = sql_fetch($sql);
 
-    $buff = get_k_buff($rm_id);
-    if (is_array($buff)) {
-        foreach ($buff as $key => $value) {
-            $plus_key = $key . '_buff';
-            $base = ses($result, $key, 0, 'int');
-            $val = $base + (int)$value;
-            if ($val < 0) $val = 0;
-            $result[$key] = $val;
-            $result[$plus_key] = (int)$value;
-        }
-    }
+    $result = apply_k_buff_layers($result, get_k_buff($rm_id));
 
     return $result;
 }
@@ -1027,19 +1050,9 @@ function get_k_unit_list($type = 'ch', $ra_id = 0, $select = '*', $where = '', $
         if ($buff) {
             // 합산값과 상세 목록을 한 번에 조회
             $buff_data = get_k_buff($row['rm_id'], true);
-            $sum_data = ses($buff_data, 'sum', array(), 'array');
+            $layers = ses($buff_data, 'layers', array(), 'array');
             $row['buff_list'] = ses($buff_data, 'list', array('buff' => array(), 'debuff' => array()), 'array');
-
-            if (is_array($sum_data)) {
-                foreach ($sum_data as $key => $value) {
-                    $plus_key = $key . '_buff';
-                    $base = ses($row, $key, 0, 'int');
-                    $val = $base + (int)$value;
-                    if ($val < 0) $val = 0;
-                    $row[$key] = $val;
-                    $row[$plus_key] = (int)$value;
-                }
-            }
+            $row = apply_k_buff_layers($row, $layers);
         } else {
             $row['buff_list'] = array('buff' => array(), 'debuff' => array());
         }
@@ -1292,7 +1305,7 @@ function insert_k_battle_unit($unit_id, $unit_type, $raid_type, $ra_id = 0) //�
                 if ($cs_id <= 0) continue;
                 $snapshot = function_exists('unified_skill_raid_snapshot')
                     ? unified_skill_raid_snapshot($unit_id, ses($sk, 'unified_a_sh_id', 0, 'int'))
-                    : array('a_sk_id' => 0, 'value' => 0, 'mp' => 0, 'turn' => 0, 'cool' => 0);
+                    : array('a_sk_id' => 0, 'value' => 0, 'mp' => 0, 'turn' => 0, 'cool' => 0, 'def_code' => '', 'def_type' => '+', 'def_enermy' => '', 'mod_type' => '', 'effect_type' => 'flat');
 
                 sql_query("
                     INSERT INTO {$battle_table}_skill
@@ -1305,6 +1318,11 @@ function insert_k_battle_unit($unit_id, $unit_type, $raid_type, $ra_id = 0) //�
                             unified_mp = '".(int)$snapshot['mp']."',
                             unified_turn = '".(int)$snapshot['turn']."',
                             unified_cool = '".(int)$snapshot['cool']."',
+                            unified_def_code = '".sql_escape_string(isset($snapshot['def_code']) ? $snapshot['def_code'] : '')."',
+                            unified_def_type = '".(isset($snapshot['def_type']) && $snapshot['def_type'] === '-' ? '-' : '+')."',
+                            unified_def_enermy = '".sql_escape_string(isset($snapshot['def_enermy']) ? $snapshot['def_enermy'] : '')."',
+                            unified_mod_type = '".(isset($snapshot['mod_type']) && $snapshot['mod_type'] === '-' ? '-' : '')."',
+							unified_effect_type = '".(isset($snapshot['effect_type']) && in_array($snapshot['effect_type'], array('flat', 'percent', 'final'), true) ? $snapshot['effect_type'] : 'flat')."',
                             ra_id = '{$ra_id}'
                 ");
             }

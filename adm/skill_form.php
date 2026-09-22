@@ -256,6 +256,15 @@ $skill_function = array("공격", "도발", "회피", "방어", "스탯강화", 
 						<option value="-" <?=$skill['sk_mod_type'] == "-" ? "selected" : ""?>>-</option>
 						<option value="x" <?=$skill['sk_mod_type'] == "x" ? "selected" : ""?>>x</option>
 					</select>
+					<span class="none" data-type="스탯강화">
+						효과방식
+						<select name="sk_effect_type" class="inline-select" style="min-width:90px;" onchange="fn_function_setting(this);">
+							<option value="flat" <?=(!isset($skill['sk_effect_type']) || $skill['sk_effect_type'] == "flat") ? "selected" : ""?>>고정값</option>
+							<option value="percent" <?=$skill['sk_effect_type'] == "percent" ? "selected" : ""?>>퍼센트</option>
+							<option value="final" <?=$skill['sk_effect_type'] == "final" ? "selected" : ""?>>최종 배율</option>
+						</select>
+						<small class="help">최종 배율은 현재 레벨의 설정값을 그대로 사용합니다. 예: 1.5 = ×1.5</small>
+					</span>
 					<strong class="box-txt ty4">수정 결과값</strong>
 					= 
 					<strong class="box-txt ty5">최종 결과값</strong>
@@ -391,6 +400,7 @@ function fn_function_setting(obj) {
 	let sk_function = $('[name="sk_function"]').val();
 	let sk_target = $('[name="sk_target"]').val();
 	let sk_mod_type = $('[name="sk_mod_type"]').val();
+	let sk_effect_type = $('[name="sk_effect_type"]').val();
 
 	$('[name="sk_def_enermy"]').show();
 	$('[name="sk_def_code"]').show();
@@ -452,12 +462,19 @@ function fn_function_setting(obj) {
 	}
 
 	if(sk_type == "패시브" && sk_function == "스탯강화") {
+		$('[name="sk_effect_type"]').val("flat");
+		sk_effect_type = "flat";
 		$('[name="sk_status_code"]').val("");
 		$('[name="sk_value_type"]').val("+");
 		$('[name="sk_def_enermy"]').val("");
 		$('[name="sk_def_enermy"]').hide();
 		$('[name="sk_def_code"]').val("");
 		$('[name="sk_def_code"]').hide();
+	}
+	if(sk_function == "스탯강화") {
+		fn_show_type('스탯강화');
+	} else {
+		fn_hide_type('스탯강화');
 	}
 
 	if(sk_function == "연동코드강화" && sk_target == "적") {
@@ -489,7 +506,10 @@ function fn_function_setting(obj) {
 		$('[name="sk_def_enermy"]').show();
 	}
 
-	if((sk_type != "패시브" || sk_function != "스탯강화") && sk_mod_type == "x") {
+	if(sk_effect_type == "final" && sk_function == "스탯강화") {
+		$('[name="sk_mod_type"]').val("x");
+		sk_mod_type = "x";
+	} else if((sk_type != "패시브" || sk_function != "스탯강화") && sk_mod_type == "x") {
 		$('[name="sk_mod_type"]').val("+");
 		sk_mod_type = "+";
 	}

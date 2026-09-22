@@ -31,13 +31,40 @@ if($sk['si_category']==980){
                 $result=$bonus;
             }
 
+            /* A 스킬의 ② 결과수정(대상의 연동코드)은 회복 대상의 레이드 유닛
+             * 스냅샷을 기준으로 계산한다. A 캐릭터/스킬 테이블을 행동마다 JOIN하지
+             * 않으면서 던전의 sk_def_code +/- 규칙을 유지한다. */
+            if ($sk['si_code'] == 'heal' && !empty($sk['unified_def_code']) && function_exists('unified_status_extra_value_from_types')) {
+                $modifier = unified_status_extra_value_from_types($sk['unified_def_code'], function($type) use ($target, $i) {
+                    return unified_combat_unit_type_value($target[$i], $type);
+                });
+                $modifier_value = isset($modifier['value']) ? (int)$modifier['value'] : 0;
+                if ($sk['unified_def_type'] === '-') $result -= $modifier_value;
+                else $result += $modifier_value;
+            }
+            if ($sk['si_code'] == 'atk' && !empty($sk['unified_def_enermy'])) {
+                $enemy_value = 0;
+                if ($sk['unified_def_enermy'] === '체력') {
+                    $enemy_value = ses($target[$i], 'hp_now', 0, 'int');
+                } elseif (function_exists('unified_combat_unit_type_value')) {
+                    $enemy_value = unified_combat_unit_type_value($target[$i], $sk['unified_def_enermy']);
+                }
+                if ($sk['unified_def_type'] === '-') $result -= $enemy_value;
+                else $result += $enemy_value;
+                if ($result < 0) $result = 0;
+            }
+            if ($sk['si_code'] == 'heal' && isset($sk['unified_mod_type']) && $sk['unified_mod_type'] === '-') {
+                $result *= -1;
+            }
+
             $result=round($result*$multi);
             if($func_type=='atk' && function_exists('k_guard_damage_value')){
                 $result=k_guard_damage_value($target[$i], $result);
             }
             
             $dead_msg=set_k_dmg($target[$i], 'hp', $result, $sk['si_code'], $func_type=='atk');
-            $sk_effect.="<p><span class=\"name\">{$target[$i]['unit_name']}</span> 의 {$kb_cf['hp_name']}{$turn}<span class=\"dmg {$func_type}\">".abs($result)."</span> {$dead_msg}</p>";
+            $result_type = $result < 0 ? 'atk' : $func_type;
+            $sk_effect.="<p><span class=\"name\">{$target[$i]['unit_name']}</span> 의 {$kb_cf['hp_name']}{$turn}<span class=\"dmg {$result_type}\">".abs($result)."</span> {$dead_msg}</p>";
             
             if($sk['sk_turn']>0&&!$dead_msg){
                 insert_k_buff($target[$i]['rm_id'], $sk, $result, $ra_id);
@@ -78,6 +105,8 @@ if($sk['si_category']==980){
   
         //버프,디버프 -> 지정된 턴 동안 적용값만큼 지정된 능력치를 증감한다.
         $sc=sql_fetch (" SELECT sc_name from {$g5['k_stat_table']} where sc_id = '{$sk['target_sc']}' ");
+        $effect_type = isset($sk['unified_effect_type']) ? $sk['unified_effect_type'] : 'flat';
+        if (!in_array($effect_type, array('flat', 'percent', 'final'), true)) $effect_type = 'flat';
         if($bonus<0){
             $func_type="minus";
         }else{
@@ -97,8 +126,31 @@ if($sk['si_category']==980){
                     $func_type="plus";
                 }
             }
-            insert_k_buff($target[$i]['rm_id'], $sk, $bonus, $ra_id);
-            $sk_effect.="<p><span class=\"name\">{$target[$i]['unit_name']}</span> 의 {$sc['sc_name']} {$turn}<span class=\"buff {$func_type}\">".abs($bonus)."</span></p>";
+            $applied_bonus = $bonus;
+            if (!empty($sk['unified_def_code']) && function_exists('unified_status_extra_value_from_types')) {
+                $modifier = unified_status_extra_value_from_types($sk['unified_def_code'], function($type) use ($target, $i) {
+                    return unified_combat_unit_type_value($target[$i], $type);
+                });
+                $modifier_value = isset($modifier['value']) ? (int)$modifier['value'] : 0;
+                if ($sk['unified_def_type'] === '-') $applied_bonus -= $modifier_value;
+                else $applied_bonus += $modifier_value;
+            }
+            if (!empty($sk['unified_def_enermy'])) {
+                $enemy_value = $sk['unified_def_enermy'] === '체력'
+                    ? ses($target[$i], 'hp_now', 0, 'int')
+                    : (function_exists('unified_combat_unit_type_value') ? unified_combat_unit_type_value($target[$i], $sk['unified_def_enermy']) : 0);
+                if ($sk['unified_def_type'] === '-') $applied_bonus -= $enemy_value;
+                else $applied_bonus += $enemy_value;
+            }
+            if (isset($sk['unified_mod_type']) && $sk['unified_mod_type'] === '-') $applied_bonus *= -1;
+            $func_type = $applied_bonus < 0 ? 'minus' : 'plus';
+            $effect_skill = $sk;
+            $effect_skill['unified_effect_type'] = $effect_type;
+            $stored_bonus = $effect_type === 'final' ? (int)round($applied_bonus * 100) : (int)round($applied_bonus);
+            insert_k_buff($target[$i]['rm_id'], $effect_skill, $stored_bonus, $ra_id);
+            $effect_label = $effect_type === 'percent' ? '%' : ($effect_type === 'final' ? '×' : '');
+            $effect_value = $effect_type === 'final' ? rtrim(rtrim(number_format(abs($applied_bonus), 2, '.', ''), '0'), '.') : abs($applied_bonus);
+            $sk_effect.="<p><span class=\"name\">{$target[$i]['unit_name']}</span> 의 {$sc['sc_name']} {$turn}<span class=\"buff {$func_type}\">{$effect_label}{$effect_value}</span></p>";
         }
     }
 }
