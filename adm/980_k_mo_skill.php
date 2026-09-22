@@ -142,6 +142,7 @@ $result = sql_query($sql);
 
 $g5['title'] = '몬스터 스킬 관리 (' . $raid_types[$cur_raid_type] . ')';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $pg_anchor = '<ul class="anchor">
     <li><a href="#anc_001">스킬 등록/수정</a></li>

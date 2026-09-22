@@ -39,6 +39,7 @@ $listall = '<a href="'.$_SERVER['PHP_SELF'].'" class="ov_listall">전체목록</
 
 $g5['title'] = '던전 발생 현황 관리';
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $colspan =9;
 

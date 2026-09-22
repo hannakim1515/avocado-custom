@@ -89,8 +89,10 @@ if(is_array($sl_level)) {
 		sql_query("update {$g5['skill_level_table']} set sl_level = '".($i+1)."' where sl_id = '{$sl['sl_id']}'");
 	}
 }
-
-
+/* A가 유일한 설정 원본이다. 저장 직후 레이드 실행 정의만 자동 갱신한다. */
+if (function_exists('unified_skill_compile_definition')) {
+	unified_skill_compile_definition((int)$sk_id);
+}
 
 goto_url('./skill_form.php?w=u&sk_id='.$sk_id."&".$qstr);
 ?>

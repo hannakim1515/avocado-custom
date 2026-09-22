@@ -4,15 +4,20 @@
 $rm    = isset($rm)    && is_array($rm)    ? $rm    : array();
 $rm_side = ses($rm, 'ch_side', null);
 
-// 공격
-if (empty($kb_cf['limit_atk']) || ($rm_side !== null && (string)$kb_cf['limit_atk'] === (string)$rm_side)) : ?>
+// 일반 공격은 스킬 장착·K 제한 설정과 무관하게 항상 제공한다.
+?>
     <li class="raid-action <?php echo isset($a_false) ? h($a_false) : '' ?>" onclick="actInfo('atk')">공격</li>
-<?php endif;
+<?php
 
 // 치유
 if (empty($kb_cf['limit_heal']) || ($rm_side !== null && (string)$kb_cf['limit_heal'] === (string)$rm_side)) : ?>
     <li class="raid-action <?php echo isset($h_false) ? h($h_false) : '' ?>" onclick="actInfo('heal')">치유</li>
 <?php endif;
+
+// 일반 방어: 공통 전투 설정의 방어 연동 코드로 1턴 피해 감소를 적용한다.
+?>
+    <li class="raid-action <?php echo isset($g_false) ? h($g_false) : '' ?>" onclick="actInfo('guard')">방어</li>
+<?php
 
 // 아이템
 if (empty($kb_cf['limit_item'])) : ?>

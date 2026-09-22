@@ -29,6 +29,7 @@ if ($w == '') {
 
 $g5['title'] = $html_title;
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $pg_anchor = '<ul class="anchor"><li><a href="#anc_001">기본 설정</a></li>';
 if (isset($config['cf_4']) && $config['cf_4']) {

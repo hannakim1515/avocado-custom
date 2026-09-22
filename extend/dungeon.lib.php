@@ -364,6 +364,15 @@ function set_dungeon_character_damage($ds_id, $ch_id, $dm = null, $value = 0) {
 		$value = $value - $code_def;
 		if($value < 0) $value = 0;
 
+		// A 통합 방어 스킬: 레이드의 unified_guard와 같은 비율만큼 받는 피해를 줄인다.
+		$guard = sql_fetch("select SUM(dl_value) as total from {$g5['dungeon_log_table']}
+			where ds_id = '{$ds_id}' and dl_cate = '효과' and dl_function = '방어'
+			and ch_id = '{$dm['ch_id']}' and dl_keep_limit > 0");
+		$guard_rate = min(90, max(0, intval($guard['total'])));
+		if($guard_rate > 0) {
+			$value = intval(round($value * (100 - $guard_rate) / 100));
+		}
+
 		if($value > 0) {
 			// hp 현황
 			$max_status_value = $dm['st_id_'.$st_hp_id] + $dm['st_id_'.$st_hp_id.'_mod'];
@@ -531,6 +540,13 @@ function get_status_dungeon_total($st_type, $ds_id, $ch_id, $dm = null) {
 	if($dm == null) $dm = get_dungeon_character($ds_id, $ch_id);
 	if(!$dm['dm_id']) return;
 
+	// 관리자에서 A 연동 타입을 K 파생 스탯에 연결한 경우,
+	// 던전 스냅샷과 던전 내 버프를 입력으로 같은 K 수식을 다시 계산한다.
+	if(function_exists('unified_k_stat_id_for_type') && function_exists('unified_dungeon_k_stat_value')) {
+		$k_sc_id = unified_k_stat_id_for_type($st_type);
+		if($k_sc_id) return unified_dungeon_k_stat_value($ds_id, $ch_id, $dm, $k_sc_id);
+	}
+
 	$filed = get_status_type_filed($st_type);
 	$result = sql_query("select st_id from {$g5['status_config_table']} st where {$filed} = 1");
 	$total = 0;
@@ -623,6 +639,38 @@ function get_status_dungeon($code_name, $ds_id, $ch_id, $dm = null, $prev_value 
 	$result['cri_value'] = $critical_status;
 	$result['value'] = $total_status;
 
+	return $result;
+}
+
+/*
+ * 스킬 슬롯과 무관한 던전 일반 공격이다.
+ * A/K 통합 전투에서 지정한 일반 공격 연동 코드를 쓰며, 던전 입장 스냅샷·던전 버프·
+ * 몬스터의 강점/취약점 규칙까지 공격 스킬과 같은 순서로 적용한다.
+ */
+function unified_dungeon_basic_attack_result($ds_id, $ds, $ch_id, $dm, $code_name) {
+	$result = array('value' => 0, 'is_critical' => 0, 'is_weak' => false, 'message' => '');
+	if (!is_array($ds) || empty($ds['ds_id']) || !is_array($dm) || empty($dm['dm_id']) || $code_name === '') return $result;
+
+	$code_result = get_status_dungeon($code_name, (int)$ds_id, (int)$ch_id, $dm);
+	$value = isset($code_result['value']) ? (int)$code_result['value'] : 0;
+	$value += (int)get_status_buffer_code((int)$ds_id, (int)$ch_id, '공통대미지');
+	$is_weak = false;
+	$message = '';
+
+	if (!empty($ds['dg_strong_code']) && $ds['dg_strong_code'] === $code_name) {
+		$value = (int)round($value * (float)$ds['dg_strong_value']);
+		$message = "「{$ds['dg_mon_name']}」이(가) 대미지의 일부를 상쇄시켰습니다.";
+	}
+	if (!empty($ds['dg_weak_code']) && $ds['dg_weak_code'] === $code_name) {
+		$value = (int)round($value * (float)$ds['dg_weak_value']);
+		$is_weak = true;
+		$message = "「{$ds['dg_mon_name']}」이(가) 경직됩니다.";
+	}
+
+	$result['value'] = max(0, (int)$value);
+	$result['is_critical'] = !empty($code_result['is_cri']) ? 1 : 0;
+	$result['is_weak'] = $is_weak;
+	$result['message'] = $message;
 	return $result;
 }
 

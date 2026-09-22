@@ -12,5 +12,6 @@ $menu['menu982'] = array (
 	array('982411', '몬스터 보유 스킬',G5_ADMIN_URL.'/980_k_mo_skill.php?raid_type=realtime',   '', ),
 	array('982420', '몬스터 패턴 관리',G5_ADMIN_URL.'/982_k_mo_pattern.php?raid_type=realtime',   '', )
 );
+unset($menu['menu982']); // 실시간 레이드 메뉴는 menu990으로 통합
 	
 ?>

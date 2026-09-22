@@ -19,23 +19,8 @@ if (isset($ch['mb_id'], $member['mb_id'])) {
     $asset_mine = (string)$ch['mb_id'] === (string)$member['mb_id'];
 }
 
-// 설정 기본값
-$kb_cf['limit_skill'] = ses($kb_cf, 'limit_skill', 0, 'int');
 $kb_cf['limit_equip'] = ses($kb_cf, 'limit_equip', 0, 'int');
 ?>
-
-<?php if (!$kb_cf['limit_skill']) { ?>
-    <hr class="padding" />
-    <h3>SKILL</h3>
-    <div class="theme-box">
-        <?php
-        $skillList = G5_PATH . '/k_battle/skin_default/skill_list.php';
-        if (is_file($skillList)) {
-            include $skillList;
-        }
-        ?>
-    </div>
-<?php } ?>
 
 <?php
 if (!$kb_cf['limit_equip']) {

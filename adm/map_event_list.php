@@ -50,6 +50,7 @@ for($i=0; $map = sql_fetch_array($ma_result); $i++) {
 
 $g5['title'] = "[ ".$ma['ma_name']." ] 지역 이벤트 관리";
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $colspan = 10;
 ?>

@@ -8,9 +8,8 @@
 }
 
 #admin_action{
-	border:1px solid rgba(255,255,255,.18);
-	background-color:rgba(0,0,0,.18);
-	border-radius:6px;
+	border:1px solid yellow;
+	background-color:transparent;
 }
 
 #admin_action input::placeholder{
@@ -38,16 +37,14 @@
 .monster-area{
     text-align:center;
     margin: 5px auto;
-    padding: 12px;
+    padding: 10px;
     height:auto;
-    border-radius:6px;
 }
 
 .monster-area .monster-image{
     overflow:hidden;
     width:100%;
     margin:5px auto;
-    border-radius:4px;
 }
 
 .monster-info{
@@ -58,8 +55,6 @@
     overflow:hidden;
     position:relative;
     height:15px;
-    border-radius:999px;
-    background-color:rgba(0,0,0,.35);
 }
 
 .mp-bar .bar-inner, .hp-bar .bar-inner{
@@ -67,7 +62,6 @@
     top:0;
     left:0;
     height:100%;
-    transition:width .25s ease;
 }
 
 .monster-area .system-msg{
@@ -80,13 +74,11 @@
 
 .hp-bar i,
 .mp-bar i{
-    position:absolute;
+    position:Absolute;
     top:0;
     right:5px;
     color:white;
     line-height:15px;
-    font-size:11px;
-    text-shadow:0 1px 2px rgba(0,0,0,.7);
 }
 
 #log_list .item.raid_admin{
@@ -198,12 +190,10 @@
 	flex-direction: column;
 	margin-left:auto;
 	margin-right:auto;
-    line-height:1.55;
 }
 .log-area li{
 	margin-left:auto;
 	margin-right:auto;
-    padding:2px 0;
 }
 
 .original_comment_area .log-area .mmbsystem{
@@ -240,17 +230,5 @@
 .log-area li .act-title.item {
     padding-bottom:0!important;
 	margin:0!important;
-}
-
-/* K 레이드 로그의 기본 여백과 바 표시만 정돈해서 기존 스킨 색상 설정과 충돌을 줄인다. */
-.rm-area{
-    border-radius:6px;
-}
-.rm-area .ui-thumb{
-    border-radius:4px;
-}
-.rm-area .rm-name,
-.monster-info .mo-name{
-    letter-spacing:0;
 }
 

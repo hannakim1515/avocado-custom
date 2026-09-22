@@ -25,6 +25,7 @@ if ($w == '') {
 
 $g5['title'] = $html_title;
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 
 $frm_submit = '<div class="btn_confirm01 btn_confirm">
@@ -69,7 +70,7 @@ if($skill['sk_id']) {
 }
 
 // 스킬 기능 사전 설정하기
-$skill_function = array("공격", "도발", "회피", "스탯강화", "연동코드강화", "스탯회복");
+$skill_function = array("공격", "도발", "회피", "방어", "스탯강화", "연동코드강화", "스탯회복");
 
 ?>
 
@@ -421,7 +422,7 @@ function fn_function_setting(obj) {
 	if(sk_function == "도발" || sk_function == "회피") {
 		fn_hide_type('단독기능');
 
-		if(sk_function == "회피" && sk_target == "적") {
+		if((sk_function == "회피" || sk_function == "방어") && sk_target == "적") {
 			$('[name="sk_target"]').val("자신");
 			sk_target = "자신";
 		} else if (sk_function == "도발") {
@@ -430,6 +431,11 @@ function fn_function_setting(obj) {
 		}
 	} else {
 		fn_show_type('단독기능');
+	}
+
+	if(sk_function == "방어" && sk_target == "적") {
+		$('[name="sk_target"]').val("자신");
+		sk_target = "자신";
 	}
 
 	if(sk_function == "스탯회복") {

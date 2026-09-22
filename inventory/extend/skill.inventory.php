@@ -4,6 +4,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 if($inven_function == "스킬획득") {
 	$item_sk = sql_fetch("select sk_id from {$g5['skill_table']} where sk_name = '{$in['it_value']}'");
 	add_skill_inven($character['ch_id'], $item_sk['sk_id'], 1);
+	if(function_exists('unified_skill_sync_character')) unified_skill_sync_character($character['ch_id']);
 	delete_inventory($in['in_id'], $in['it_use_ever']);
 	echo location_url($return_url);
 }

@@ -14,17 +14,14 @@ if($state['no_member'] && $state['is_able']) {
 
 	$double_check = sql_fetch("select * from {$g5['dungeon_member_table']} where ch_id = '{$character['ch_id']}' and ds_id = '{$ds_id}'");
 	if(!$double_check['dm_id']) {
+		// A/K 양쪽에서 획득한 연결 스킬의 소유·장착 상태를 맞춘 뒤 스냅샷을 만든다.
+		if(function_exists('unified_skill_sync_character')) {
+			unified_skill_sync_character($character['ch_id']);
+		}
 
 		// 최초 스탯 셋팅하기
 		$status_result = sql_query("select st_id from {$g5['status_config_table']}");
 		$status_sql = "";
-		$k_bridge_status = array();
-
-		// K 브릿지가 있으면 장비/패시브가 반영된 K 기준 최종 스탯을 먼저 준비한다.
-		if(function_exists('k_status_bridge_get_final_values')) {
-			$k_bridge_status = k_status_bridge_get_final_values($character['ch_id']);
-			if(!is_array($k_bridge_status)) $k_bridge_status = array();
-		}
 
 		for($i=0; $st = sql_fetch_array($status_result); $i++) { 
 			$check_firled = sql_query("SHOW COLUMNS FROM {$g5['dungeon_member_table']} LIKE 'st_id_{$st['st_id']}'");
@@ -35,53 +32,13 @@ if($state['no_member'] && $state['is_able']) {
 				sql_query(" ALTER TABLE `{$g5['dungeon_member_table']}` ADD `st_id_{$st['st_id']}_use` int(11) NOT NULL DEFAULT '0' ", true);
 			}
 
-			$add_status = 0;
-
-			// 스탯 정보를 모두 저장합니다.
-			// - 1. 스탯을 증가시켜 주는 패시브 스킬 확인
-			// - 2. 장착중인 장비의 스탯 확인
-			// - 3. 길드 별 스탯 증감치 확인
-
-			// 기본 스탯 수치 정보
-			if(isset($k_bridge_status[$st['st_id']])) {
-				// 던전 컬럼명은 유지하고, 입장 시 저장되는 기준값만 K 계산 결과로 교체한다.
-				$add_status = (int)$k_bridge_status[$st['st_id']];
-			} else {
-				// K 브릿지를 사용할 수 없을 때는 기존 아보카도 계산식을 유지한다.
-				$has = get_status($character['ch_id'], $st['st_id']);
-				$has = $has['now'];
-
-			// 스킬 정보
-			$add_status = $has;
-			$passive_sql = "select SUM(sl.sl_set_value) as total, sk.sk_mod_type from {$g5['skill_has_table']} sh, {$g5['skill_table']} sk, {$g5['skill_level_table']} sl
-									where		sk.sk_id = sh.sk_id
-										and		sh.ch_id = '{$character['ch_id']}'
-										and		sh.sh_level = sl.sl_level
-										and		sk.sk_id = sl.sk_id
-										and		sh.sh_use = '1'
-										and		sk.sk_type = '패시브'
-										and		sk.sk_function = '스탯강화'
-										and		sk.sk_mod_st_id = '{$st['st_id']}'
-									group by sk.sk_mod_type";
-			$passive_result = sql_query($passive_sql);
-			for($j=0; $skill_state = sql_fetch_array($passive_result); $j++) {
-				// --- 적용될 스탯 총 합
-				switch($skill_state['sk_mod_type']) {
-					case "+" : 
-						$add_status = $add_status + $skill_state['total'];
-					break;
-					case "-" : 
-						$add_status = $add_status - $skill_state['total'];
-					break;
-					case "x" : 
-						$add_status = $add_status * $skill_state['total'];
-					break;
-				}
-			}
+			// 던전 입장 시점의 공통 최종 스탯을 저장한다.
+			// 장비/패시브 변경은 진행 중인 던전에 소급 적용되지 않는다.
+			$add_status = function_exists('unified_stat_value')
+				? unified_stat_value($character['ch_id'], $st['st_id'])
+				: get_status($character['ch_id'], $st['st_id'])['now'];
 
 			// --- 던전 버프 적용
-			}
-
 			if($ds['dg_status'] == $st['st_id']) {
 				if($ds['dg_status_type'] == '+') {
 					// 단순 포인트 더하기

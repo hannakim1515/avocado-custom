@@ -95,6 +95,7 @@ $result = sql_query($sql);
 $title_pre=($unit_type_filter=='mo')?'몬스터':'캐릭터';
 $g5['title'] = $title_pre . ' 스킬 등록 (' . $raid_types[$cur_raid_type] . ')';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 ?>
 
 <style>

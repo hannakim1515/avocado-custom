@@ -25,6 +25,7 @@ $listall = '<a href="'.$_SERVER['PHP_SELF'].'" class="ov_listall">전체목록</
 
 $g5['title'] = '스킬 관리';
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 // 연동코드 목록 가져오기
 $extra = array();
@@ -58,57 +59,15 @@ for($i=0; $st = sql_fetch_array($status_result); $i++) {
 $colspan = 11;
 
 $pg_anchor = '<ul class="anchor">
-	<li><a href="#anc_001">슬롯설정</a></li>
-	<li><a href="#anc_002">스킬목록</a></li>
+	<li><a href="#anc_001">스킬목록</a></li>
+	<li><a href="./990_unified_skill_map.php">통합 전투 설정</a></li>
 </ul>';
 ?>
 
 <section id="anc_001">
-	<h2 class="h2_frm">슬롯설정</h2>
+	<h2 class="h2_frm">공통 스킬 목록</h2>
 	<?php echo $pg_anchor ?>
-
-	<form action="./skill_update.php" method="post" autocomplete="off">
-	<input type="hidden" name="sfl" value="<?php echo $sfl ?>">
-	<input type="hidden" name="stx" value="<?php echo $stx ?>">
-	<input type="hidden" name="sst" value="<?php echo $sst ?>">
-	<input type="hidden" name="sod" value="<?php echo $sod ?>">
-	<input type="hidden" name="page" value="<?php echo $page ?>">
-	<input type="hidden" name="token" value="<?php echo $token ?>">
-
-	<div class="tbl_frm01 tbl_wrap">
-		<table>
-		<colgroup>
-			<col style="width: 100px;">
-			<col style="width: 100px;">
-			<col style="width: 100px;">
-			<col>
-			<col style="width: 130px;">
-		</colgroup>
-		<tbody>
-		<tr>
-			<th scope="row">최소슬롯</th>
-			<td>
-				<input type="text" name="cf_skill_count" value="<?=$config['cf_skill_count']?>" style="width:80px;"/>
-			</td>
-			<th scope="row">최대스롯</th>
-			<td>
-				<input type="text" name="cf_skill_count_max" value="<?=$config['cf_skill_count_max']?>" style="width:80px;"/>
-			</td>
-			<td>
-				<div class="btn_confirm01 btn_confirm" style="padding:0;">
-					<input type="submit" value="확인" class="btn_submit">
-				</div>
-			</td>
-		</tr>
-		</tbody>
-		</table>
-	</div>
-	</form>
-
-</section>
-<section id="anc_002">
-	<h2 class="h2_frm">스킬목록</h2>
-	<?php echo $pg_anchor ?>
+	<p class="local_desc01 local_desc">스킬 장착 슬롯 수는 <a href="./990_unified_skill_map.php">통합 전투 설정</a>에서만 변경합니다.</p>
 
 	<?php if ($is_admin == 'super') { ?>
 	<div class="btn_add01 btn_add">

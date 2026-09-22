@@ -65,6 +65,7 @@ for ($si = 0; $row = sql_fetch_array($st_result); $si++) {
 
 $g5['title'] = '몬스터 관리 (' . $raid_types[$cur_raid_type] . ')';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $colspan = 7 + count($status);
 ?>

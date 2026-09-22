@@ -2,7 +2,7 @@
 include_once('./_common.php');
 $g5['title'] = "던전진행";
 include_once('./_head.sub.php');
-add_stylesheet('<link rel="stylesheet" href="'.G5_DUNGEON_URL.'/css/style.css">', 0);
+add_stylesheet('<link rel="stylesheet" href="'.G5_DUNGEON_URL.'/css/style.css?v=unified-20260922">', 0);
 
 $log_url = "./ground.php?ds_id={$ds_id}";
 if($list_type != 'log') {
@@ -90,7 +90,7 @@ $total_turn_count = sql_fetch("select count(*) as cnt from {$g5['dungeon_log_tab
 			<? if($is_action) { ?>
 			<div class="write-area" data-active="스킬">
 				<div class="tabs">
-					<a data-tab="스킬" href="javascript:change_tabs('스킬');"><span>스킬사용</span></a>
+					<a data-tab="스킬" href="javascript:change_tabs('스킬');"><span>행동 · 스킬</span></a>
 					<a data-tab="아이템" href="javascript:change_tabs('아이템');"><span>아이템사용</span></a>
 					<a data-tab="대화" href="javascript:change_tabs('대화');"><span>대화하기</span></a>
 				</div>

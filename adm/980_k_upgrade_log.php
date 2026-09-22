@@ -52,6 +52,7 @@ if ($sfl == 'mb_id' && $stx)
 
 $g5['title'] = '강화 로그 관리';
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $colspan = 7;
 

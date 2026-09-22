@@ -13,6 +13,7 @@ $frm_submit = '<div class="btn_confirm01 btn_confirm">
 
 $g5['title'] = "지역별 통행 관리";
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 // 지역 목록
 $ma_list = array();

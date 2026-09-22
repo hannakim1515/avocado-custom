@@ -34,6 +34,7 @@ $result = sql_query($sql);
 
 $g5['title'] = '보유 장비 관리';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 ?>
 <h2 class="h2_frm">보유장비관리</h2>
 

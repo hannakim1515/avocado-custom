@@ -81,6 +81,11 @@ if ($data['warning'] === '') {
         $target_type  = (string)$rm['unit_type'];
         $target_list  = true;
 
+    } elseif ($type === 'guard') {
+        $data['info'] = '다음 행동 전까지 자신의 받는 피해를 줄입니다.';
+        $data['target'] = '<input type="hidden" name="target_type" id="target_type" value="'.$rm['unit_type'].'">'
+                        . '<input type="hidden" name="action_target" id="action_target" value="'.$rm_id.'"><span>자신</span>';
+
     } elseif ($type === 'item') {
         $target_load = false;
         $data['info']  = '아이템을 사용합니다.';

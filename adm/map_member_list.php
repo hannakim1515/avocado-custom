@@ -7,6 +7,7 @@ auth_check($auth[$sub_menu], 'r');
 
 $g5['title'] = '캐릭터 위치 관리';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 // 지역 목록
 $ma_config = array();

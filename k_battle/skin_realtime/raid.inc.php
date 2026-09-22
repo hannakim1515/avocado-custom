@@ -58,7 +58,7 @@ if ($time_limit > 0 && $time_start > 0) {
 ?>
 
 <style>
-    @import url('<?php echo G5_URL?>/k_battle/skin_realtime/raid.realtime.css');
+    @import url('<?php echo G5_URL?>/k_battle/skin_realtime/raid.realtime.css?v=unified-20260922');
 </style>
 
 <div class="all-wrapper" <?php if($ra['ra_bg_img']){ echo "style=\"background-image:url('".h($ra['ra_bg_img'])."')\""; } ?>>
@@ -123,9 +123,10 @@ if ($time_limit > 0 && $time_start > 0) {
                 
                 $bf_list = sql_query("SELECT * FROM {$battle_table}_buff WHERE bf_value > 0 AND turn_left > 0 AND rm_id = '".ses($rm, 'rm_id', 0, 'int')."'");
                 while ($row = sql_fetch_array($bf_list)) {
-                    $name = (ses($row, 'si_code', '')) === 'buff'
+                    $buff_code = ses($row, 'si_code', '');
+                    $name = $buff_code === 'buff'
                         ? (ses($sc_list, $row['sc_id'], ''))
-                        : (ses($kb_cf, 'hp_name', ''));
+                        : ($buff_code === 'unified_guard' ? '방어' : ses($kb_cf, 'hp_name', ''));
                     $name = h($name);
                     $val  = ses($row, 'bf_value', 0, 'int');
                     $turn = ses($row, 'turn_left', 0, 'int');
@@ -135,9 +136,10 @@ if ($time_limit > 0 && $time_start > 0) {
                 // 디버프
                 $bf_list = sql_query("SELECT * FROM {$battle_table}_buff WHERE bf_value < 0 AND turn_left > 0 AND rm_id = '".ses($rm, 'rm_id', 0, 'int')."'");
                 while ($row = sql_fetch_array($bf_list)) {
-                    $name = (ses($row, 'si_code', '')) === 'buff'
+                    $buff_code = ses($row, 'si_code', '');
+                    $name = $buff_code === 'buff'
                         ? (ses($sc_list, $row['sc_id'], ''))
-                        : (ses($kb_cf, 'hp_name', ''));
+                        : ($buff_code === 'unified_guard' ? '방어' : ses($kb_cf, 'hp_name', ''));
                     $name = h($name);
                     $val  = ses($row, 'bf_value', 0, 'int');
                     $turn = ses($row, 'turn_left', 0, 'int');

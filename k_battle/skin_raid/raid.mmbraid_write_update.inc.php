@@ -100,7 +100,8 @@ if (ses($board, 'bo_1_subj', '') === 'mmbraid' && ses($board, 'bo_1', '') === 't
                                 $dead_msg = '';
                                 $val = 0;
                             } else {
-                                $dead_msg = set_k_dmg($t, 'hp', (int)$dmg['value']);
+                                $dmg['value'] = k_guard_damage_value($t, (int)$dmg['value']);
+                                $dead_msg = set_k_dmg($t, 'hp', (int)$dmg['value'], false, true);
                                 $val = (int)round($dmg['value'] * -1);
                             }
                             $act_effect .= "<p>{$cri}<span class=\"name\">{$t['unit_name']}</span>의 ".ses($kb_cf, 'hp_name', 'HP')." <span class=\"dmg atk\">{$val}</span>{$dead_msg}</p>";

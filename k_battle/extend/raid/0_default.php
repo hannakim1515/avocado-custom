@@ -9,6 +9,11 @@ function get_k_status($unit_id, $sc_id, $unit_type)//커스텀 스탯
         return false;
     }
 
+    // 캐릭터·몬스터 모두 연결표가 가리키는 A 원본을 사용한다.
+    if (($unit_type === 'ch' || $unit_type === 'mo') && function_exists('unified_k_stat_value_for_unit')) {
+        return unified_k_stat_value_for_unit((int)$unit_id, $unit_type, (int)$sc_id);
+    }
+
     $result   = 0;
     $maxvalue = 0;
     $round    = '';
@@ -69,6 +74,11 @@ function get_k_status($unit_id, $sc_id, $unit_type)//커스텀 스탯
 
     } else {
         return false;
+    }
+
+    // 테스트/몬스터도 같은 DB 수식 엔진을 쓴다. status.inc.php를 수동 복사할 필요가 없다.
+    if (function_exists('unified_k_stat_formula_value')) {
+        return unified_k_stat_formula_value((int)$sc_id, $unit_st);
     }
 
     // 외부 수식 파일에서 $result/$round/$minvalue/$maxvalue 계산
@@ -258,7 +268,7 @@ function get_k_skill_list($type, $id, $raid_type = '', $select = '*')//캐릭터
             SELECT {$select}
             FROM {$battle_table}_skill bs
             INNER JOIN {$g5['k_ch_skill_table']} cs ON bs.cs_id = cs.cs_id
-            INNER JOIN {$g5['k_skill_table']} sk ON cs.sk_id = sk.sk_id
+            INNER JOIN {$g5['k_skill_table']} sk ON cs.sk_id = sk.sk_id AND sk.unified_a_sk_id > 0
             WHERE bs.rm_id = '{$id}'
             ORDER BY cs.cs_id ASC
         ";
@@ -268,7 +278,7 @@ function get_k_skill_list($type, $id, $raid_type = '', $select = '*')//캐릭터
             return $sk_list;
         }
 
-        $sql_search = " WHERE cs.ch_id = '{$id}' ";
+        $sql_search = " WHERE cs.ch_id = '{$id}' AND sk.unified_a_sk_id > 0 ";
 
         if ($type === 'use') {
             $sql_search .= " AND cs.cs_use = 1 ";
@@ -431,6 +441,11 @@ function get_k_mo_skill_list($mo_id, $raid_type = '', $select = '*')//몬스터 
 function get_k_equip_bonus($ch_id)//장비 보너스
 {
     global $g5;
+
+    // 통합 스탯 레이어가 로드된 경우 동일한 장착 장비 집계를 재사용한다.
+    if (function_exists('unified_stat_equip_bonus_list')) {
+        return unified_stat_equip_bonus_list($ch_id);
+    }
 
     $bonus_list = array();
 
@@ -899,6 +914,8 @@ function get_k_buff($rm_id, $detail = false)//버프 불러오기 ($detail=true�
         if ($detail) {
             if ($si_code === 'buff') {
                 $name = ses($sc_names, $sc_id, '');
+            } elseif ($si_code === 'unified_guard') {
+                $name = '방어';
             } else {
                 $name = ses($kb_cf, 'hp_name', 'HP');
             }
@@ -1180,40 +1197,60 @@ function insert_k_battle_unit($unit_id, $unit_type, $raid_type, $ra_id = 0) //�
         return false;
     }
 
+    if ($unit_type === 'ch' && function_exists('unified_skill_sync_character')) {
+        // A 스킬이 유일한 원본이며 K에는 레이드 실행 캐시만 준비한다.
+        unified_skill_sync_character($unit_id);
+    }
+
     // HP/MP
     if ($unit_type === 'mo') {
-        $hp_max = ses($unit, 'mo_hp', 0, 'int');
-        $mp_max = ses($unit, 'mo_mp', 0, 'int');
+        // 몬스터도 A의 기본 스탯 입력 순서와 st_use_hp를 그대로 사용한다.
+        $hp_max = function_exists('unified_monster_hp_value')
+            ? unified_monster_hp_value($unit)
+            : ses($unit, 'mo_hp', 0, 'int');
+        $mp_from_stat = (!empty($kb_cf['mp']) && function_exists('unified_monster_stat_value'))
+            ? unified_monster_stat_value((int)$unit[$origin_id], (int)$kb_cf['mp'])
+            : 0;
+        $mp_max = $mp_from_stat > 0 ? $mp_from_stat : ses($unit, 'mo_mp', 0, 'int');
     } else {
-        $bonus_list = get_k_equip_bonus($unit_id);
-
-        $hp_row = sql_fetch("SELECT sc_max FROM {$g5['status_table']} WHERE ch_id = '{$unit_id}' AND st_id = '{$kb_cf['hp']}'");
-        $hp_max = ses($hp_row, 'sc_max', 0, 'int');
-        $hp_max += ses($bonus_list, $kb_cf['hp'], 0, 'int');
-
-        $mp_row = sql_fetch("SELECT sc_max FROM {$g5['status_table']} WHERE ch_id = '{$unit_id}' AND st_id = '{$kb_cf['mp']}'");
-        $mp_max = ses($mp_row, 'sc_max', 0, 'int');
-        $mp_max += ses($bonus_list, $kb_cf['mp'], 0, 'int');   
+        // HP는 A의 st_use_hp 단일 원본, MP는 통합 설정에서 지정한 A 스탯을 사용한다.
+        if (function_exists('unified_stat_value')) {
+            $hp_max = function_exists('unified_stat_hp_value')
+                ? unified_stat_hp_value($unit_id, ses($kb_cf, 'hp', 0, 'int'))
+                : unified_stat_value($unit_id, ses($kb_cf, 'hp', 0, 'int'));
+            $mp_max = unified_stat_value($unit_id, ses($kb_cf, 'mp', 0, 'int'));
+        } else {
+            $bonus_list = get_k_equip_bonus($unit_id);
+            $hp_row = sql_fetch("SELECT sc_max FROM {$g5['status_table']} WHERE ch_id = '{$unit_id}' AND st_id = '{$kb_cf['hp']}'");
+            $hp_max = ses($hp_row, 'sc_max', 0, 'int') + ses($bonus_list, $kb_cf['hp'], 0, 'int');
+            $mp_row = sql_fetch("SELECT sc_max FROM {$g5['status_table']} WHERE ch_id = '{$unit_id}' AND st_id = '{$kb_cf['mp']}'");
+            $mp_max = ses($mp_row, 'sc_max', 0, 'int') + ses($bonus_list, $kb_cf['mp'], 0, 'int');
+        }
     }
 
     // 스탯
     $st_set = '';
     $st_value = array();
 
-    if (!empty($k_stat) && is_array($k_stat)) {
-        for ($i = 0; $i < count($k_stat); $i++) {
-            if (empty($k_stat[$i])) continue;
-            $val = get_k_status($unit_id, $k_stat[$i], $unit_type);
-            $st_value[$k_stat[$i]] = (int)$val;
+    $slot_stat_ids = function_exists('unified_k_active_stat_ids') ? unified_k_active_stat_ids() : $k_stat;
+    if (!empty($slot_stat_ids) && is_array($slot_stat_ids)) {
+        for ($i = 0; $i < count($slot_stat_ids); $i++) {
+            if (empty($slot_stat_ids[$i])) continue;
+            $val = function_exists('unified_k_stat_value_for_unit')
+                ? unified_k_stat_value_for_unit($unit_id, $unit_type, $slot_stat_ids[$i])
+                : get_k_status($unit_id, $slot_stat_ids[$i], $unit_type);
+            $st_value[$slot_stat_ids[$i]] = (int)$val;
         }
 
-        for ($i = 0; $i < count($k_stat); $i++) {
-            if (empty($k_stat[$i])) continue;
+        for ($i = 0; $i < count($slot_stat_ids); $i++) {
+            if (empty($slot_stat_ids[$i])) continue;
 
+            // 공통 계산기는 패시브까지 포함하므로 K 패시브를 중복 적용하지 않는다.
             $bonus = 0;
-            $bonus = (int)get_k_passive_bonus($unit_id, $k_stat[$i], $st_value);
-            
-            $this_value = ses($st_value, $k_stat[$i], 0, 'int') + $bonus;
+            if (!function_exists('unified_k_stat_value_for_unit') && $unit_type !== 'ch') {
+                $bonus = (int)get_k_passive_bonus($unit_id, $slot_stat_ids[$i], $st_value);
+            }
+            $this_value = ses($st_value, $slot_stat_ids[$i], 0, 'int') + $bonus;
             $st_set .= ", st_".($i+1)." = {$this_value}";
         }
     }
@@ -1233,6 +1270,9 @@ function insert_k_battle_unit($unit_id, $unit_type, $raid_type, $ra_id = 0) //�
 
     // 스킬 세팅 (캐릭터만)
     if ($unit_type !== 'mo') {
+        if (function_exists('unified_skill_prepare_battle_snapshot')) {
+            unified_skill_prepare_battle_snapshot($battle_table);
+        }
         $sk_list = get_k_skill_list('use', $unit_id, $raid_type);
         $unit_row = sql_fetch("
             SELECT rm_id, unit_id, unit_type
@@ -1250,6 +1290,9 @@ function insert_k_battle_unit($unit_id, $unit_type, $raid_type, $ra_id = 0) //�
                 }
                 $cs_id = ses($sk, 'cs_id', 0, 'int');
                 if ($cs_id <= 0) continue;
+                $snapshot = function_exists('unified_skill_raid_snapshot')
+                    ? unified_skill_raid_snapshot($unit_id, ses($sk, 'unified_a_sh_id', 0, 'int'))
+                    : array('a_sk_id' => 0, 'value' => 0, 'mp' => 0, 'turn' => 0, 'cool' => 0);
 
                 sql_query("
                     INSERT INTO {$battle_table}_skill
@@ -1257,6 +1300,11 @@ function insert_k_battle_unit($unit_id, $unit_type, $raid_type, $ra_id = 0) //�
                             rm_id = '{$unit_row['rm_id']}',
                             unit_id = '{$unit_row['unit_id']}',
                             unit_type = '{$unit_row['unit_type']}',
+                            unified_a_sk_id = '".(int)$snapshot['a_sk_id']."',
+                            unified_value = '".(float)$snapshot['value']."',
+                            unified_mp = '".(int)$snapshot['mp']."',
+                            unified_turn = '".(int)$snapshot['turn']."',
+                            unified_cool = '".(int)$snapshot['cool']."',
                             ra_id = '{$ra_id}'
                 ");
             }
@@ -1300,11 +1348,3 @@ function delete_k_battle_data($battle_table, $ra_id, $type = '') //전투 데이
 
     return true;
 }
-
-
-
-
-
-
-
-

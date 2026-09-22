@@ -2,36 +2,35 @@
 /***************************************************************
 	Design Manager Setting Style: 자동생성 CSS
 ---------------------------------------------------------------
-	- 최종 수정일 : 2026-05-22 12:56:25
+	- 최종 수정일 : 2026-09-21 17:52:08
 ***************************************************************/
 
 
+body,
+.txt-default	{ color: #ffffff; }
 a,
 .txt-point	{ color: #29c7c9; }
 
 
 @media all and (min-width: 1025px) { 
 	html.single:before	{
-		background-image: url('http://localhost/avocado/data/site/design_background.png');
-		background-repeat: no-repeat;
-		background-size: cover;
+		background-image: url('http://localhost/avocado/skin/member/basic/img/bak_admin_login_top_pattern.png');
 		}
 }
 
 @media all and (max-width: 1024px) {
 	html.single:before	{
-		background-image: none;
+		background-image: url('http://localhost/avocado/skin/member/basic/img/bak_admin_login_top_pattern.png');
 		}
 }
 
 
 @media all and (min-width: 1025px) { 
 	#header	{
-		background-color: rgba(0, 0, 0, 0);
+		background-color: rgba(0, 0, 0, .5);
 		}
 
 	#gnb	{
-		background-color: rgba(0, 0, 0, .0);
 		}
 
 	#gnb_control_box	{ display: none; }
@@ -40,11 +39,10 @@ a,
 @media all and (max-width: 1024px) {
 
 	#header	{
-		background-color: rgba(0, 0, 0, 0);
+		background-color: rgba(0, 0, 0, .5);
 		}
 
 	#gnb	{
-		background-color: rgba(0, 0, 0, .0);
 		}
 
 	#gnb_control_box	{
@@ -54,37 +52,38 @@ a,
 
 
 
-
+#body	{ margin-left: 200px; }
 #header	{
-	position: relative;
-	margin: 0;
-	padding: 0;
-	clear: both;
-	height: 50px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	overflow-y: auto;
+	width: 200px;
+	
 }
-#header .fix-layout	{ height: 100%; }
 #logo	{
-	display: block;
-	position: absolute;
-	top: 50%;
-	left: 0%;
-	transform: translateY(-50%);
+	padding:20px 0;
+	text-align: center;
 }
+
+
 
 /*#gnb	{ float: right; }*/
 #gnb,
 #gnb *	{
-	color: ;
+	color: #ffffff;
 	font-size: 14px;
 }
 #gnb a:hover {
-	color: ;
+	color: #29c7c9;
 	font-size: 14px;
 }
 
 
 
 
+*::-webkit-scrollbar-track	{ background-color: #333333; }
 *::-webkit-scrollbar-thumb	{ background: #29c7c9; }
 
 * { outline-color: #29c7c9; }
@@ -92,6 +91,9 @@ a,
 ::-moz-selection	{ background:#29c7c9; }
 ::-webkit-selection	{ background:#29c7c9; }
 
+::selection	{ color:#333333; }
+::-moz-selection	{ color:#333333; }
+::-webkit-selection	{ color:#333333; }
 
 
 
@@ -163,7 +165,7 @@ a,
 
 
 .status-bar dd p	{
-	background: ;
+	background: #ffffff;
 }
 .status-bar dd p span	{
 	background: #29c7c9;
@@ -173,7 +175,7 @@ a,
 	background: #29c7c9;
 }
 .status-bar dd p i	{
-	color: ;
+	color: #333333;
 }
 
 
@@ -226,7 +228,7 @@ select:-webkit-autofill {
 
 
 
-.flex-control-paging a	{ background: ; }
+.flex-control-paging a	{ background: #ffffff; }
 .flex-control-paging a.flex-active	{ background: #29c7c9; }
 
 
@@ -250,7 +252,7 @@ select:-webkit-autofill {
 
 
 
-.timeline-Tweet:before { border-top-color: ; }
+.timeline-Tweet:before { border-top-color: #333333; }
 .TweetAuthor-name	{ color: #29c7c9; }
 
 
@@ -330,7 +332,7 @@ select:-webkit-autofill {
 .inventory-list a i	{
 	/*
 	background: #29c7c9;
-	color: ;
+	color: #333333;
 	*/
 
 	border: 1px solid #29c7c9;

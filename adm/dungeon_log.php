@@ -46,6 +46,7 @@ $listall = '<a href="'.$_SERVER['PHP_SELF'].'" class="ov_listall">전체목록</
 
 $g5['title'] = "『{$ds['dg_title']}』 로그 관리";
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $total_turn_count = sql_fetch("select count(*) as cnt from {$g5['dungeon_log_table']} where dl_is_turn = 1 and ds_id = '{$ds_id}'");
 $total_turn_count = $total_turn_count['cnt'];

@@ -6,6 +6,7 @@
 
 .skill-list-box {display:block; position:relative; text-align:center; margin:10px 0; padding:10px; background:#000; border-radius:10px;}
 .skill-list-box .setting-control {padding-top:10px; margin-top:10px; border-top:1px solid rgba(255,255,255,.2); text-align:right;}
+.skill-list-box .skill-slot-summary {display:inline-block; margin-right:8px; color:rgba(255,255,255,.7); font-size:11px; vertical-align:middle;}
 
 /* 현재 셋팅돤 스킬 목록 */
 .skill-set-list {text-align:center;}

@@ -22,6 +22,7 @@ $listall = '<a href="'.$_SERVER['PHP_SELF'].'" class="ov_listall">전체목록</
 
 $g5['title'] = '스탯 연동코드 관리';
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $status_type = explode("||", $config['cf_status_select_type']);
 $status_type = array_filter($status_type);
@@ -37,50 +38,12 @@ $pg_anchor = '<ul class="anchor">
 ?>
 
 <section id="anc_001">
-	<h2 class="h2_frm">체력설정</h2>
+	<h2 class="h2_frm">체력 원본</h2>
 	<?php echo $pg_anchor ?>
-
-	<form name="fstatusform" method="post" id="fstatuslist2" action="./status_extra_form_update.php" autocomplete="off" enctype="multipart/form-data">
-	<input type="hidden" name="sfl" value="<?php echo $sfl ?>">
-	<input type="hidden" name="stx" value="<?php echo $stx ?>">
-	<input type="hidden" name="sst" value="<?php echo $sst ?>">
-	<input type="hidden" name="sod" value="<?php echo $sod ?>">
-	<input type="hidden" name="page" value="<?php echo $page ?>">
-	<input type="hidden" name="token" value="<?php echo $token ?>">
-	<input type="hidden" name="add_type" value="hp">
-
-	<div class="tbl_frm01 tbl_wrap">
-		<table>
-		<colgroup>
-			<col style="width: 130px;">
-			<col>
-			<col style="width: 130px;">
-		</colgroup>
-		<tbody>
-		<tr>
-			<th scope="row">체력스탯</th>
-			<td>
-				<select name="st_id">
-					<option value="">지정하지 않음</option>
-					<?
-						$stat_sql = "select st_id, st_name, st_use_hp from {$g5['status_config_table']} order by st_order asc";
-						$stat_list = sql_query($stat_sql);
-						for($i=0; $srow = sql_fetch_array($stat_list); $i++) {
-					?>
-						<option value="<?=$srow['st_id']?>" <?=$srow['st_use_hp'] ? "selected" : ""?>><?=$srow['st_name']?></option>
-					<? } ?>
-				</select>
-			</td>
-			<td>
-				<div class="btn_confirm01 btn_confirm" style="padding:0;">
-					<input type="submit" value="확인" class="btn_submit">
-				</div>
-			</td>
-		</tr>
-		</tbody>
-		</table>
+	<div class="local_desc01 local_desc">
+		체력(HP) 원본과 레이드 MP 원본은 <a href="./990_unified_skill_map.php">통합 전투 설정</a>에서만 변경합니다.
+		이 페이지에서는 전투 연동 코드의 수식만 관리합니다.
 	</div>
-	</form>
 </section>
 
 

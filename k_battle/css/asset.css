@@ -18,10 +18,9 @@
     justify-content:center;
     align-items:center;
     position: relative;
-    padding:12px;
+    padding:10px;
     max-width:600px;
     margin:0 auto;
-    gap:8px;
 }
 
 .asset-area .list-area{
@@ -96,11 +95,10 @@
     align-items:center;
     grid-template-columns: repeat(auto-fill, minmax(36px, auto));
     grid-template-rows: repeat(auto-fill, minmax(36px, auto));
-    grid-gap:4px;
+    grid-gap:2px;
     overflow:auto;
-    background:rgba(0,0,0,.22);
-    border-radius: 6px;
-    padding:4px;
+    background:#00000030;
+    border-radius: 5px;
 }
 
 .asset-area .info-area{
@@ -123,7 +121,6 @@
     margin: 2px;
     cursor:pointer;
     position:relative;
-    border-radius:4px;
 }
 
 .asset-list li img{
@@ -142,7 +139,6 @@
     height:120px;
     min-width: 330px;
     padding-left: 10px;
-    border-radius:6px;
 }
 
 .asset-info .ui-btn{
@@ -183,7 +179,7 @@
 }
 .asset-info .asset-option span{
     margin-right:2px;
-    background-color:rgba(0,0,0,.45);
+    background-color:#00000060;
     border-radius:3px;
     font-size:10px;
     line-height:12px;
@@ -197,7 +193,6 @@
     padding: 0px 10px;
     margin-top:3px;
     text-align:left;
-    line-height:1.45;
 }
 .asset-info .asset-content input{
     width:100%;

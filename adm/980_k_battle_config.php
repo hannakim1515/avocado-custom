@@ -49,6 +49,7 @@ if (!isset($slot_arr[0])) {
 
 $g5['title'] = '플러그인 설정';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 ?>
 
 <section id="anc_002">

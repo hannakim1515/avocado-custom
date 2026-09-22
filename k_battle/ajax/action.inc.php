@@ -68,6 +68,10 @@ if ($type === 'atk' || $type === 'heal') {
 
     use_k_action($type, $rm, $target_id, $target_type, $ra_id, $msg, $option);
 
+} elseif ($type === 'guard') {
+
+    use_k_guard($rm, $ra_id, $msg, $option);
+
 } elseif ($type === 'item') {
 
     $in = sql_fetch("

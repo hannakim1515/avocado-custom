@@ -4,6 +4,7 @@ include_once('./_common.php');
 
 $g5['title'] = '커스텀 함수 복사';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 include_once('./admin.stat.php'); // 여기서 $func_list가 정의된다고 가정하되, 아래에서 부재 시 방어
 
 // 상태 설정 목록 로드
@@ -64,7 +65,7 @@ if (!isset($func_list) || !is_array($func_list)) {
     }
     ?>
     <div class="php_func">
-        <p>아래 상자 안의 모든 글자를 <span>[아보카도 경로/k_battle/extend/battle/status.inc.php]</span> 파일 안에 붙여넣으세요. ctrl+a 후 ctrl+c 추천.</p>
+        <p>통합본은 저장된 수식을 DB에서 직접 계산하므로 이 파일을 수동으로 붙여넣을 필요가 없습니다. 아래 코드는 기존 단독 K 버전 호환용 참고 자료입니다.</p>
         <textarea><?php echo "<?php\n".$all_func."?>"; ?></textarea>
     </div>
 </div>

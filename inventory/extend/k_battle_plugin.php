@@ -14,6 +14,7 @@ if($inven_function == "스킬지급(K)") {
                         ch_id = '{$ch['ch_id']}',
                         sk_id = '{$in['it_value']}'
             " );
+			if(function_exists('unified_skill_sync_character')) unified_skill_sync_character($ch['ch_id']);
             delete_inventory($in['in_id'], $in['it_use_ever']);
             alert('등록되었습니다.', $return_url);
         }

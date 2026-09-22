@@ -47,6 +47,7 @@ $listall = '<a href="'.h($_SERVER['PHP_SELF'], ENT_QUOTES).'" class="ov_listall"
 
 $g5['title'] = '장비 관리';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 /* 스탯 목록 */
 $st_list = array();

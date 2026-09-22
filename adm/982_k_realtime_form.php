@@ -27,6 +27,7 @@ if ($w === '') {
 
 $g5['title'] = $html_title;
 include_once './admin.head.php';
+include_once './990_unified_menu_bootstrap.php';
 
 // 하단 버튼 영역 생성
 $fra_submit  = '<div class="btn_confirm01 btn_confirm">'.PHP_EOL;

@@ -74,6 +74,12 @@ function get_status_type_filed($st_type) {
 // 타입별 스탯값 합계 가져오기
 function get_status_total($st_type, $ch_id) {
 	global $g5;
+
+	// 통합본에서는 장착 장비, A/K 패시브, K 커스텀 수식까지 같은 최종값을 사용한다.
+	if(function_exists('unified_stat_total_by_type')) {
+		return unified_stat_total_by_type($st_type, $ch_id);
+	}
+
 	$filed = get_status_type_filed($st_type);
 
 	$result = sql_fetch("select sum(sc_max) as total from {$g5['status_config_table']} st, {$g5['status_table']} sc where st.st_id = sc.st_id and sc.ch_id = '{$ch_id}' and st.{$filed} = 1");
@@ -167,6 +173,10 @@ function get_extra_hp($ch_id) {
 	global $g5;
 
 	$result = sql_fetch("select * from {$g5['status_table']} sc, {$g5['status_config_table']} st where sc.ch_id = '{$ch_id}' and st.st_id = sc.st_id and st.st_use_hp = 1");
+	if($result['st_id'] && function_exists('unified_stat_value')) {
+		// sc_value는 누적 피해량으로 유지하고, 최대 HP만 공통 최종 스탯으로 바꾼다.
+		$result['sc_max'] = unified_stat_value($ch_id, $result['st_id']);
+	}
 
 	$result['now'] = $result['sc_max'] - $result['sc_value'];
 	$result['has'] = $result['sc_max'];

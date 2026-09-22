@@ -20,7 +20,18 @@ function get_k_battle_skill($id, $select='*', $info=false){//전투용 스킬 �
         WHERE bs.bs_id = '{$id}'
     ";
 
-    return sql_fetch($sql);
+    $row = sql_fetch($sql);
+    /*
+     * A 스킬은 입장 시점에 battle_skill에 수치를 스냅샷한다. 같은 캐릭터가
+     * 여러 레이드에 참여해도 그 레이드가 시작된 뒤에는 서로 영향을 주지 않는다.
+     */
+    if (!empty($row['unified_a_sk_id'])) {
+        $row['sk_value'] = isset($row['unified_value']) ? (float)$row['unified_value'] : 0;
+        $row['sk_mp'] = isset($row['unified_mp']) ? (int)$row['unified_mp'] : 0;
+        $row['sk_turn'] = isset($row['unified_turn']) ? (int)$row['unified_turn'] : 0;
+        $row['sk_cool'] = isset($row['unified_cool']) ? (int)$row['unified_cool'] : 0;
+    }
+    return $row;
 }
 
 /*전투 액션*/
@@ -46,8 +57,9 @@ function use_k_action($action_type, $unit, $target_id, $target_type, $ra_id='0',
         $action_tag='공격';
         $miss = get_k_battle_func('miss', $target, $unit, true);
         $miss_val = ses($miss, 'value', 0, 'int');
+        $evade = sql_fetch("SELECT bf_id FROM {$battle_table}_buff WHERE rm_id = '".(int)$target['rm_id']."' AND ra_id = '".sql_escape_string($ra_id)."' AND si_code = 'unified_evade' AND turn_left > 0 LIMIT 1", false);
         $rand = rand(1, 100);
-        if ($rand <= $miss_val) {
+        if (!empty($evade['bf_id']) || $rand <= $miss_val) {
             $pass = true;
             if (!empty($miss['cri'])) $cri = '<span class="cri">크리티컬!</span>';
         }
@@ -61,11 +73,15 @@ function use_k_action($action_type, $unit, $target_id, $target_type, $ra_id='0',
     $dead_msg = '';
 
     if (!$pass) {
-        $dmg = get_k_battle_func($action_type, $unit, $target);
+        // 일반 공격/치유도 스킬 장착 여부와 무관하게 A 전투 연동 코드 하나로 계산한다.
+        $dmg = function_exists('unified_battle_action_value')
+            ? unified_battle_action_value($action_type, $unit)
+            : get_k_battle_func($action_type, $unit, $target);
         $dmg_val = ses($dmg, 'value', 0, 'int');
         $dmg_val *= $multi;
+        if ($action_type === 'atk') $dmg_val = k_guard_damage_value($target, $dmg_val);
         $dmg['value'] = $dmg_val;
-        $dead_msg = set_k_dmg($target, 'hp', $dmg_val);
+        $dead_msg = set_k_dmg($target, 'hp', $dmg_val, false, $action_type === 'atk');
     }
     if (!empty($dmg['cri'])) $cri = '<span class="cri">크리티컬!</span>';
 
@@ -90,6 +106,32 @@ function use_k_action($action_type, $unit, $target_id, $target_type, $ra_id='0',
     insert_k_log($msg, $ra_id, ses($unit, 'unit_type', ''), $option,$system);
     return false;
 }
+
+/* 스킬 슬롯과 무관한 공통 일반 방어. 던전의 일반 방어와 똑같이 A 연동 코드값을
+ * 피해 감소율로 사용하고, 기존 buff 테이블의 턴 감소 흐름을 그대로 활용한다. */
+function use_k_guard($unit, $ra_id='0', $msg='', $option='', $system='')
+{
+    global $battle_table;
+
+    $rm_id = ses($unit, 'rm_id', 0, 'int');
+    if ($rm_id <= 0) return '참가자 정보를 찾을 수 없습니다.';
+    if (!function_exists('unified_combat_action_code') || unified_combat_action_code('guard') === '') {
+        return '통합 전투 설정에서 일반 방어 연동 코드를 선택하세요.';
+    }
+
+    $guard = function_exists('unified_battle_action_value') ? unified_battle_action_value('guard', $unit) : array('value' => 0);
+    $rate = min(90, max(0, ses($guard, 'value', 0, 'int')));
+    sql_query("INSERT INTO {$battle_table}_buff
+        SET si_code = 'unified_guard', sc_id = 0, bf_value = '{$rate}', cs_id = 0,
+            turn_left = 1, rm_id = '{$rm_id}', ra_id = '".sql_escape_string($ra_id)."'", false);
+
+    $unit_name = h(ses($unit, 'unit_name', ''));
+    $msg .= '<p class="act-title guard">방어</p><p><span class="name">'.$unit_name.'</span>의 받는 피해가 <span class="dmg guard">'.$rate.'</span>% 감소합니다.</p>';
+    if ($system) $system .= '의 방어!';
+    insert_k_log($msg, $ra_id, ses($unit, 'unit_type', ''), $option, $system);
+    return false;
+}
+
 function use_k_skill($sk, $unit, $target_id, $target_type, $ra_id=0, $msg='', $option='',$system='')//스킬사용
 {
     global $g5, $battle_table, $k_unit_stat, $kb_cf;
@@ -148,8 +190,14 @@ function use_k_skill($sk, $unit, $target_id, $target_type, $ra_id=0, $msg='', $o
 
     // 보정 스탯 계산
     $bonus_stat = 0;
-    if (!empty($sk['sc_id']) && isset($k_unit_stat[$sk['sc_id']]) && isset($unit[$k_unit_stat[$sk['sc_id']]])) {
-        $bonus_stat = (int)$unit[$k_unit_stat[$sk['sc_id']]];
+    $source_col = '';
+    if (!empty($sk['sc_id'])) {
+        $source_col = function_exists('unified_k_stat_slot_column')
+            ? unified_k_stat_slot_column((int)$sk['sc_id'])
+            : ses($k_unit_stat, $sk['sc_id'], '');
+    }
+    if ($source_col !== '' && isset($unit[$source_col])) {
+        $bonus_stat = (int)$unit[$source_col];
     }
 
     $sk_value = ses($sk, 'sk_value', 0.0, 'float');
@@ -163,10 +211,15 @@ function use_k_skill($sk, $unit, $target_id, $target_type, $ra_id=0, $msg='', $o
         }else{
             $bonus = round(($bonus_stat ? $bonus_stat : 1) * $sk_value);
         }
+    } elseif ($unit['unit_type'] === 'mo' && $source_col !== '') {
+        // 기존 몬스터 스킬의 빈 보정 방식은 "해당 공통 스탯 + 입력 수치"로 해석한다.
+        $bonus = $bonus_stat + $sk_value;
+    } elseif ($unit['unit_type'] === 'mo') {
+        $bonus = $sk_value;
     }
 
-    if (ses($sk, 'default_calc', '') === 'i' && !empty($sk['sc_id']) && isset($k_unit_stat[$sk['sc_id']])) {
-        $key = $k_unit_stat[$sk['sc_id']];
+    if (ses($sk, 'default_calc', '') === 'i' && $source_col !== '') {
+        $key = $source_col;
         $unit[$key] = ses($unit, $key, 0, 'int') + (int)$bonus;
     }
 
@@ -568,12 +621,33 @@ function exec_k_mo_act($rm_id, $ra_id, $option = '', $system='') //몬스터 행
     return $mo_action_done;
 }
 
+/* 방어 버프는 캐릭터·몬스터의 일반 공격, 스킬, 도트에 공통 적용한다. */
+function k_guard_damage_value($unit, $value)
+{
+    global $battle_table;
+    $value = (int)$value;
+    if ($value >= 0) return $value;
+
+    $rm_id = ses($unit, 'rm_id', 0, 'int');
+    if ($rm_id <= 0) return $value;
+
+    static $rates = array();
+    $key = (string)$battle_table.'|'.$rm_id;
+    if (!isset($rates[$key])) {
+        $guard = sql_fetch("SELECT SUM(bf_value) AS rate FROM {$battle_table}_buff
+            WHERE rm_id = '{$rm_id}' AND si_code = 'unified_guard' AND turn_left > 0", false);
+        $rates[$key] = min(90, max(0, (int)ses($guard, 'rate', 0, 'int')));
+    }
+    return $rates[$key] > 0 ? -(int)round(abs($value) * (100 - $rates[$key]) / 100) : $value;
+}
+
 /*대미지 셋*/
-function set_k_dmg($unit, $type, $value, $rev=false)//대미지처리
+function set_k_dmg($unit, $type, $value, $rev=false, $guard_applied=false)//대미지처리
 {
     global $battle_table;
 
     $value = (int)$value;
+    if (!$guard_applied && $type === 'hp' && $value < 0) $value = k_guard_damage_value($unit, $value);
     if ($value === 0) return false;
 
     $rm_id = ses($unit, 'rm_id', 0, 'int');
@@ -641,8 +715,9 @@ function get_k_dot($ra_id=0, $type='atk', $msg='', $option='')//도트처리
 
         $unit['unit_name'] = $origin ? $origin['unit_name'] : '';
         $delta = (int)$row['bf_value']; // atk: 음수, heal: 양수
+        if ($delta < 0) $delta = k_guard_damage_value($unit, $delta);
 
-        $dead_msg = set_k_dmg($unit, 'hp', $delta);
+        $dead_msg = set_k_dmg($unit, 'hp', $delta, false, $delta < 0);
         $hp_label = ses($kb_cf, 'hp_name', 'hp');
         $sk_effect .= '<p><span class="name">'.$unit['unit_name'].'</span> 의 '.$hp_label.' <span class="dmg '.$type.'">'.abs($delta).'</span>'.$dead_msg.'</p>';
     }

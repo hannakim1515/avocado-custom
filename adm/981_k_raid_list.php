@@ -87,6 +87,7 @@ if ($cur_raid_type !== 'all') {
 $listall      = '<a href="'.h($_SERVER['SCRIPT_NAME']).'?raid_type='.h($cur_raid_type).'" class="ov_listall">전체목록</a>';
 $g5['title']  = '레이드 리스트 관리';
 include_once './admin.head.php';
+include_once './990_unified_menu_bootstrap.php';
 ?>
 
 <style>

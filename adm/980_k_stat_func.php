@@ -35,6 +35,7 @@ $self = ses($_SERVER, 'PHP_SELF', '');
 
 $g5['title'] = $title.' 설정';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 include_once('./admin.stat.php'); 
 
 // 샘플 유닛/타겟 분해

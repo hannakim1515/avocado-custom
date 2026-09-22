@@ -96,14 +96,17 @@ if(!isset($config['cf_map_all_h'])) {
 }
 
 if(isset($character['ch_id']) && !$character['ma_id']) {
-	$ma_id = sql_fetch("select ma_id from {$g5['map_table']} where ma_start = '1' limit 0, 1");
-	$ma_id = $ma_id['ma_id'];
-	sql_query("
-		update {$g5['character_table']}
-				set		ma_id = '{$ma_id}'
-			where		ch_id = '{$character['ch_id']}'
-	");
-	$character['ma_id'] = $ma_id;
+	$ma_id = sql_fetch("select ma_id from {$g5['map_table']} where ma_start = '1' and ma_use = '1' order by ma_id asc limit 0, 1");
+	if (empty($ma_id['ma_id'])) $ma_id = sql_fetch("select ma_id from {$g5['map_table']} where ma_use = '1' order by ma_id asc limit 0, 1");
+	if (!empty($ma_id['ma_id'])) {
+		$ma_id = (int)$ma_id['ma_id'];
+		sql_query("
+			update {$g5['character_table']}
+					set		ma_id = '{$ma_id}'
+				where		ch_id = '".(int)$character['ch_id']."'
+		");
+		$character['ma_id'] = $ma_id;
+	}
 }
 
 

@@ -56,6 +56,7 @@ if ($sfl == 'ch_id' && $stx)
 
 $g5['title'] = $title.' 설정';
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 include_once ('./admin.stat.php');
 
 if($kb_cf['sample_unit']){

@@ -9,4 +9,5 @@ $menu['menu981'] = array (
 	array('981400', '-----몬스터 관리-----',G5_ADMIN_URL.'/980_k_monster.php?raid_type=mmbraid',   '', ),
 	array('981401', '몬스터 관리',G5_ADMIN_URL.'/980_k_monster.php?raid_type=mmbraid',   '', ),
 );
+unset($menu['menu981']); // MMB 레이드 메뉴는 menu990으로 통합
 ?>

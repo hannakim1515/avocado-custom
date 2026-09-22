@@ -9,6 +9,7 @@ if ($is_admin != 'super')
 
 $g5['title'] = '1:1 배틀 설정';
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $bc = sql_fetch("select * from {$g5['battle_config_table']}");
 
@@ -34,18 +35,6 @@ $extra = array();
 $extra_result = sql_query("select * from {$g5['status_extra_table']}");
 for($i=0; $ex = sql_fetch_array($extra_result); $i++) {
 	$extra[] = $ex['ex_name'];
-}
-
-// K 전투 함수도 1:1 전투 설정에서 선택할 수 있게 같은 목록에 합쳐 둔다.
-if(!empty($g5['k_stat_table'])) {
-	$k_battle_result = sql_query("select sc_name from {$g5['k_stat_table']} where sc_category = 'battle' order by sc_id asc", false);
-	if($k_battle_result) {
-		for($i=0; $k_battle = sql_fetch_array($k_battle_result); $i++) {
-			if($k_battle['sc_name'] && !in_array($k_battle['sc_name'], $extra)) {
-				$extra[] = $k_battle['sc_name'];
-			}
-		}
-	}
 }
 
 

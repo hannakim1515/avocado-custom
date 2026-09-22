@@ -23,6 +23,12 @@ if (empty($sk['sk_id']) || !isset($character['ch_id']) || (int)$sk['ch_id'] !== 
     exit;
 }
 
+/* 통합 스킬은 A 스킬 화면에서만 수정·장착한다. K는 읽기 전용 실행 캐시다. */
+if (!empty($sk['unified_a_sk_id'])) {
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 /* 분기 처리 */
 $sql_set = '';
 

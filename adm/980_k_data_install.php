@@ -4,6 +4,7 @@ include_once('./_common.php');
 
 $g5['title'] = '플러그인 설치/버전 관리';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 // 버전 상수 정의
 if (!defined('K_BATTLE_VERSION')) {

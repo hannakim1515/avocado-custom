@@ -21,4 +21,5 @@ $menu['menu980'] = array (
 	array('980410', '몬스터 스킬 등록',G5_ADMIN_URL.'/980_k_skill.php?unit_type=mo',   '', ),
 	array('980411', '몬스터 보유 스킬',G5_ADMIN_URL.'/980_k_mo_skill.php',   '', ),
 );
+unset($menu['menu980']); // (K)종합 전투 플러그인 메뉴 제거: menu990으로 통합
 ?>

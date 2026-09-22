@@ -47,6 +47,7 @@ if ($sfl == 'ch_id' && $stx)
 
 $g5['title'] = '1:1 배틀 로그 기록';
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $colspan = 10;
 

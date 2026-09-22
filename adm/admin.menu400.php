@@ -7,7 +7,6 @@ $menu['menu400'] = array (
 	array('400310', '보유타이틀 관리', ''.G5_ADMIN_URL.'/title_has_list.php', ''),
 	array('400400', $config['cf_rank_name'].' 설정 관리', ''.G5_ADMIN_URL.'/level_list.php', ''),
 	array('400410', $config['cf_exp_name'].' 관리', ''.G5_ADMIN_URL.'/exp_list.php', ''),
-	array('400420', '스탯 관리', ''.G5_ADMIN_URL.'/status_list.php', ''),
 	array('400500', '커플 관리', ''.G5_ADMIN_URL.'/couple_list.php', ''),
 	array('400900', 'NPC 관리', ''.G5_ADMIN_URL.'/npc_list.php', '')
 );

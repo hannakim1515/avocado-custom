@@ -46,6 +46,7 @@ for($i = 0; $row = sql_fetch_array($rank_sql); $i++) {
 
 $g5['title'] = '강화 레벨';
 include_once ('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $colspan =8;
 

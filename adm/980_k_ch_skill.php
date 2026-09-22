@@ -82,6 +82,7 @@ $result = sql_query($sql);
 /* ---------- 화면 ---------- */
 $g5['title'] = '보유 스킬 관리 (' . $raid_types[$cur_raid_type] . ')';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 ?>
 
 <style>

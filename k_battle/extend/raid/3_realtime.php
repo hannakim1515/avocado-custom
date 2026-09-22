@@ -145,7 +145,10 @@ function k_next_unit_realtime($ra_id, $type = '')//다음 유닛 체크
 
     // 다음 턴 유닛 선정
     $type_sql = $type ? "AND unit_type = '{$type}'" : '';
-    $speed_col = ses($k_unit_stat, $kb_cf['speed'], '') ? $k_unit_stat[$kb_cf['speed']].' desc' : 'unit_type asc';
+    $speed_slot = function_exists('unified_k_stat_slot_column')
+        ? unified_k_stat_slot_column((int)ses($kb_cf, 'speed', 0, 'int'))
+        : ses($k_unit_stat, $kb_cf['speed'], '');
+    $speed_col = $speed_slot !== '' ? $speed_slot.' desc' : 'unit_type asc';
 
     $sql = "SELECT rm_id, unit_type 
               FROM {$battle_table}_unit 

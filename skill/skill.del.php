@@ -19,6 +19,7 @@ $now_dungeon = is_has_dungeon($ch['ch_id']);
 $sh = sql_fetch("select * from {$g5['skill_has_table']} where sh_id = {$sh_id}");
 if(!$now_dungeon && $sh['sh_id'] && $ch['ch_id'] && $ch['ch_id'] == $sh['ch_id'] && $ch['mb_id'] == $member['mb_id']) {
 	sql_query("update {$g5['skill_has_table']} set sh_use = '0', sh_datetime = '' where sh_id = '{$sh['sh_id']}'"); 
+	if(function_exists('unified_skill_sync_character')) unified_skill_sync_character($ch['ch_id'], true, 'a');
 	//delete_inventory($item['in_id'], $item['it_use_ever']);
 } else {
 	echo "F";

@@ -35,6 +35,7 @@ for ($ri = 0; $row = sql_fetch_array($rank_sql); $ri++) {
 
 $g5['title'] = '강화 레벨';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 // 테이블 헤더 수 = 9
 $colspan = 9;

@@ -2,7 +2,7 @@
 if (!defined('_GNUBOARD_')) exit;
 define('G5_MYSQL_HOST', 'localhost');
 define('G5_MYSQL_USER', 'root');
-define('G5_MYSQL_PASSWORD', '');
+define('G5_MYSQL_PASSWORD', '0000');
 define('G5_MYSQL_DB', 'test');
 define('G5_MASTER_PW', '');
 define('G5_DB_URL', 'http://localhost/phpmyadmin/');

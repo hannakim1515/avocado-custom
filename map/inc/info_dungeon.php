@@ -17,11 +17,17 @@ $ds_mem = get_dungeon_member($dg['ds_id'], "");
 				<strong><?=$ma['ma_name']?></strong>
 			</div>
 			<div class="control">
-				<?
-					if($character['ch_state'] == '승인' && $character['ma_id'] == $ma_id) {
+				<?php
+					$ch_map = get_map($character['ma_id']);
+					$can_move = !empty($ch_map['ma_move']) && strpos($ch_map['ma_move'], '||'.$ma['ma_id'].'||') !== false;
+					if($character['ch_state'] != '승인') {
+						echo '<p class="map-action-guide">승인된 캐릭터만 던전에 입장할 수 있습니다.</p>';
+					} elseif($character['ma_id'] == $ma_id) {
 						include(G5_PATH."/map/inc/btn_gate_app.php");
-					} else {
+					} elseif($can_move) {
 						include(G5_PATH."/map/inc/btn_move.php");
+					} else {
+						echo '<p class="map-action-guide">이 지역으로 가는 통행 경로가 없습니다. 관리자 지역관리에서 현재 지역의 통행설정에 이 지역을 추가하세요.</p>';
 					}
 				?>
 			</div>

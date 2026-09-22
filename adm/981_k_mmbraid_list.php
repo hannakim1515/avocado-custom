@@ -53,6 +53,7 @@ $result = sql_query($sql);
 $listall = '<a href="'.h($_SERVER['SCRIPT_NAME']).'" class="ov_listall">전체목록</a>';
 $g5['title'] = 'MMB 레이드 관리';
 include_once './admin.head.php';
+include_once './990_unified_menu_bootstrap.php';
 
 ?>
 

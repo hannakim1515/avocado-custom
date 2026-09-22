@@ -536,3 +536,66 @@ body * {
         height: auto;
     }
 }
+
+/* ================================================================
+   A/K 통합 실시간 레이드 UI
+================================================================ */
+:root {--ak-raid-bg:#08101f; --ak-raid-panel:rgba(13,25,47,.82); --ak-raid-panel-2:rgba(24,42,73,.88); --ak-raid-line:rgba(150,191,239,.24); --ak-raid-text:#eff6ff; --ak-raid-muted:#a9bad2; --ak-raid-accent:#49d6c7; --ak-raid-gold:#ffca70; --ak-raid-danger:#ff617f;}
+.all-wrapper {position:relative; display:grid; grid-template-columns:minmax(0,1fr) minmax(310px,360px); gap:14px; align-items:stretch; min-height:100vh; height:100dvh; padding:14px; background-color:var(--ak-raid-bg); isolation:isolate;}
+.all-wrapper:before {content:""; position:absolute; inset:0; z-index:-1; background:radial-gradient(circle at 50% 0,rgba(61,109,167,.32),transparent 44%),linear-gradient(180deg,rgba(5,10,22,.3),rgba(5,10,22,.93));}
+.all-wrapper:after {z-index:-1; background:linear-gradient(180deg,rgba(2,7,16,.18),rgba(2,7,16,.68));}
+.all-wrapper .left-area {min-width:0; width:auto; padding:10px; border:1px solid var(--ak-raid-line); border-radius:18px; background:linear-gradient(155deg,rgba(22,42,76,.78),rgba(7,15,30,.9)); box-shadow:0 18px 55px rgba(0,0,0,.3);}
+.all-wrapper .right-area {min-width:0; width:auto; padding:12px; border:1px solid var(--ak-raid-line); border-radius:18px; background:rgba(8,17,33,.78); box-shadow:0 18px 55px rgba(0,0,0,.3); backdrop-filter:blur(13px);}
+.all-wrapper #ally-area,.all-wrapper #enemy-area {min-height:156px; max-height:156px; padding:4px 0; scrollbar-color:#4e6689 transparent;}
+.all-wrapper .unit-list {width:96%; gap:9px;}
+.all-wrapper .unit-list li {width:148px; min-height:55px; padding:7px 8px 7px 48px; border:1px solid var(--ak-raid-line); border-radius:12px; background:linear-gradient(135deg,rgba(39,61,101,.88),rgba(15,27,51,.92)); box-shadow:0 7px 20px rgba(0,0,0,.18); transition:.18s ease;}
+.all-wrapper .unit-list li:hover {border-color:rgba(73,214,199,.75); transform:translateY(-1px);}
+.all-wrapper .unit-list li.nowturn {border-color:var(--ak-raid-gold); filter:drop-shadow(0 0 9px rgba(255,202,112,.6));}
+.all-wrapper .unit-list .unit-thumb {left:8px; width:34px; height:34px; border:1px solid rgba(73,214,199,.7); box-shadow:0 0 12px rgba(73,214,199,.2);}
+.all-wrapper .unit-list .ar-default .unit-name {color:var(--ak-raid-text); font-size:12px; text-align:left;}
+.all-wrapper .unit-list .ar-info p {height:9px; margin-top:3px; border-radius:8px; background:#090f1d; border:1px solid rgba(255,255,255,.08);}
+.all-wrapper .unit-list .ar-info .unit-hp span {background:linear-gradient(90deg,#ed5d79,#ffad77);}
+.all-wrapper .unit-list .ar-info .unit-mp span {background:linear-gradient(90deg,#399ed6,#73d7e6);}
+.all-wrapper .unit-list .ar-info .unit-hp i,.all-wrapper .unit-list .ar-info .unit-mp i {font-size:8px; line-height:8px; color:#fff; text-shadow:0 1px 3px #000;}
+.all-wrapper #center-area {min-height:0; justify-content:center; align-items:flex-end;}
+.all-wrapper #center-area #turn-area {position:absolute; top:14px; right:16px; width:auto; height:auto; padding:8px 12px; border:1px solid rgba(255,202,112,.5); border-radius:10px; background:rgba(14,23,43,.8); color:var(--ak-raid-gold); font-size:18px; line-height:1; box-shadow:0 8px 20px rgba(0,0,0,.25);}
+.all-wrapper #center-area #turn-area #turn-inner:before {content:'TURN '; font-family:'main'; font-size:10px; letter-spacing:.1em; color:var(--ak-raid-muted);}
+#time-limit-area {height:auto; min-width:0; margin:0 0 0 8px; padding:0; color:var(--ak-raid-text); font-size:15px;}
+#system-msg {align-self:center; max-width:780px; padding:20px 30px; color:#fff; font-size:clamp(22px,3vw,38px); line-height:1.2; text-shadow:0 3px 18px #000; filter:none;}
+.all-wrapper #my-area {width:min(720px,100%); margin:0 auto;}
+.all-wrapper #my-area #my-inner {padding:12px; border:1px solid var(--ak-raid-line); border-radius:16px; background:linear-gradient(145deg,rgba(31,52,90,.88),rgba(12,22,42,.94)); box-shadow:0 16px 40px rgba(0,0,0,.28);}
+.all-wrapper #center-area #my-area.active:before {height:150px; background:linear-gradient(to top,rgba(73,214,199,.17),transparent);}
+#action-select {justify-content:flex-start; gap:7px;}
+#action-select li {width:auto; min-width:54px; height:34px; padding:0 10px; margin:0; border:1px solid rgba(73,214,199,.45); border-radius:8px; background:rgba(23,49,76,.95); color:var(--ak-raid-text); font-size:12px; font-weight:800; text-shadow:none; transition:.18s ease;}
+#action-select li:hover {border-color:var(--ak-raid-accent); background:#24526a; transform:translateY(-1px);}
+#action-select li:nth-child(1) {border-color:rgba(255,97,127,.64); background:rgba(103,35,56,.88);}
+#action-select li:nth-child(2) {border-color:rgba(73,214,199,.64);}
+#action-select li:nth-child(3) {border-color:rgba(255,202,112,.65); background:rgba(94,71,37,.86);}
+#action-select li.raid-action.false {opacity:.45;}
+#action-info {min-height:84px; margin-top:10px; padding:10px 12px; border:1px solid var(--ak-raid-line); border-radius:10px; background:rgba(5,13,28,.62); color:var(--ak-raid-text);}
+#action-info .info {font-size:12px; text-align:left; color:var(--ak-raid-text);}
+#action-info .warning {min-height:18px; text-align:left; color:var(--ak-raid-muted); font-size:11px;}
+#action-info .target {display:flex; align-items:center; gap:7px; padding-top:6px; text-align:left;}
+#action-info .target select {max-width:200px; border:1px solid var(--ak-raid-line); border-radius:6px; background:#1a2a48; color:#fff;}
+#action-info .target .ui-btn {border:1px solid rgba(73,214,199,.7); border-radius:6px; background:#287d83; color:#fff;}
+#my-info {margin-top:10px!important;}
+#my-info p:not(.rm-buff p) {height:18px; margin-top:4px; border:1px solid rgba(255,255,255,.1); border-radius:9px; background:#080f1e;}
+#my-info .unit-hp span {background:linear-gradient(90deg,#eb5c76,#ffa574);}
+#my-info .unit-mp span {background:linear-gradient(90deg,#398dd0,#70d9e5);}
+#my-info .unit-hp i,#my-info .unit-mp i {line-height:17px; color:white; font-size:10px; text-shadow:0 1px 3px #000;}
+.all-wrapper .right-area {padding-top:12px;}
+.all-wrapper #log-area {height:calc(100% - 112px); border:1px solid var(--ak-raid-line); border-radius:12px; background:rgba(5,12,25,.54); overflow:hidden;}
+.all-wrapper #log-area .log-area {background:transparent;}
+.all-wrapper #log-area .log-area li {padding:7px 9px;}
+.all-wrapper #log-area .log-area li .log-title {margin:3px auto 7px; padding:5px; border:1px solid var(--ak-raid-line); border-radius:7px; background:rgba(33,54,88,.72); color:var(--ak-raid-text); font-size:11px;}
+.all-wrapper #log-area .log-area li p {font-size:11px; color:#d8e6fa;}
+.all-wrapper .log_btn {height:94px; min-height:94px; padding-top:9px;}
+.all-wrapper .log_btn textarea {height:52px; padding:8px; border:1px solid var(--ak-raid-line); border-radius:8px; background:rgba(18,33,58,.9); color:#fff; resize:none;}
+.all-wrapper .log_btn .btn-area {height:26px; gap:6px; margin-top:6px;}
+.all-wrapper .log_btn .btn-area .ui-btn {border:1px solid var(--ak-raid-line); border-radius:6px; background:#1d385b; color:#dfeeff; font-family:'main'; font-size:11px;}
+.all-wrapper .log_btn .btn-area .ui-btn:hover {border-color:var(--ak-raid-accent); background:#28556e;}
+.log-area li .act-title.guard {background:linear-gradient(90deg,rgba(151,113,61,.7),transparent); color:#ffe2a0;}
+.log-area li p span.dmg.guard {color:#ffe2a0;}
+.log-area li p span.dmg.guard:after {content:'] 감소';}
+@media all and (max-width:980px) {.all-wrapper {grid-template-columns:1fr; height:auto; min-height:100dvh; overflow:auto; padding:8px;}.all-wrapper .left-area {min-height:720px;}.all-wrapper .right-area {height:340px;}.all-wrapper #log-area {height:calc(100% - 96px);}.all-wrapper #center-area #turn-area {position:fixed; z-index:20;}.all-wrapper #ally-area,.all-wrapper #enemy-area {min-height:120px;max-height:120px;}.all-wrapper .right-area {width:auto;}.all-wrapper #center-area {min-height:380px;}}
+@media all and (max-width:560px) {.all-wrapper .left-area {padding:6px; min-height:680px;}.all-wrapper .unit-list {width:100%;gap:4px;}.all-wrapper .unit-list li {width:132px;}.all-wrapper #ally-area,.all-wrapper #enemy-area {min-height:106px;max-height:106px;}.all-wrapper #my-area #my-inner {padding:8px;}#action-select {gap:4px;}#action-select li {min-width:48px;height:31px;padding:0 7px;font-size:11px;}.all-wrapper #center-area #turn-area {top:8px;right:8px;}.all-wrapper .right-area {height:300px;}}

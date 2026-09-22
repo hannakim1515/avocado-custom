@@ -66,26 +66,12 @@ if($is_mine) {
 			<?
 					echo "</li>";
 				}
-				for($i; $i < $max_slot; $i++) { 
-					echo "<li>";
-			?>
-					<div class="item none">
-						<div class="thumb blank"></div>
-					</div>
-			<? }
-				for($i; $i < $maxium_slot; $i++) { 
-					echo "<li>";
-			?>
-					<div class="item none">
-						<div class="thumb lock"></div>
-					</div>
-			<?		echo "</li>";
-				}
 			?>
 		</ul>
 		<? if($is_mine) { ?>
 		<div class="setting-control">
-			<button type="button" onclick="$('.skill-conf-list').toggle();" class="ui-btn">설정</button>
+			<span class="skill-slot-summary">장착 <?=count($set_list)?> / <?=$max_slot?></span>
+			<button type="button" onclick="$('.skill-conf-list').toggle();" class="ui-btn">스킬 관리</button>
 		</div>
 		<? } ?>
 	</div>

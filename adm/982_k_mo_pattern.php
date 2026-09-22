@@ -79,6 +79,7 @@ if ($mo_id_filter > 0) {
 
 $g5['title'] = '몬스터 패턴 관리 (' . $raid_types[$cur_raid_type] . ')';
 include_once('./admin.head.php');
+include_once('./990_unified_menu_bootstrap.php');
 
 $pg_anchor = '<ul class="anchor">
     <li><a href="#anc_001">패턴 목록</a></li>

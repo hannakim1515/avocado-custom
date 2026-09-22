@@ -74,6 +74,9 @@ switch($sh['sk_function']) {
 	case "회피" : 
 		include(G5_PATH.'/dungeon/proc/inc/evasion.php');
 	break;
+	case "방어" : 
+		include(G5_PATH.'/dungeon/proc/inc/guard.php');
+	break;
 	case "스탯강화" : 
 		include(G5_PATH.'/dungeon/proc/inc/enforce_state.php');
 	break;

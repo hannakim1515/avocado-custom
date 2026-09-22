@@ -2040,4 +2040,2046 @@ select:-webkit-autofill {
 <b>Notice</b>:  Undefined index: mmb_call in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>774</b><br />
 <br />
 <b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>774</b><br />
+}<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>5</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\lib\common.lib.php</b> on line <b>1500</b><br />
+@charset "utf-8";
+/***************************************************************
+	Design Manager Setting Style: 자동생성 CSS
+---------------------------------------------------------------
+	- 최종 수정일 : 2026-05-28 15:45:10
+***************************************************************/
+
+
+<br />
+<b>Notice</b>:  Undefined index: color_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>35</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>35</b><br />
+<br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>39</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>39</b><br />
+
+
+@media all and (min-width: 1025px) { 
+	html.single:before	{
+	<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>52</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>52</b><br />
+<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>54</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>54</b><br />
+<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>56</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>56</b><br />
+<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>58</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>58</b><br />
+<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>60</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>60</b><br />
+<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>62</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>62</b><br />
+	}
+}
+
+@media all and (max-width: 1024px) {
+	html.single:before	{
+	<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>70</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>70</b><br />
+	background-image: none;
+	<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>74</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>74</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>76</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>76</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>78</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>78</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>80</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>80</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>82</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>82</b><br />
+	}
+}
+
+
+@media all and (min-width: 1025px) { 
+	#header	{
+	<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>94</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>94</b><br />
+<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>96</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>96</b><br />
+<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>98</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>98</b><br />
+<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>100</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>100</b><br />
+<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>102</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>102</b><br />
+<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>104</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>104</b><br />
+	}
+
+	#gnb	{
+	<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>110</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>110</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>112</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>112</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>114</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>114</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>116</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>116</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>118</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>118</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>120</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>120</b><br />
+	}
+
+	#gnb_control_box	{ display: none; }
+}
+
+@media all and (max-width: 1024px) {
+
+	#header	{
+	<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>131</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>131</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>133</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>133</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>135</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>135</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>137</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>137</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>139</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>139</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>141</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>141</b><br />
+	}
+
+	#gnb	{
+	<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>147</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>147</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>149</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>149</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>151</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>151</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>153</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>153</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>155</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>155</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>157</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>157</b><br />
+	}
+
+	#gnb_control_box	{
+	display: block;
+	}
+}
+
+
+<br />
+<b>Notice</b>:  Undefined index: use_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>168</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>168</b><br />
+
+<br />
+<b>Notice</b>:  Undefined index: menu_pos in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>177</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>177</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_pos in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>197</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>197</b><br />
+
+/*#gnb	{ float: right; }*/
+#gnb,
+#gnb *	{
+	color: <br />
+<b>Notice</b>:  Undefined index: menu_text in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>222</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>222</b><br />
+;
+	font-size: <br />
+<b>Notice</b>:  Undefined index: menu_text in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>223</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>223</b><br />
+px;
+}
+#gnb a:hover {
+	color: <br />
+<b>Notice</b>:  Undefined index: menu_text in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>226</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>226</b><br />
+;
+	font-size: <br />
+<b>Notice</b>:  Undefined index: menu_text in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>227</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>227</b><br />
+px;
+}
+
+
+
+
+<br />
+<b>Notice</b>:  Undefined index: color_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>237</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>237</b><br />
+<br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>239</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>239</b><br />
+
+<br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>244</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>244</b><br />
+
+<br />
+<b>Notice</b>:  Undefined index: color_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>251</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>251</b><br />
+
+
+
+
+.ui-btn	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>264</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>264</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>265</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>265</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>266</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>266</b><br />
+;
+}
+.ui-btn:hover	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>269</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>269</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>270</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>270</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>271</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>271</b><br />
+;
+}
+
+.ui-btn.point	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>275</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>275</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>276</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>276</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>277</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>277</b><br />
+;
+}
+.ui-btn.point:hover	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>280</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>280</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>281</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>281</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>282</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>282</b><br />
+;
+}
+
+.ui-btn.etc	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>286</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>286</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>287</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>287</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>288</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>288</b><br />
+;
+}
+.ui-btn.etc:hover	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>291</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>291</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>292</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>292</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>293</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>293</b><br />
+;
+}
+.swiper-pagination-bullet-active {background:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>295</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>295</b><br />
+;}
+
+
+.pg_wrap .pg_page	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>302</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>302</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>303</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>303</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>304</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>304</b><br />
+;
+}
+.pg_wrap .pg_page:hover	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>307</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>307</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>308</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>308</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>309</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>309</b><br />
+;
+}
+
+.pg_wrap .pg_current,
+.pg_wrap .pg_current:hover	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>314</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>314</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>315</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>315</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>316</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>316</b><br />
+;
+}
+
+
+
+
+
+.bar-equalizer i	{
+<br />
+<b>Notice</b>:  Undefined index: equalizer in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>327</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>327</b><br />
+<br />
+<b>Notice</b>:  Undefined index: equalizer in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>329</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>329</b><br />
+}
+
+
+
+.status-bar dd p	{
+	background: <br />
+<b>Notice</b>:  Undefined index: color_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>342</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>342</b><br />
+;
+}
+.status-bar dd p span	{
+	background: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>345</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>345</b><br />
+;
+	opacity: .5;
+}
+.status-bar dd p sup	{
+	background: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>349</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>349</b><br />
+;
+}
+.status-bar dd p i	{
+	color: <br />
+<b>Notice</b>:  Undefined index: color_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>352</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>352</b><br />
+;
+}
+
+
+
+hr.line	{
+	background: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>361</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>361</b><br />
+;
+}
+
+
+
+
+.form-input,
+input[type="file"],
+input[type="text"],
+input[type="number"],
+input[type="password"],
+textarea,
+select	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>377</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>377</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>378</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>378</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>379</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>379</b><br />
+;
+	
+	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>381</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>381</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>382</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>382</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>383</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>383</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>384</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>384</b><br />
+}
+
+::-webkit-input-placeholder {
+	color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>388</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>388</b><br />
+;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+	color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>391</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>391</b><br />
+;
+	opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+	color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>395</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>395</b><br />
+;
+	opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+	color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>399</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>399</b><br />
+;
+}
+
+
+*::-webkit-input-placeholder	{ color:#000; } 
+textarea:-moz-placeholder, input:-moz-placeholder	{ color:#000; }
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  background-color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>408</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>408</b><br />
+ !important;
+  color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>409</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>409</b><br />
+;
+}
+
+
+
+
+.flex-control-paging a	{ background: <br />
+<b>Notice</b>:  Undefined index: color_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>418</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>418</b><br />
+; }
+.flex-control-paging a.flex-active	{ background: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>419</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>419</b><br />
+; }
+
+
+
+
+.theme-box	{
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>428</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>428</b><br />
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>430</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>430</b><br />
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>432</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>432</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>435</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>435</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>436</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>436</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>437</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>437</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>438</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>438</b><br />
+}
+.theme-box.no-link a	{
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>441</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>441</b><br />
+}
+
+
+
+.inven-popup-viewer {
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>452</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>452</b><br />
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>454</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>454</b><br />
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>456</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>456</b><br />
+}
+
+
+
+
+.timeline-Tweet:before { border-top-color: <br />
+<b>Notice</b>:  Undefined index: color_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>467</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>467</b><br />
+; }
+.TweetAuthor-name	{ color: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>468</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>468</b><br />
+; }
+
+
+
+
+#submenu	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: sub_menu in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>477</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>477</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: sub_menu in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>478</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>478</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: sub_menu in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>480</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>480</b><br />
+}
+#submenu a	{
+	color: <br />
+<b>Notice</b>:  Undefined offset: 1 in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>489</b><br />
+;
+}
+#submenu a:hover	{
+	color: <br />
+<b>Notice</b>:  Undefined offset: 6 in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>492</b><br />
+;
+}
+
+
+
+
+.theme-list,
+.theme-form	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: board_table in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>503</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>503</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: board_table in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>504</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>504</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: board_table in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>506</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>506</b><br />
+}
+
+/*** Form Area ***/
+.theme-form th	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: form_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>517</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>517</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: form_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>518</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>518</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: form_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>520</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>520</b><br />
+}
+.theme-form td	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: form_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>529</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>529</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: form_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>530</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>530</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: form_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>532</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>532</b><br />
+}
+
+/*** List Area ***/
+.theme-list th	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: list_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>543</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>543</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: list_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>544</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>544</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: list_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>546</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>546</b><br />
+}
+.theme-list td	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: list_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>555</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>555</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: list_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>556</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>556</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: list_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>558</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>558</b><br />
+}
+
+
+
+
+#tab_list { border-color: <br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>573</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>573</b><br />
+; }
+
+
+
+
+.inventory-list a {
+	/*border: 1px solid <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>582</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>582</b><br />
+;*/
+
+	border: 1px solid <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>584</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>584</b><br />
+;
+}
+.inventory-list a i	{
+	/*
+	background: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>588</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>588</b><br />
+;
+	color: <br />
+<b>Notice</b>:  Undefined index: color_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>589</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>589</b><br />
+;
+	*/
+
+	border: 1px solid <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>592</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>592</b><br />
+;
+	background: rgba(0, 0, 0, .7);
+	color: #fff;
+}
+
+
+
+
+
+#load_log_board	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>605</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>605</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>607</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>607</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>609</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>609</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>611</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>611</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>613</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>613</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>615</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>615</b><br />
+}
+
+.board-notice	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_notice in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>621</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>621</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_notice in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>623</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>623</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_notice in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>626</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>626</b><br />
+}
+
+#log_list	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_list in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>636</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>636</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_list in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>638</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>638</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_list in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>641</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>641</b><br />
+}
+#log_list .item	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_list_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>653</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>653</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_list_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>655</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>655</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_list_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>658</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>658</b><br />
+
+	<br />
+<b>Notice</b>:  Undefined offset: 6 in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>666</b><br />
+}
+
+#log_list .item .item-inner .ui-pic	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_log in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>672</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>672</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_log in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>674</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>674</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_log in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>677</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>677</b><br />
+}
+
+
+#log_list .item .item-inner .item-comment	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_reply_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>691</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>691</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_reply_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>693</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>693</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_reply_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>696</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>696</b><br />
+	<br />
+<b>Notice</b>:  Undefined offset: 6 in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>703</b><br />
+}
+
+
+#log_list .item .item-inner	.ui-comment	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_reply in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>710</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>710</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_reply in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>712</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>712</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_reply in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>715</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>715</b><br />
+
+	}
+
+
+#log_list .item .item-inner .co-header p,
+#log_list .item .item-inner .co-header p a	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_name in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>732</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>732</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: mmb_name in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>735</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>735</b><br />
+}
+
+#log_list .item .item-inner .co-header p.owner,
+#log_list .item .item-inner .co-header p.owner a	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_owner_name in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>742</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>742</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: mmb_owner_name in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>745</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>745</b><br />
+}
+
+#log_list .item .item-inner .co-footer .date	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_datetime in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>751</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>751</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: mmb_datetime in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>754</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>754</b><br />
+}
+#log_list .item .item-inner .co-content .other-site-link	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_link in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>759</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>759</b><br />
+}
+#log_list .item .item-inner .co-content .link_hash_tag	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_hash in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>764</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>764</b><br />
+}
+#log_list .item .item-inner .co-content .log_link_tag	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_log_ank in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>769</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>769</b><br />
+}
+#log_list .item .item-inner .co-content .member_call	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_call in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>774</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>774</b><br />
+}<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>5</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\lib\common.lib.php</b> on line <b>1500</b><br />
+@charset "utf-8";
+/***************************************************************
+	Design Manager Setting Style: 자동생성 CSS
+---------------------------------------------------------------
+	- 최종 수정일 : 2026-09-21 15:55:00
+***************************************************************/
+
+
+<br />
+<b>Notice</b>:  Undefined index: color_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>35</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>35</b><br />
+<br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>39</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>39</b><br />
+
+
+@media all and (min-width: 1025px) { 
+	html.single:before	{
+	<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>52</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>52</b><br />
+<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>54</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>54</b><br />
+<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>56</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>56</b><br />
+<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>58</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>58</b><br />
+<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>60</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>60</b><br />
+<br />
+<b>Notice</b>:  Undefined index: background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>62</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>62</b><br />
+	}
+}
+
+@media all and (max-width: 1024px) {
+	html.single:before	{
+	<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>70</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>70</b><br />
+	background-image: none;
+	<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>74</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>74</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>76</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>76</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>78</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>78</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>80</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>80</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>82</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>82</b><br />
+	}
+}
+
+
+@media all and (min-width: 1025px) { 
+	#header	{
+	<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>94</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>94</b><br />
+<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>96</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>96</b><br />
+<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>98</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>98</b><br />
+<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>100</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>100</b><br />
+<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>102</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>102</b><br />
+<br />
+<b>Notice</b>:  Undefined index: header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>104</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>104</b><br />
+	}
+
+	#gnb	{
+	<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>110</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>110</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>112</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>112</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>114</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>114</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>116</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>116</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>118</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>118</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>120</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>120</b><br />
+	}
+
+	#gnb_control_box	{ display: none; }
+}
+
+@media all and (max-width: 1024px) {
+
+	#header	{
+	<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>131</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>131</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>133</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>133</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>135</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>135</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>137</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>137</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>139</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>139</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_header_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>141</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>141</b><br />
+	}
+
+	#gnb	{
+	<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>147</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>147</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>149</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>149</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>151</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>151</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>153</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>153</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>155</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>155</b><br />
+<br />
+<b>Notice</b>:  Undefined index: m_menu_background in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>157</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>157</b><br />
+	}
+
+	#gnb_control_box	{
+	display: block;
+	}
+}
+
+
+<br />
+<b>Notice</b>:  Undefined index: use_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>168</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>168</b><br />
+
+<br />
+<b>Notice</b>:  Undefined index: menu_pos in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>177</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>177</b><br />
+<br />
+<b>Notice</b>:  Undefined index: menu_pos in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>197</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>197</b><br />
+
+/*#gnb	{ float: right; }*/
+#gnb,
+#gnb *	{
+	color: <br />
+<b>Notice</b>:  Undefined index: menu_text in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>222</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>222</b><br />
+;
+	font-size: <br />
+<b>Notice</b>:  Undefined index: menu_text in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>223</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>223</b><br />
+px;
+}
+#gnb a:hover {
+	color: <br />
+<b>Notice</b>:  Undefined index: menu_text in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>226</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>226</b><br />
+;
+	font-size: <br />
+<b>Notice</b>:  Undefined index: menu_text in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>227</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>227</b><br />
+px;
+}
+
+
+
+
+<br />
+<b>Notice</b>:  Undefined index: color_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>237</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>237</b><br />
+<br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>239</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>239</b><br />
+
+<br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>244</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>244</b><br />
+
+<br />
+<b>Notice</b>:  Undefined index: color_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>251</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>251</b><br />
+
+
+
+
+.ui-btn	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>264</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>264</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>265</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>265</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>266</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>266</b><br />
+;
+}
+.ui-btn:hover	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>269</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>269</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>270</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>270</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>271</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>271</b><br />
+;
+}
+
+.ui-btn.point	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>275</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>275</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>276</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>276</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>277</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>277</b><br />
+;
+}
+.ui-btn.point:hover	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>280</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>280</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>281</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>281</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>282</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>282</b><br />
+;
+}
+
+.ui-btn.etc	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>286</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>286</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>287</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>287</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>288</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>288</b><br />
+;
+}
+.ui-btn.etc:hover	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>291</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>291</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>292</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>292</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_etc in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>293</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>293</b><br />
+;
+}
+.swiper-pagination-bullet-active {background:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>295</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>295</b><br />
+;}
+
+
+.pg_wrap .pg_page	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>302</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>302</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>303</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>303</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>304</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>304</b><br />
+;
+}
+.pg_wrap .pg_page:hover	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>307</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>307</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>308</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>308</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>309</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>309</b><br />
+;
+}
+
+.pg_wrap .pg_current,
+.pg_wrap .pg_current:hover	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>314</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>314</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>315</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>315</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>316</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>316</b><br />
+;
+}
+
+
+
+
+
+.bar-equalizer i	{
+<br />
+<b>Notice</b>:  Undefined index: equalizer in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>327</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>327</b><br />
+<br />
+<b>Notice</b>:  Undefined index: equalizer in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>329</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>329</b><br />
+}
+
+
+
+.status-bar dd p	{
+	background: <br />
+<b>Notice</b>:  Undefined index: color_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>342</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>342</b><br />
+;
+}
+.status-bar dd p span	{
+	background: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>345</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>345</b><br />
+;
+	opacity: .5;
+}
+.status-bar dd p sup	{
+	background: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>349</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>349</b><br />
+;
+}
+.status-bar dd p i	{
+	color: <br />
+<b>Notice</b>:  Undefined index: color_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>352</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>352</b><br />
+;
+}
+
+
+
+hr.line	{
+	background: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>361</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>361</b><br />
+;
+}
+
+
+
+
+.form-input,
+input[type="file"],
+input[type="text"],
+input[type="number"],
+input[type="password"],
+textarea,
+select	{
+	color:	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>377</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>377</b><br />
+;
+	background:	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>378</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>378</b><br />
+;
+	border-color:	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>379</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>379</b><br />
+;
+	
+	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>381</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>381</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>382</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>382</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>383</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>383</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>384</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>384</b><br />
+}
+
+::-webkit-input-placeholder {
+	color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>388</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>388</b><br />
+;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+	color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>391</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>391</b><br />
+;
+	opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+	color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>395</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>395</b><br />
+;
+	opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+	color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>399</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>399</b><br />
+;
+}
+
+
+*::-webkit-input-placeholder	{ color:#000; } 
+textarea:-moz-placeholder, input:-moz-placeholder	{ color:#000; }
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  background-color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>408</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>408</b><br />
+ !important;
+  color: <br />
+<b>Notice</b>:  Undefined index: input_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>409</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>409</b><br />
+;
+}
+
+
+
+
+.flex-control-paging a	{ background: <br />
+<b>Notice</b>:  Undefined index: color_default in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>418</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>418</b><br />
+; }
+.flex-control-paging a.flex-active	{ background: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>419</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>419</b><br />
+; }
+
+
+
+
+.theme-box	{
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>428</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>428</b><br />
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>430</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>430</b><br />
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>432</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>432</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>435</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>435</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>436</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>436</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>437</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>437</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>438</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>438</b><br />
+}
+.theme-box.no-link a	{
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>441</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>441</b><br />
+}
+
+
+
+.inven-popup-viewer {
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>452</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>452</b><br />
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>454</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>454</b><br />
+<br />
+<b>Notice</b>:  Undefined index: box_style in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>456</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>456</b><br />
+}
+
+
+
+
+.timeline-Tweet:before { border-top-color: <br />
+<b>Notice</b>:  Undefined index: color_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>467</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>467</b><br />
+; }
+.TweetAuthor-name	{ color: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>468</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>468</b><br />
+; }
+
+
+
+
+#submenu	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: sub_menu in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>477</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>477</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: sub_menu in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>478</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>478</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: sub_menu in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>480</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>480</b><br />
+}
+#submenu a	{
+	color: <br />
+<b>Notice</b>:  Undefined offset: 1 in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>489</b><br />
+;
+}
+#submenu a:hover	{
+	color: <br />
+<b>Notice</b>:  Undefined offset: 6 in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>492</b><br />
+;
+}
+
+
+
+
+.theme-list,
+.theme-form	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: board_table in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>503</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>503</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: board_table in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>504</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>504</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: board_table in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>506</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>506</b><br />
+}
+
+/*** Form Area ***/
+.theme-form th	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: form_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>517</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>517</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: form_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>518</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>518</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: form_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>520</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>520</b><br />
+}
+.theme-form td	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: form_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>529</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>529</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: form_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>530</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>530</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: form_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>532</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>532</b><br />
+}
+
+/*** List Area ***/
+.theme-list th	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: list_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>543</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>543</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: list_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>544</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>544</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: list_header in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>546</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>546</b><br />
+}
+.theme-list td	{
+	background-color:	<br />
+<b>Notice</b>:  Undefined index: list_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>555</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>555</b><br />
+;
+	color:	<br />
+<b>Notice</b>:  Undefined index: list_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>556</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>556</b><br />
+;
+<br />
+<b>Notice</b>:  Undefined index: list_body in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>558</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>558</b><br />
+}
+
+
+
+
+#tab_list { border-color: <br />
+<b>Notice</b>:  Undefined index: btn_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>573</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>573</b><br />
+; }
+
+
+
+
+.inventory-list a {
+	/*border: 1px solid <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>582</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>582</b><br />
+;*/
+
+	border: 1px solid <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>584</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>584</b><br />
+;
+}
+.inventory-list a i	{
+	/*
+	background: <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>588</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>588</b><br />
+;
+	color: <br />
+<b>Notice</b>:  Undefined index: color_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>589</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>589</b><br />
+;
+	*/
+
+	border: 1px solid <br />
+<b>Notice</b>:  Undefined index: color_point in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>592</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>592</b><br />
+;
+	background: rgba(0, 0, 0, .7);
+	color: #fff;
+}
+
+
+
+
+
+#load_log_board	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>605</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>605</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>607</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>607</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>609</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>609</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>611</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>611</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>613</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>613</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_contain_bak in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>615</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>615</b><br />
+}
+
+.board-notice	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_notice in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>621</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>621</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_notice in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>623</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>623</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_notice in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>626</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>626</b><br />
+}
+
+#log_list	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_list in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>636</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>636</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_list in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>638</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>638</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_list in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>641</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>641</b><br />
+}
+#log_list .item	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_list_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>653</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>653</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_list_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>655</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>655</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_list_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>658</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>658</b><br />
+
+	<br />
+<b>Notice</b>:  Undefined offset: 6 in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>666</b><br />
+}
+
+#log_list .item .item-inner .ui-pic	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_log in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>672</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>672</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_log in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>674</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>674</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_log in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>677</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>677</b><br />
+}
+
+
+#log_list .item .item-inner .item-comment	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_reply_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>691</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>691</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_reply_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>693</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>693</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_reply_item in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>696</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>696</b><br />
+	<br />
+<b>Notice</b>:  Undefined offset: 6 in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>703</b><br />
+}
+
+
+#log_list .item .item-inner	.ui-comment	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_reply in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>710</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>710</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_reply in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>712</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>712</b><br />
+<br />
+<b>Notice</b>:  Undefined index: mmb_reply in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>715</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>715</b><br />
+
+	}
+
+
+#log_list .item .item-inner .co-header p,
+#log_list .item .item-inner .co-header p a	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_name in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>732</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>732</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: mmb_name in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>735</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>735</b><br />
+}
+
+#log_list .item .item-inner .co-header p.owner,
+#log_list .item .item-inner .co-header p.owner a	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_owner_name in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>742</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>742</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: mmb_owner_name in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>745</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>745</b><br />
+}
+
+#log_list .item .item-inner .co-footer .date	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_datetime in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>751</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>751</b><br />
+	<br />
+<b>Notice</b>:  Undefined index: mmb_datetime in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>754</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>754</b><br />
+}
+#log_list .item .item-inner .co-content .other-site-link	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_link in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>759</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>759</b><br />
+}
+#log_list .item .item-inner .co-content .link_hash_tag	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_hash in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>764</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>764</b><br />
+}
+#log_list .item .item-inner .co-content .log_link_tag	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_log_ank in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>769</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>769</b><br />
+}
+#log_list .item .item-inner .co-content .member_call	{
+	<br />
+<b>Notice</b>:  Undefined index: mmb_call in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>774</b><br />
+<br />
+<b>Notice</b>:  Trying to access array offset on value of type null in <b>C:\xampp\htdocs\avocado\adm\design_form_css.php</b> on line <b>774</b><br />
 }

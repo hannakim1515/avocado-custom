@@ -46,6 +46,8 @@ if (empty($rm) || !isset($rm['hp_now'])) {
 
     if ($type === 'atk' || $type === 'heal') {
         $data['warning']=use_k_action($type, $rm, $target_id, $target_type, $ra_id, $msg, $option, $unit_name);
+    } elseif ($type === 'guard') {
+        $data['warning']=use_k_guard($rm, $ra_id, $msg, $option, $unit_name);
     } elseif ($type === 'item') {
         $data['warning']=use_k_item($rm, $target_id, $ra_id, $msg, $option);
     } elseif ($type === 'skill' && $bs_id) {
@@ -60,6 +62,9 @@ if (empty($rm) || !isset($rm['hp_now'])) {
         $data['warning']=use_k_skill($sk, $rm, $target_id, $target_type, $ra_id, $msg, $option, $unit_name);
     }
 
+    /* 행동이 실제로 성공했을 때만 턴을 넘긴다. 설정 누락·대상 오류로 방어가
+     * 실패했는데도 턴이 소모되던 문제를 막는다. */
+    if ($data['warning'] === '') {
     /**turn change**/
     if($turn_type==='speed'){
         if ($rm_id) {sql_query("UPDATE {$battle_table}_unit SET tt_done = 1 WHERE rm_id = {$rm_id}");}
@@ -126,6 +131,7 @@ if (empty($rm) || !isset($rm['hp_now'])) {
             $next = null;
             include './_action_turnchange.'.$turn_type.'.php';
         }
+    }
     }
 
 }

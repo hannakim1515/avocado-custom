@@ -3,6 +3,17 @@
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 check_site_auth($is_member);
 
+// extend 라이브러리 로드
+if(is_file(G5_EXTEND_PATH.'/status_extra.lib.php')) {
+	include_once(G5_EXTEND_PATH.'/status_extra.lib.php');
+}
+if(is_file(G5_EXTEND_PATH.'/status_battle.lib.php')) {
+	include_once(G5_EXTEND_PATH.'/status_battle.lib.php');
+}
+if(is_file(G5_EXTEND_PATH.'/k_status_bridge.lib.php')) {
+	include_once(G5_EXTEND_PATH.'/k_status_bridge.lib.php');
+}
+
 // 테마 head.sub.php 파일
 if(!defined('G5_IS_ADMIN') && defined('G5_THEME_PATH') && is_file(G5_THEME_PATH.'/head.sub.php')) {
     require_once(G5_THEME_PATH.'/head.sub.php');
