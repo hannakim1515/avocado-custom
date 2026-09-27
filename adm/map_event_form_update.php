@@ -2,6 +2,23 @@
 $sub_menu = "710100";
 include_once('./_common.php');
 $ma_id = $_REQUEST['ma_id'];
+$action_id = isset($_POST['action_id']) ? (int)$_POST['action_id'] : 0;
+$me_type = (isset($_POST['me_type']) && $_POST['me_type'] == 'parttime') ? 'parttime' : 'search';
+$me_per_s = 1;
+$me_per_e = isset($_POST['me_per_e']) ? (int)$_POST['me_per_e'] : 100;
+if($me_per_e < 0) $me_per_e = 0;
+if($me_per_e > 100) $me_per_e = 100;
+
+if($me_type == 'search') {
+	$action_id = 0;
+} else {
+	$action = get_map_action($action_id);
+	if(!$action['action_id'] || $action['ma_id'] != $ma_id) {
+		alert("아르바이트/외주 이벤트는 연결할 MAP 행동을 선택하세요.");
+	} else {
+		$me_type = map_normalize_action_type($action['action_type']);
+	}
+}
 
 if ($w == 'u') check_demo();
 auth_check($auth[$sub_menu], 'w');
@@ -22,6 +39,8 @@ if (isset($_POST['me_content'])) {
 
 $sql_common = "
 	ma_id			= '{$ma_id}',
+	action_id		= '{$action_id}',
+	me_type			= '{$me_type}',
 	me_title		= '{$me_title}',
 	me_content		= '{$me_content}',
 	me_get_item		= '{$me_get_item}',

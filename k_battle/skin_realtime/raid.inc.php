@@ -112,7 +112,7 @@ if ($time_limit > 0 && $time_start > 0) {
 
                 // 액션 비활성화 플래그 (action_select.php에서 사용하는 값)
                 if ($hp_now <= 0 || $tt_done || $is_stun || $not_start || $not_myturn) {
-                    $i_false = $h_false = $a_false = $s_false = "false";
+                    $i_false = $h_false = $a_false = $g_false = $s_false = "false";
                     $my_class='';
                 }
                 // 버프

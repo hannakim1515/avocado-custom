@@ -264,19 +264,19 @@
    A/K 통합 전투 UI — 던전과 실시간 레이드가 같은 색·버튼 체계를 사용한다.
    기존 마크업을 보존하여 스킨 교체 없이 통합본만 덮어쓸 수 있다.
 ================================================================ */
-:root {--ak-ink:#0a1020; --ak-panel:#121b31; --ak-panel-2:#1a2742; --ak-line:rgba(157,190,233,.22); --ak-text:#edf4ff; --ak-muted:#a9bad3; --ak-accent:#49d6c7; --ak-gold:#ffc96b; --ak-danger:#ff617f;}
-.dungeonWrap {min-width:0; min-height:100vh; background:radial-gradient(circle at 82% 18%, #273a61 0, #0a1020 38%, #050810 100%); color:var(--ak-text);}
+:root {--ak-ink:#171116; --ak-panel:#241923; --ak-panel-2:#34202d; --ak-line:rgba(224,174,190,.20); --ak-text:#fff1f5; --ak-muted:#d1afb9; --ak-accent:#d898a8; --ak-gold:#e6bf84; --ak-danger:#ef758d;}
+.dungeonWrap {min-width:0; min-height:100vh; background:#171116; color:var(--ak-text);}
 .dungeon-top-area {height:72px; border-bottom:1px solid var(--ak-line); background:rgba(7,12,25,.88); box-shadow:0 10px 35px rgba(0,0,0,.25); backdrop-filter:blur(12px);}
-.dungeon-top-area .inner .turn {width:154px; background:linear-gradient(135deg,#1c3156,#13213b); border-right:1px solid var(--ak-line);}
+.dungeon-top-area .inner .turn {width:154px; background:#2b1b27; border-right:1px solid var(--ak-line);}
 .dungeon-top-area .inner .turn span {color:var(--ak-muted); font-size:12px; letter-spacing:.04em;}
 .dungeon-top-area .inner .turn strong {color:var(--ak-gold); font-size:23px;}
 .dungeon-top-area .control {padding-left:20px;}
-.dungeon-top-area .control a {margin-right:7px; padding:9px 14px; border:1px solid var(--ak-line); border-radius:8px; background:rgba(28,42,70,.75); color:var(--ak-text); font-size:12px; transition:.18s ease;}
-.dungeon-top-area .control a:hover {border-color:var(--ak-accent); background:#20375d; transform:translateY(-1px);}
+.dungeon-top-area .control a {margin-right:7px; padding:9px 14px; border:1px solid var(--ak-line); border-radius:8px; background:rgba(48,29,43,.75); color:var(--ak-text); font-size:12px; transition:.18s ease;}
+.dungeon-top-area .control a:hover {border-color:var(--ak-accent); background:#5a3147; transform:translateY(-1px);}
 .dungeon-top-area .control a.exit {border-color:rgba(255,97,127,.55); color:#ffdbe2;}
 .dungeon-content-area {top:72px;}
-.dungeon-active-pannel {width:42%; min-width:440px; border-right:1px solid var(--ak-line); background:linear-gradient(180deg,rgba(10,16,32,.97),rgba(14,24,45,.93)); box-shadow:18px 0 38px rgba(0,0,0,.18);}
-.monster-active-pannel {width:58%; background:radial-gradient(circle at center 62%,rgba(80,132,193,.18),transparent 47%);}
+.dungeon-active-pannel {width:42%; min-width:440px; border-right:1px solid var(--ak-line); background:#211720; box-shadow:18px 0 38px rgba(0,0,0,.18);}
+.monster-active-pannel {width:58%; background:transparent;}
 .monster-active-pannel .allTurn {top:0; right:22px; width:112px; height:76px; border:1px solid rgba(255,201,107,.58); background:linear-gradient(140deg,#593b24,#261b27); box-shadow:0 10px 25px rgba(0,0,0,.26);}
 .monster-active-pannel .allTurn strong {color:var(--ak-gold);}
 .monster-active-pannel .status {left:15%; width:70%; bottom:72px; padding:18px; border:1px solid var(--ak-line); border-radius:14px; background:rgba(8,14,27,.72); box-shadow:0 14px 40px rgba(0,0,0,.3); backdrop-filter:blur(10px);}

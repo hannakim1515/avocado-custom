@@ -11,9 +11,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 			<div class="control">
 				<?
 					if($character['ch_state'] == '승인') { 
-						if($character['ma_id'] == $ma_id) {
-							include(G5_PATH."/map/inc/btn_search.php");
-						} else if(!$use_dungeon_map || (function_exists('is_has_dungeon') && !is_has_dungeon($character['ch_id']))) {
+						if($character['ma_id'] != $ma_id && (!$use_dungeon_map || (function_exists('is_has_dungeon') && !is_has_dungeon($character['ch_id'])))) {
 							include(G5_PATH."/map/inc/btn_move.php");
 						}
 					}
@@ -31,6 +29,10 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 			<div><?=nl2br($ma['ma_content'])?></div>
 		</div>
 	</div>
+
+	<? if($character['ch_state'] == '승인' && $character['ma_id'] == $ma_id) {
+		include(G5_PATH."/map/inc/action_list.php");
+	} ?>
 
 	<div class="searchCounter">
 		<div class="counter">

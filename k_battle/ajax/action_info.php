@@ -50,8 +50,12 @@ if ((int)$rm['hp_now'] <= 0) {
             if ($turn_type === 'all' || ($turn_type === 'skill' && $type === 'skill')) $tt_check = true;
             break;
         case 'realtime':
-               $ra = sql_fetch("SELECT now_turn FROM {$battle_table} WHERE ra_id = '{$ra_id}'");
-               $notmyturn=k_turn_type_check($turn_type, $ra['now_turn'], $rm_id);
+               $ra = sql_fetch("SELECT ra_state, now_turn FROM {$battle_table} WHERE ra_id = '{$ra_id}'");
+               if ((int)ses($ra, 'ra_state', 0, 'int') !== 1) {
+                   $data['warning'] = '레이드가 아직 시작되지 않았거나 이미 종료되었습니다.';
+               } else {
+                   $notmyturn=k_turn_type_check($turn_type, $ra['now_turn'], $rm_id);
+               }
             break;
         default:
             # code...

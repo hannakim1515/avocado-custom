@@ -24,15 +24,39 @@ if(!$lock) {
 	set_move_map($character['ch_id'], $ma_id);
 }
 //$side_cost = get_gold($member['mb_id']);
+
+$ma_name_js = json_encode($ma['ma_name']);
+$ma_bg_img = trim(isset($ma['ma_img']) ? $ma['ma_img'] : '');
+if($ma_bg_img === '' && isset($ma['ma_parent']) && (int)$ma['ma_parent'] > 0 && (int)$ma['ma_parent'] !== (int)$ma['ma_id']) {
+	$parent_img = sql_fetch("select ma_img from {$g5['map_table']} where ma_id = '".(int)$ma['ma_parent']."'");
+	$ma_bg_img = isset($parent_img['ma_img']) ? trim($parent_img['ma_img']) : '';
+}
+$ma_bg_img_js = json_encode($ma_bg_img);
+$npc_img_js = json_encode('');
+$npc_name_js = json_encode($ma['ma_name']);
+$ma_content = map_replace_script_vars($ma['ma_content'], array(
+	'map_name' => $ma['ma_name'],
+	'npc_name' => $ma['ma_name']
+));
+$ma_content_js = json_encode($ma_content);
 ?>
 
 <script>
 <? if($msg) { ?>alert("<?=$msg?>");<? } ?>
 
-open_map_pannel(<?=$ma_id?>);
-
 <? if(!$lock) { ?>
 	$('.map-img-viewer .anker a').removeClass('on');
 	$('.map-img-viewer .anker a[data-idx="<?=$ma_id?>"]').addClass('on');
+	if(typeof map_vn_after_move == 'function') {
+		map_vn_after_move(<?=$ma_id?>, <?=$ma_name_js?>, <?=$npc_img_js?>, <?=$npc_name_js?>, <?=$ma_content_js?>, <?=$ma_bg_img_js?>);
+	} else {
+		open_map_pannel(<?=$ma_id?>);
+		if(typeof map_set_scene_npc == 'function') {
+			map_set_scene_npc(<?=$npc_img_js?>, <?=$npc_name_js?>);
+		}
+	}
+<? } else { ?>
+	if(typeof mapVnMovingTo != 'undefined') mapVnMovingTo = 0;
+	open_map_pannel(<?=$ma_id?>);
 <? } ?>
 </script>

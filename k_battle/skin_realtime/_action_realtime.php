@@ -16,8 +16,8 @@ $select = "origin.{$unit_type}_name AS unit_name, unit.*";
 $rm     = get_k_unit($rm_id, $unit_type, $select);
 if (!is_array($rm)) $rm = array();
 
-$ra = sql_fetch("SELECT now_turn, ra_turn_type, ra_mo_auto FROM {$battle_table} WHERE {$ar_title} = '{$ra_id}'");
-if (!is_array($ra)) $ra = array('now_turn' => null, 'ra_turn_type' => 'speed', 'ra_mo_auto' => 'free');
+$ra = sql_fetch("SELECT ra_state, now_turn, ra_turn_type, ra_mo_auto FROM {$battle_table} WHERE {$ar_title} = '{$ra_id}'");
+if (!is_array($ra)) $ra = array('ra_state' => 0, 'now_turn' => null, 'ra_turn_type' => 'speed', 'ra_mo_auto' => 'free');
 
 $data = array(
     'warning'     => '',
@@ -32,7 +32,9 @@ $mo_auto   = ses($ra, 'ra_mo_auto', 'auto');
 $next      = array();
 
 // 기본 상태 체크
-if (empty($rm) || !isset($rm['hp_now'])) {
+if ((int)ses($ra, 'ra_state', 0, 'int') !== 1) {
+    $data['warning'] = '레이드가 아직 시작되지 않았거나 이미 종료되었습니다.';
+} elseif (empty($rm) || !isset($rm['hp_now'])) {
     $data['warning'] = '유닛 정보를 찾을 수 없습니다.';
 } elseif ((int)$rm['hp_now'] <= 0) {
     $data['warning'] = '현재 행동불능 상태입니다.';
@@ -64,6 +66,12 @@ if (empty($rm) || !isset($rm['hp_now'])) {
 
     /* 행동이 실제로 성공했을 때만 턴을 넘긴다. 설정 누락·대상 오류로 방어가
      * 실패했는데도 턴이 소모되던 문제를 막는다. */
+    // 기존 전투 함수는 성공 시 false를 반환한다. 이를 오류로 취급하면
+    // 행동은 기록되지만 아래의 턴 변경 로직이 실행되지 않는다.
+    if ($data['warning'] === false || $data['warning'] === null) {
+        $data['warning'] = '';
+    }
+
     if ($data['warning'] === '') {
     /**turn change**/
     if($turn_type==='speed'){

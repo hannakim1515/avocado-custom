@@ -4,11 +4,16 @@ header('Content-Type: application/json; charset=UTF-8');
 include_once './_common.php';
 
 // $ra 조회 후 turn_type, mo_auto 설정
-$ra = sql_fetch("SELECT ra_turn, ra_count, ra_turn_type, ra_mo_auto, now_turn FROM {$battle_table} WHERE {$ar_title} = '{$ra_id}'");
+$ra = sql_fetch("SELECT ra_state, ra_turn, ra_count, ra_turn_type, ra_mo_auto, now_turn FROM {$battle_table} WHERE {$ar_title} = '{$ra_id}'");
 if (!is_array($ra)) $ra = array();
 
+if ((int)ses($ra, 'ra_state', 0, 'int') !== 1) {
+    echo json_encode(false);
+    exit;
+}
+
 $turn_type = ses($ra, 'ra_turn_type', 'speed');
-$mo_auto   = (ses($ra, 'ra_mo_auto', 'auto') === 'free');
+$mo_auto   = (ses($ra, 'ra_mo_auto', 'auto') === 'auto');
 
 $ra_turn  = ses($ra, 'ra_turn', 0, 'int');
 $ra_count = ses($ra, 'ra_count', 0, 'int');

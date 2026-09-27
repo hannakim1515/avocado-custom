@@ -21,11 +21,16 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 $sql = " select * {$sql_common} {$sql_order} limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
 
+$map_event_counts = array();
+$event_count_result = sql_query(" select ma_id, count(me_id) as cnt from {$g5['map_event_table']} group by ma_id ");
+for($i=0; $event_count = sql_fetch_array($event_count_result); $i++) {
+	$map_event_counts[$event_count['ma_id']] = $event_count['cnt'];
+}
+
 $listall = '<a href="'.$_SERVER['PHP_SELF'].'" class="ov_listall">전체목록</a>';
 
 $g5['title'] = '지역 관리';
 include_once ('./admin.head.php');
-include_once('./990_unified_menu_bootstrap.php');
 $colspan = 13;
 ?>
 
@@ -276,33 +281,31 @@ $colspan = 13;
 					<td>
 						<?
 							if(!$is_parent) { 
-							// 이벤트 카운터 검색
-								$me_cnt = sql_fetch("select count(me_id) as cnt from {$g5['map_event_table']} where ma_id = '{$row['ma_id']}'");
-								$me_cnt = $me_cnt['cnt'];
+								$me_cnt = isset($map_event_counts[$row['ma_id']]) ? $map_event_counts[$row['ma_id']] : 0;
 						?>
-							<a href="./map_event_list.php?ma_id=<?=$row['ma_id']?>"><?=$me_cnt?>건</a>
+							<a href="./map_event_list.php?ma_id=<?=$row['ma_id']?>">통합관리 (<?=$me_cnt?>건)</a>
 						<? } ?>
 					</td>
 				</tr>
 				<tr class="<?php echo $bg; ?>" style="display:none;">
 					<td style="background:#efeff1;"></td>
 
-					<? if($is_parent) { ?>
 					<td colspan="4">
-						<div style="display:block; position:relative; height:100px; border:1px solid #ddd;">
+						<div style="display:block; position:relative; height:100px; border:1px solid #ddd; background:#f7f7f7;">
 							<? if($row['ma_img']) { ?>
-								<img src="<?=$row['ma_img']?>" style="display:block; width:100%; height:100%; object-fit:cover;" />
+								<img src="<?=$row['ma_img']?>" style="display:block; width:100%; height:100%; object-fit:cover;" onerror="this.remove();" />
+							<? } else if(!$is_parent) { ?>
+								<span style="display:flex; align-items:center; justify-content:center; height:100%; color:#888; font-size:12px;">상위지역 이미지 사용</span>
 							<? } ?>
 						</div>
-						<input type="text" name="ma_img[<?php echo $i ?>]" value="<?php echo get_text($row['ma_img']) ?>" class="frm_input full" placeholder="지도 이미지 URL">
+						<input type="text" name="ma_img[<?php echo $i ?>]" value="<?php echo get_text($row['ma_img']) ?>" class="frm_input full" placeholder="<?=$is_parent ? '지도 이미지 URL' : '하위지역 이미지 URL (비우면 상위지역 이미지 사용)'?>">
+						<? if(!$is_parent) { ?>
+							<p style="margin-top:4px; color:#777; font-size:12px;">비워두면 해당 상위지역의 이미지를 자동으로 사용합니다.</p>
+						<? } ?>
 					</td>
 					<td colspan="8">
-					<? } else { ?>
-						<td style="background:#efeff1;"></td>
-						<td style="background:#efeff1;"></td>
-						<td colspan="10">
-							<input type="hidden" name="ma_img[<?php echo $i ?>]" value="<?php echo get_text($row['ma_img']) ?>" />
-					<? } ?>
+						<input type="hidden" name="ma_npc_img[<?php echo $i ?>]" value="<?php echo get_text($row['ma_npc_img']) ?>" />
+						<input type="hidden" name="ma_npc_name[<?php echo $i ?>]" value="<?php echo get_text($row['ma_npc_name']) ?>" />
 						<textarea name="ma_content[<?php echo $i ?>]" class="frm_input full" style="height:120px;"><?php echo get_text($row['ma_content']) ?></textarea>
 					</td>
 				</tr>
