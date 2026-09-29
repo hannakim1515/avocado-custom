@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Character Archive Client</title>
+  <link rel="stylesheet" href="../theme/basic/css/system-ui.css">
+</head>
+<body class="game-client-active client-is-ready">
+  <header id="header" class="client-header">
+    <a class="client-brand" href="#" aria-label="메인">
+      <img src="../img/system/faction-emblem.png" alt="">
+      <span><b>AVOCADO</b><small>CHARACTER ARCHIVE</small></span>
+    </a>
+    <nav class="client-global" aria-label="주요 메뉴">
+      <a class="is-current" href="#world">WORLD</a>
+      <a href="#guide">GUIDE</a>
+      <a href="#community">COMMUNITY</a>
+      <a href="#ranking">RANKING</a>
+    </nav>
+    <div class="client-session">
+      <span>LIVE CONNECTION</span>
+      <b>ACCESS / GUEST</b>
+    </div>
+    <button class="client-menu" type="button" aria-label="메뉴 열기"><span></span><span></span></button>
+  </header>
+
+  <main class="client-shell">
+    <aside class="module-rail" aria-label="게임 시스템">
+      <div class="module-rail__title"><b>SYSTEM</b><span>MODULE SELECT</span></div>
+      <nav>
+        <a class="is-active" href="#myroom"><span>01</span><b>MY ROOM</b><small>개인 기록</small></a>
+        <a href="#craft"><span>02</span><b>CRAFT</b><small>조합 제조</small></a>
+        <a href="#enhance"><span>03</span><b>EQUIP</b><small>장비 강화</small></a>
+        <a href="#skill"><span>04</span><b>SKILL</b><small>능력 강화</small></a>
+        <a href="#dungeon"><span>05</span><b>MISSION</b><small>던전 입장</small></a>
+        <a href="#raid"><span>06</span><b>RAID</b><small>레이드</small></a>
+      </nav>
+      <div class="module-rail__footer"><span>CHANNEL</span><b>00 / PUBLIC</b></div>
+    </aside>
+
+    <section class="world-stage" aria-labelledby="stage-title">
+      <div class="world-stage__backdrop" aria-hidden="true"></div>
+      <div class="world-stage__shade" aria-hidden="true"></div>
+      <div class="world-stage__masthead" aria-hidden="true">ARCHIVE</div>
+      <img class="world-stage__emblem" src="../img/system/faction-emblem.png" alt="">
+      <img class="world-stage__character" src="../img/system/character-operative.png" alt="은발과 검은 코트를 입은 캐릭터">
+
+      <div class="world-stage__coordinates" aria-hidden="true"><span>X.0782</span><span>Y.0419</span></div>
+      <div class="world-stage__copy">
+        <p>CHARACTER COMMUNITY CLIENT</p>
+        <h1 id="stage-title">당신의 캐릭터가<br><strong>세계의 기록</strong>이 됩니다.</h1>
+        <div class="world-stage__actions">
+          <a class="action-primary" href="#world">세계관 입장</a>
+          <a class="action-secondary" href="#character">캐릭터 관리</a>
+        </div>
+      </div>
+
+      <div class="character-record">
+        <span class="character-record__index">07</span>
+        <div><small>SELECTED CHARACTER</small><b>ACTIVE RECORD</b><p>캐릭터를 선택하고 커뮤니티의 기록을 이어가세요.</p></div>
+      </div>
+
+      <div class="stage-markers" aria-hidden="true"><i></i><span>WORLD NODE / CONNECTED</span></div>
+    </section>
+
+    <aside class="intel-panel">
+      <section class="access-panel">
+        <div class="panel-heading"><span>ACCESS</span><b>MEMBER LINK</b></div>
+        <div class="access-panel__module">
+          <h2>MEMBER LOGIN</h2>
+          <form><input class="re-input" placeholder="아이디"><input class="re-input" type="password" placeholder="비밀번호"><label class="re-save-id"><input type="checkbox"><span>자동 로그인</span></label><button class="re-login-btn" type="button">LOGIN / CONNECT</button></form>
+          <div class="re-login-links"><a href="#register">회원가입</a><span>/</span><a href="#find">정보 찾기</a></div>
+        </div>
+      </section>
+
+      <section class="world-brief">
+        <div class="panel-heading"><span>WORLD</span><b>LIVE STATUS</b></div>
+        <dl><div><dt>ACTIVE USERS</dt><dd>--</dd></div><div><dt>OPEN MISSIONS</dt><dd>06</dd></div><div><dt>SERVER</dt><dd>NORMAL</dd></div></dl>
+      </section>
+
+      <section class="dispatch-panel">
+        <div class="panel-heading"><span>NOTICE</span><b>LATEST DISPATCH</b></div>
+        <a href="#notice"><time>09.29</time><span>새로운 기록이 도착했습니다.</span></a>
+        <a href="#event"><time>EVENT</time><span>진행 중인 이벤트 확인</span></a>
+      </section>
+    </aside>
+
+    <nav class="system-deck" aria-label="빠른 시스템 이동">
+      <a class="system-deck__primary" href="#myroom"><span>PERSONAL ARCHIVE</span><b>MY ROOM</b><small>캐릭터와 개인 기록을 관리합니다.</small></a>
+      <a href="#craft"><span>CRAFT</span><b>ASSEMBLY</b></a>
+      <a href="#enhance"><span>GEAR</span><b>ENHANCE</b></a>
+      <a href="#mission"><span>FIELD</span><b>MISSION</b></a>
+      <a href="#raid"><span>CO-OP</span><b>RAID</b></a>
+      <div class="system-deck__meter"><span>CLIENT READY</span><b>100</b></div>
+    </nav>
+  </main>
+</body>
+</html>

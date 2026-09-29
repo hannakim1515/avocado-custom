@@ -10,8 +10,7 @@ if ($is_member) {
 } else {
     $logo = get_logo('pc');
     $m_logo = get_logo('mo');
-
-    $logo_data = "";
+    $logo_data = '';
     if ($logo) {
         $logo_data .= "<img src='".$logo."' ";
     }
@@ -19,7 +18,7 @@ if ($is_member) {
         $logo_data .= "class='only-pc' /><img src='".$m_logo."' class='not-pc'";
     }
     if ($logo_data) {
-        $logo_data .= " />";
+        $logo_data .= ' />';
     }
 }
 ?>
@@ -41,9 +40,7 @@ if ($is_member) {
                     <p class="re-character-name"><?php echo get_text($character['ch_name']); ?></p>
                 <?php } ?>
             <?php } else { ?>
-                <a class="re-character-empty" href="<?php echo G5_URL; ?>/mypage/character/character_form.php">
-                    캐릭터 생성
-                </a>
+                <a class="re-character-empty" href="<?php echo G5_URL; ?>/mypage/character/character_form.php">캐릭터 생성</a>
             <?php } ?>
         </div>
 
@@ -54,39 +51,19 @@ if ($is_member) {
             <?php } ?>
         </p>
         <ul class="re-member-links">
-            <li>
-                <a href="<?php echo G5_URL; ?>/mypage/memo/">
-                    쪽지
-                    <?php if ($memo_not_read) { ?><i><?php echo $memo_not_read; ?></i><?php } ?>
-                </a>
-            </li>
+            <li><a href="<?php echo G5_URL; ?>/mypage/memo/">쪽지<?php if ($memo_not_read) { ?><i><?php echo $memo_not_read; ?></i><?php } ?></a></li>
             <li><a href="<?php echo G5_URL; ?>/mypage/">계정관리</a></li>
             <li><a href="<?php echo G5_BBS_URL; ?>/logout.php">로그아웃</a></li>
         </ul>
     </div>
 <?php } else { ?>
-    <?php if ($logo_data) { ?>
-        <div class="re-login-logo">
-            <?php echo $logo_data; ?>
-        </div>
-    <?php } ?>
-
+    <?php if ($logo_data) { ?><div class="re-login-logo"><?php echo $logo_data; ?></div><?php } ?>
     <form method="post" action="<?php echo G5_HTTPS_BBS_URL; ?>/login_check.php" autocomplete="off">
         <input type="hidden" name="url" value="<?php echo G5_URL; ?>">
-        <input class="re-input" type="text" name="mb_id" placeholder="아이디" required>
-        <input class="re-input" type="password" name="mb_password" placeholder="비밀번호" required>
-
-        <label class="re-save-id">
-            <input type="checkbox" name="auto_login" value="1">
-            <span>자동 로그인</span>
-        </label>
-
-        <button class="re-login-btn" type="submit">로그인</button>
+        <input class="re-input" type="text" name="mb_id" placeholder="아이디" autocomplete="username" required>
+        <input class="re-input" type="password" name="mb_password" placeholder="비밀번호" autocomplete="current-password" required>
+        <label class="re-save-id"><input type="checkbox" name="auto_login" value="1"><span>자동 로그인</span></label>
+        <button class="re-login-btn" type="submit">LOGIN / CONNECT</button>
     </form>
-
-    <div class="re-login-links">
-        <a href="<?php echo G5_BBS_URL; ?>/register.php">회원가입</a>
-        <span>|</span>
-        <a href="<?php echo G5_BBS_URL; ?>/password_lost.php">정보 찾기</a>
-    </div>
+    <div class="re-login-links"><a href="<?php echo G5_BBS_URL; ?>/register.php">회원가입</a><span>/</span><a href="<?php echo G5_BBS_URL; ?>/password_lost.php">정보 찾기</a></div>
 <?php } ?>

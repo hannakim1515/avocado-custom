@@ -1,0 +1,4 @@
+[    4246ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8000/favicon.ico:0
+[   14239ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8000/main.phpD:/Users/Administrator/Desktop/%EC%98%A4%ED%83%80%EC%BF%A0%20%EC%9E%90%EB%A3%8C/%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80/%EC%95%84%EB%B3%B4%EC%B9%B4%EB%8F%84/%E2%97%8F%EB%A7%8C%EB%93%A4%EC%96%B4%EB%91%94%20%ED%99%88%ED%94%BC/%ED%8E%98%EC%96%B4%EC%BB%A4/bbs/login.php:0
+[   49034ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost/avo_Test/bbs/login.php:0
+[   54343ms] [WARNING] The powerPreference option is currently ignored when calling requestAdapter() on Windows. See https://crbug.com/369219127 @ :0

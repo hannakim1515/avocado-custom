@@ -3,106 +3,154 @@ if (!defined('_GNUBOARD_')) {
     include_once('./_common.php');
 }
 
-if (defined('G5_THEME_PATH')) {
-    include_once(G5_THEME_PATH . '/head.php');
-} else {
-    include_once(G5_PATH . '/head.php');
+$system_modules = array(
+    array('index' => '01', 'label' => 'MY ROOM', 'title' => '개인 기록', 'href' => G5_URL.'/room/'),
+    array('index' => '02', 'label' => 'CHARACTER', 'title' => '캐릭터', 'href' => G5_URL.'/member/'),
+    array('index' => '03', 'label' => 'RELATION', 'title' => '관계', 'href' => G5_URL.'/couple/'),
+    array('index' => '04', 'label' => 'MARKET', 'title' => '상점', 'href' => G5_URL.'/shop/'),
+    array('index' => '05', 'label' => 'MISSION', 'title' => '던전', 'href' => G5_URL.'/dungeon/'),
+    array('index' => '06', 'label' => 'WORLD MAP', 'title' => '지도', 'href' => G5_URL.'/map/'),
+);
+
+$selected_name = 'ACTIVE RECORD';
+if ($is_member && isset($character['ch_name']) && $character['ch_name']) {
+    $selected_name = get_text($character['ch_name']);
 }
-$feature_cards = [
-    ['title' => '마이룸', 'desc' => '나만의 공간을 꾸며보세요', 'icon' => '✦', 'class' => 'cyan', 'href' => G5_URL . '/room/index.php'],
-    ['title' => '조합 제조', 'desc' => '아이템을 제작하고 조합합니다', 'icon' => '⚗', 'class' => 'green', 'href' => G5_URL . '/craft.php'],
-    ['title' => '장비강화', 'desc' => '장비의 잠재력을 끌어냅니다', 'icon' => '⚔', 'class' => 'blue', 'href' => G5_URL . '/enhance.php'],
-    ['title' => '스킬강화', 'desc' => '스킬의 한계를 돌파합니다', 'icon' => '✧', 'class' => 'violet', 'href' => G5_URL . '/skill.php'],
-    ['title' => '던전입장', 'desc' => '다양한 던전에 도전하세요', 'icon' => '▰', 'class' => 'gold', 'href' => G5_URL . '/dungeon.php'],
-    ['title' => '레이드 입장', 'desc' => '강력한 레이드에 도전하세요', 'icon' => '♜', 'class' => 'red', 'href' => G5_URL . '/raid.php'],
-];
-
-
-add_stylesheet('<link rel="stylesheet" href="' . G5_URL . '/css/gpt_main.css">', 0);
 ?>
 
-<div class="re-page">
-    <div class="re-bg" aria-hidden="true"></div>
-
-    <main class="re-main">
-        <section class="re-hero">
-            <aside class="re-panel re-login">
-                <div class="re-panel-inner">
-                    <?php include(G5_PATH."/templete/txt.outlogin.php"); ?>
-                </div>
-            </aside>
-
-            <section class="re-title-area">
-                <h1>페어제 자캐커뮤</h1>
-                <p class="re-sub-en">AVOCADO EDITION</p>
-                <div class="re-title-line"></div>
-                <p class="re-sub-ko">당신의 이야기가, 이 세계의 역사가 된다.</p>
-                <a class="re-enter-btn" href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=world">세계 입장 ✦</a>
-            </section>
-        </section>
-
-        <section class="re-features">
-            <?php foreach ($feature_cards as $card) { ?>
-                <a class="re-feature re-feature-<?php echo $card['class']; ?>" href="<?php echo $card['href']; ?>">
-                    <span class="re-feature-light"></span>
-                    <span class="re-feature-icon"><?php echo get_text($card['icon']); ?></span>
-                    <strong><?php echo get_text($card['title']); ?></strong>
-                    <em><?php echo get_text($card['desc']); ?></em>
-                </a>
-            <?php } ?>
-        </section>
-
-        <section class="re-bottom">
-            <section class="re-panel re-notice">
-                <div class="re-panel-inner">
-                    <div class="re-section-head">
-                        <h2>공지</h2>
-                        <a href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=notice">더보기 +</a>
-                    </div>
-
-                    <ul>
-                        <?php if (count($notices) > 0) { ?>
-                            <?php foreach ($notices as $notice) { ?>
-                            <li>
-                                <span><?php echo get_text($notice['date']); ?></span>
-                                <a href="<?php echo $notice['href']; ?>"><?php echo get_text($notice['title']); ?></a>
-                                <?php if ($notice['new']) { ?><b>N</b><?php } ?>
-                            </li>
-                            <?php } ?>
-                        <?php } else { ?>
-                            <li>
-                                <span>-</span>
-                                <a href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=notice">등록된 공지가 없습니다.</a>
-                            </li>
-                        <?php } ?>
-                    </ul>
-                </div>
-            </section>
-
-            <section class="re-panel re-event">
-                <div class="re-panel-inner">
-                    <div class="re-section-head">
-                        <h2>진행중 이벤트</h2>
-                        <a href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=event">더보기 +</a>
-                    </div>
-
-                    <div class="re-event-banner">
-                        <p>혈빛 성운을 넘어, 새로운 문이 열린다</p>
-                        <strong>출석 이벤트</strong>
-                        <span>매일 접속하고 특별한 보상을 받아가세요.</span>
-                        <a href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=event">이벤트 참여하기 →</a>
-                    </div>
-                </div>
-            </section>
-        </section>
-    </main>
-
+<div id="system-intro" class="client-boot" role="dialog" aria-modal="true" aria-label="시스템 접속 준비 중">
+    <div class="client-boot__world" aria-hidden="true"></div>
+    <div class="client-boot__scan" aria-hidden="true"></div>
+    <div class="client-boot__topline"><span>ARCHIVE CLIENT / NODE 01</span><span>INITIALIZING</span></div>
+    <div class="client-boot__assembly" aria-hidden="true">
+        <span class="client-boot__ring client-boot__ring--outer"></span>
+        <span class="client-boot__ring client-boot__ring--inner"></span>
+        <span class="client-boot__axis client-boot__axis--x"></span>
+        <span class="client-boot__axis client-boot__axis--y"></span>
+        <img src="<?php echo G5_IMG_URL; ?>/system/faction-emblem.png" alt="">
+    </div>
+    <div class="client-boot__copy">
+        <small>FACTION LINK / AUTHORIZED</small>
+        <strong><?php echo get_text($config['cf_title']); ?></strong>
+        <span>CONNECTION ESTABLISHED</span>
+    </div>
+    <div class="client-boot__progress"><span>BOOT SEQUENCE</span><b><i></i></b><em>100%</em></div>
+    <button type="button" class="client-boot__skip">SKIP <span aria-hidden="true">↗</span></button>
 </div>
 
-<?php
-if (defined('G5_THEME_PATH')) {
-    include_once(G5_THEME_PATH . '/tail.php');
-} else {
-    include_once(G5_PATH . '/tail.php');
-}
-?>
+<script>document.body.classList.add('game-client-active', 'client-boot-active');</script>
+
+<main class="client-shell">
+    <aside class="module-rail" aria-label="게임 시스템">
+        <div class="module-rail__title"><b>SYSTEM</b><span>MODULE SELECT</span></div>
+        <nav>
+            <?php foreach ($system_modules as $index => $module) { ?>
+                <a<?php echo $index === 0 ? ' class="is-active"' : ''; ?> href="<?php echo $module['href']; ?>">
+                    <span><?php echo $module['index']; ?></span><b><?php echo $module['label']; ?></b><small><?php echo get_text($module['title']); ?></small>
+                </a>
+            <?php } ?>
+        </nav>
+        <div class="module-rail__footer"><span>CHANNEL</span><b>00 / PUBLIC</b></div>
+    </aside>
+
+    <section class="world-stage" aria-labelledby="stage-title">
+        <div class="world-stage__backdrop" aria-hidden="true"></div>
+        <div class="world-stage__shade" aria-hidden="true"></div>
+        <div class="world-stage__masthead" aria-hidden="true">ARCHIVE</div>
+        <img class="world-stage__emblem" src="<?php echo G5_IMG_URL; ?>/system/faction-emblem.png" alt="">
+        <img class="world-stage__character" src="<?php echo G5_IMG_URL; ?>/system/character-operative.png" alt="은발과 검은 코트를 입은 기록 관리 요원">
+
+        <div class="world-stage__coordinates" aria-hidden="true"><span>X.0782</span><span>Y.0419</span></div>
+        <div class="world-stage__copy">
+            <p>CHARACTER COMMUNITY CLIENT</p>
+            <h1 id="stage-title">당신의 캐릭터가<br><strong>세계의 기록</strong>이 됩니다.</h1>
+            <div class="world-stage__actions">
+                <a class="action-primary" href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=world">세계관 입장 <span aria-hidden="true">↗</span></a>
+                <a class="action-secondary" href="<?php echo G5_URL; ?>/mypage/character/">캐릭터 관리 <span aria-hidden="true">→</span></a>
+            </div>
+        </div>
+
+        <div class="character-record">
+            <span class="character-record__index">07</span>
+            <div><small>SELECTED CHARACTER</small><b><?php echo $selected_name; ?></b><p>캐릭터를 선택하고 커뮤니티의 기록을 이어가세요.</p></div>
+        </div>
+
+        <div class="stage-markers" aria-hidden="true"><i></i><span>WORLD NODE / CONNECTED</span></div>
+    </section>
+
+    <aside class="intel-panel">
+        <section class="access-panel" aria-label="멤버 접속">
+            <div class="panel-heading"><span>ACCESS</span><b>MEMBER LINK</b></div>
+            <div class="access-panel__module"><?php include(G5_PATH.'/templete/txt.outlogin.php'); ?></div>
+        </section>
+
+        <section class="world-brief" aria-label="시스템 상태">
+            <div class="panel-heading"><span>WORLD</span><b>LIVE STATUS</b></div>
+            <dl>
+                <div><dt>ARCHIVE SERVER</dt><dd>ONLINE</dd></div>
+                <div><dt>MISSION GATE</dt><dd>OPEN</dd></div>
+                <div><dt>CHANNEL</dt><dd>PUBLIC</dd></div>
+            </dl>
+        </section>
+
+        <section class="dispatch-panel" aria-label="빠른 안내">
+            <div class="panel-heading"><span>NOTICE</span><b>LATEST DISPATCH</b></div>
+            <a href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=notice"><time>NOTICE</time><span>새로운 공지와 운영 기록 확인</span></a>
+            <a href="<?php echo G5_URL; ?>/bbs/board.php?bo_table=event"><time>EVENT</time><span>진행 중인 이벤트 확인</span></a>
+        </section>
+    </aside>
+
+    <nav class="system-deck" aria-label="빠른 시스템 이동">
+        <a class="system-deck__primary" href="<?php echo G5_URL; ?>/room/"><span>PERSONAL ARCHIVE</span><b>MY ROOM</b><small>캐릭터와 개인 기록을 관리합니다.</small></a>
+        <a href="<?php echo G5_URL; ?>/member/"><span>ROSTER</span><b>CHARACTER</b></a>
+        <a href="<?php echo G5_URL; ?>/couple/"><span>LINK</span><b>RELATION</b></a>
+        <a href="<?php echo G5_URL; ?>/dungeon/"><span>FIELD</span><b>MISSION</b></a>
+        <a href="<?php echo G5_URL; ?>/map/"><span>REGION</span><b>WORLD MAP</b></a>
+        <div class="system-deck__meter"><span>CLIENT READY</span><b>100</b></div>
+    </nav>
+</main>
+
+<script>
+$(function () {
+    $('body').addClass('game-client-active');
+
+    var $intro = $('#system-intro');
+    var revealClient = function () {
+        $('body').removeClass('client-boot-active').addClass('client-is-ready');
+    };
+    var finishIntro = function () {
+        if (!$intro.length || $intro.hasClass('is-complete')) {
+            revealClient();
+            return;
+        }
+        $intro.addClass('is-complete');
+        window.setTimeout(function () {
+            $intro.remove();
+            revealClient();
+        }, 420);
+        try { window.sessionStorage.setItem('system-intro-seen', '1'); } catch (error) {}
+    };
+
+    if (!$intro.length) {
+        revealClient();
+        return;
+    }
+
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        $intro.remove();
+        revealClient();
+        return;
+    }
+
+    try {
+        if (window.sessionStorage.getItem('system-intro-seen') === '1') {
+            $intro.remove();
+            revealClient();
+            return;
+        }
+    } catch (error) {}
+
+    $intro.find('.client-boot__skip').on('click', finishIntro);
+    window.setTimeout(finishIntro, 3200);
+});
+</script>

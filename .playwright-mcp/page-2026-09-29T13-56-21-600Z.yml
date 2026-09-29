@@ -1,0 +1,95 @@
+- generic [active] [ref=f39e1]:
+  - iframe [ref=f39e2]:
+    - iframe [ref=f40e2]: </body> </html>
+  - iframe [ref=f39e4]:
+    - generic [ref=f41e1]:
+      - banner [ref=f41e2]:
+        - generic [ref=f41e3]:
+          - heading [level=1] [ref=f41e4]:
+            - link "메인으로 이동" [ref=f41e5] [cursor=pointer]:
+              - /url: http://localhost/avo_Test/main.php
+              - generic [aria-hidden] [ref=f41e6]: ✦
+              - strong [ref=f41e8]: 아보카도 에디션
+          - navigation "메인 메뉴" [ref=f41e9]:
+            - link "세계관" [ref=f41e10] [cursor=pointer]:
+              - /url: http://localhost/avo_Test/bbs/board.php?bo_table=world
+            - link "가이드" [ref=f41e11] [cursor=pointer]:
+              - /url: http://localhost/avo_Test/bbs/board.php?bo_table=guide
+            - link "커뮤니티" [ref=f41e12] [cursor=pointer]:
+              - /url: http://localhost/avo_Test/bbs/board.php?bo_table=community
+            - link "랭킹" [ref=f41e13] [cursor=pointer]:
+              - /url: http://localhost/avo_Test/bbs/board.php?bo_table=ranking
+          - generic "시스템 상태" [ref=f41e14]: COMMUNITY
+      - generic [ref=f41e18]:
+        - dialog "시스템 접속 준비 중":
+          - generic:
+            - generic: SYS / ACCESS
+            - generic: INITIALIZING
+          - generic:
+            - generic: NODE / 001
+            - strong: 아보카도 에디션
+            - emphasis: CONNECTION ESTABLISHED
+          - generic: BOOT SEQUENCE100%
+          - button "SKIP ↗"
+        - main [ref=f41e19]:
+          - region [ref=f41e20]:
+            - generic [ref=f41e21]:
+              - paragraph [ref=f41e22]: 01 CHARACTER COMMUNITY
+              - heading "아보카도 에디션" [level=1] [ref=f41e23]
+              - paragraph [ref=f41e24]: 캐릭터와 이야기가 연결되는 곳.지금 당신의 기록을 시작하세요.
+              - generic [ref=f41e25]:
+                - link "세계관 열람 ↗" [ref=f41e26] [cursor=pointer]:
+                  - /url: http://localhost/avo_Test/bbs/board.php?bo_table=world
+                  - generic [ref=f41e27]: 세계관 열람
+                  - generic [ref=f41e28]: ↗
+                - link "내 기록 →" [ref=f41e29] [cursor=pointer]:
+                  - /url: http://localhost/avo_Test/room/index.php
+                  - generic [ref=f41e30]: 내 기록
+                  - generic [ref=f41e31]: →
+            - generic "캐릭터 연결 시스템" [ref=f41e32]:
+              - generic [ref=f41e37]: C
+              - paragraph [ref=f41e38]: CHARACTERLINK
+          - region [ref=f41e39]:
+            - generic [ref=f41e40]:
+              - text: "02"
+              - heading "SYSTEM ACCESS" [level=2] [ref=f41e41]
+              - text: SELECT A MODULE
+            - generic [ref=f41e42]:
+              - link "01 PERSONAL SPACE 마이룸 나만의 공간과 기록을 관리합니다." [ref=f41e43] [cursor=pointer]:
+                - /url: http://localhost/avo_Test/room/index.php
+                - generic [ref=f41e44]: "01"
+                - generic [ref=f41e45]: PERSONAL SPACE
+                - strong [ref=f41e46]: 마이룸
+                - paragraph [ref=f41e47]: 나만의 공간과 기록을 관리합니다.
+              - link "02 CRAFT SYSTEM 조합 제조 아이템을 제작하고 조합합니다." [ref=f41e49] [cursor=pointer]:
+                - /url: http://localhost/avo_Test/craft.php
+                - generic [ref=f41e50]: "02"
+                - generic [ref=f41e51]: CRAFT SYSTEM
+                - strong [ref=f41e52]: 조합 제조
+                - paragraph [ref=f41e53]: 아이템을 제작하고 조합합니다.
+              - link "03 EQUIPMENT 장비 강화 장비의 잠재력을 끌어냅니다." [ref=f41e55] [cursor=pointer]:
+                - /url: http://localhost/avo_Test/enhance.php
+                - generic [ref=f41e56]: "03"
+                - generic [ref=f41e57]: EQUIPMENT
+                - strong [ref=f41e58]: 장비 강화
+                - paragraph [ref=f41e59]: 장비의 잠재력을 끌어냅니다.
+              - link "04 SKILL CORE 스킬 강화 스킬의 한계를 돌파합니다." [ref=f41e61] [cursor=pointer]:
+                - /url: http://localhost/avo_Test/skill.php
+                - generic [ref=f41e62]: "04"
+                - generic [ref=f41e63]: SKILL CORE
+                - strong [ref=f41e64]: 스킬 강화
+                - paragraph [ref=f41e65]: 스킬의 한계를 돌파합니다.
+              - link "05 MISSION 던전 입장 다양한 던전에 도전합니다." [ref=f41e67] [cursor=pointer]:
+                - /url: http://localhost/avo_Test/dungeon.php
+                - generic [ref=f41e68]: "05"
+                - generic [ref=f41e69]: MISSION
+                - strong [ref=f41e70]: 던전 입장
+                - paragraph [ref=f41e71]: 다양한 던전에 도전합니다.
+              - link "06 RAID SYSTEM 레이드 입장 강력한 레이드에 도전합니다." [ref=f41e73] [cursor=pointer]:
+                - /url: http://localhost/avo_Test/raid.php
+                - generic [ref=f41e74]: "06"
+                - generic [ref=f41e75]: RAID SYSTEM
+                - strong [ref=f41e76]: 레이드 입장
+                - paragraph [ref=f41e77]: 강력한 레이드에 도전합니다.
+      - link [ref=f41e79] [cursor=pointer]:
+        - /url: "#header"

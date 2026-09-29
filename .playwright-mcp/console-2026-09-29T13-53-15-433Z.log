@@ -1,0 +1,7 @@
+[   49820ms] [WARNING] The powerPreference option is currently ignored when calling requestAdapter() on Windows. See https://crbug.com/369219127 @ :0
+[   54216ms] [WARNING] The powerPreference option is currently ignored when calling requestAdapter() on Windows. See https://crbug.com/369219127 @ :0
+[   57206ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost/avo_Test/enhance.php:0
+[   64439ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost/avo_Test/craft.php:0
+[   65958ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost/avo_Test/enhance.php:0
+[   68271ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost/avo_Test/raid.php:0
+[   69709ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost/avo_Test/dungeon.php:0

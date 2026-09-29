@@ -1,0 +1,101 @@
+- generic [active] [ref=f10e1]:
+  - banner [ref=f10e2]:
+    - generic [ref=f10e4]:
+      - generic [ref=f10e5]:
+        - generic [ref=f10e6]: ✶
+        - generic [ref=f10e7]: 페어제 자캐커뮤
+      - navigation "메인 메뉴" [ref=f10e8]:
+        - link "세계관" [ref=f10e9] [cursor=pointer]:
+          - /url: http://localhost/avo_Test/bbs/board.php?bo_table=world
+        - link "가이드" [ref=f10e10] [cursor=pointer]:
+          - /url: http://localhost/avo_Test/bbs/board.php?bo_table=guide
+        - link "커뮤니티" [ref=f10e11] [cursor=pointer]:
+          - /url: http://localhost/avo_Test/bbs/board.php?bo_table=community
+        - link "랭킹" [ref=f10e12] [cursor=pointer]:
+          - /url: http://localhost/avo_Test/bbs/board.php?bo_table=ranking
+  - main [ref=f10e17]:
+    - generic [ref=f10e18]:
+      - complementary [ref=f10e19]:
+        - generic [ref=f10e20]:
+          - heading "MEMBER LOGIN" [level=2] [ref=f10e21]
+          - generic [ref=f10e22]:
+            - generic [ref=f10e23]:
+              - link "NO IMAGE" [ref=f10e24] [cursor=pointer]:
+                - /url: http://localhost/avo_Test/mypage/
+              - paragraph [ref=f10e26]: test
+            - paragraph [ref=f10e27]:
+              - text: 최고관리자 님
+              - link "관리자 페이지" [ref=f10e28] [cursor=pointer]:
+                - /url: http://localhost/avo_Test/adm/
+            - list [ref=f10e29]:
+              - listitem [ref=f10e30]:
+                - link "쪽지" [ref=f10e31] [cursor=pointer]:
+                  - /url: http://localhost/avo_Test/mypage/memo/
+              - listitem [ref=f10e32]:
+                - link "계정관리" [ref=f10e33] [cursor=pointer]:
+                  - /url: http://localhost/avo_Test/mypage/
+              - listitem [ref=f10e34]:
+                - link "로그아웃" [ref=f10e35] [cursor=pointer]:
+                  - /url: http://localhost/avo_Test/bbs/logout.php
+      - generic [ref=f10e36]:
+        - heading "페어제 자캐커뮤" [level=1] [ref=f10e37]
+        - paragraph [ref=f10e38]: AVOCADO EDITION
+        - paragraph [ref=f10e40]: 당신의 이야기가, 이 세계의 역사가 된다.
+        - link "세계 입장 ✦" [ref=f10e41] [cursor=pointer]:
+          - /url: http://localhost/avo_Test/bbs/board.php?bo_table=world
+    - generic [ref=f10e42]:
+      - link "✦ 마이룸 나만의 공간을 꾸며보세요" [ref=f10e43] [cursor=pointer]:
+        - /url: http://localhost/avo_Test/room/index.php
+        - generic [ref=f10e44]: ✦
+        - strong [ref=f10e45]: 마이룸
+        - emphasis [ref=f10e46]: 나만의 공간을 꾸며보세요
+      - link "⚗ 조합 제조 아이템을 제작하고 조합합니다" [ref=f10e47] [cursor=pointer]:
+        - /url: http://localhost/avo_Test/craft.php
+        - generic [ref=f10e48]: ⚗
+        - strong [ref=f10e49]: 조합 제조
+        - emphasis [ref=f10e50]: 아이템을 제작하고 조합합니다
+      - link "⚔ 장비강화 장비의 잠재력을 끌어냅니다" [ref=f10e51] [cursor=pointer]:
+        - /url: http://localhost/avo_Test/enhance.php
+        - generic [ref=f10e52]: ⚔
+        - strong [ref=f10e53]: 장비강화
+        - emphasis [ref=f10e54]: 장비의 잠재력을 끌어냅니다
+      - link "✧ 스킬강화 스킬의 한계를 돌파합니다" [ref=f10e55] [cursor=pointer]:
+        - /url: http://localhost/avo_Test/skill.php
+        - generic [ref=f10e56]: ✧
+        - strong [ref=f10e57]: 스킬강화
+        - emphasis [ref=f10e58]: 스킬의 한계를 돌파합니다
+      - link "▰ 던전입장 다양한 던전에 도전하세요" [ref=f10e59] [cursor=pointer]:
+        - /url: http://localhost/avo_Test/dungeon.php
+        - generic [ref=f10e60]: ▰
+        - strong [ref=f10e61]: 던전입장
+        - emphasis [ref=f10e62]: 다양한 던전에 도전하세요
+      - link "♜ 레이드 입장 강력한 레이드에 도전하세요" [ref=f10e63] [cursor=pointer]:
+        - /url: http://localhost/avo_Test/raid.php
+        - generic [ref=f10e64]: ♜
+        - strong [ref=f10e65]: 레이드 입장
+        - emphasis [ref=f10e66]: 강력한 레이드에 도전하세요
+    - generic [ref=f10e67]:
+      - generic [ref=f10e69]:
+        - generic [ref=f10e70]:
+          - heading "공지" [level=2] [ref=f10e71]
+          - link "더보기 +" [ref=f10e72] [cursor=pointer]:
+            - /url: http://localhost/avo_Test/bbs/board.php?bo_table=notice
+        - list [ref=f10e73]:
+          - text: "Warning: count(): Parameter must be an array or an object that implements Countable in C:\\xampp\\htdocs\\avo_Test\\gpt_main.php on line 64"
+          - listitem [ref=f10e74]:
+            - generic [ref=f10e75]: "-"
+            - link "등록된 공지가 없습니다." [ref=f10e76] [cursor=pointer]:
+              - /url: http://localhost/avo_Test/bbs/board.php?bo_table=notice
+      - generic [ref=f10e78]:
+        - generic [ref=f10e79]:
+          - heading "진행중 이벤트" [level=2] [ref=f10e80]
+          - link "더보기 +" [ref=f10e81] [cursor=pointer]:
+            - /url: http://localhost/avo_Test/bbs/board.php?bo_table=event
+        - generic [ref=f10e82]:
+          - paragraph [ref=f10e83]: 혈빛 성운을 넘어, 새로운 문이 열린다
+          - strong [ref=f10e84]: 출석 이벤트
+          - generic [ref=f10e85]: 매일 접속하고 특별한 보상을 받아가세요.
+          - link "이벤트 참여하기 →" [ref=f10e86] [cursor=pointer]:
+            - /url: http://localhost/avo_Test/bbs/board.php?bo_table=event
+  - link [ref=f10e87] [cursor=pointer]:
+    - /url: "#header"
