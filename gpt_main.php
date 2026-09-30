@@ -3,18 +3,10 @@ if (!defined('_GNUBOARD_')) {
     include_once('./_common.php');
 }
 
-$player_name = 'PLAYER_01';
-$player_rank = '00';
 $player_credit = 0;
-$player_avatar = G5_IMG_URL.'/system/character-operative.png';
 
 if ($is_member) {
-    $player_name = !empty($character['ch_name']) ? get_text($character['ch_name']) : get_text($member['mb_nick']);
-    $player_rank = !empty($character['ch_rank']) ? get_text($character['ch_rank']) : '01';
     $player_credit = isset($member['mb_point']) ? (int) $member['mb_point'] : 0;
-    if (!empty($character['ch_thumb'])) {
-        $player_avatar = $character['ch_thumb'];
-    }
 }
 
 $quick_menus = array(
@@ -67,20 +59,15 @@ $quick_menus = array(
 
         <section class="lobby-status" aria-label="플레이어 상태">
             <img class="lobby-status__frame" src="<?php echo G5_IMG_URL; ?>/system/top_status_reference.png" alt="">
-            <span class="lobby-status__avatar<?php echo !empty($character['ch_thumb']) ? ' is-user-avatar' : ' is-system-avatar'; ?>" style="background-image:url('<?php echo htmlspecialchars($player_avatar, ENT_QUOTES); ?>')" aria-hidden="true"></span>
             <div class="lobby-status__player">
-                <small>LV.<?php echo $player_rank; ?></small>
-                <strong><?php echo $player_name; ?></strong>
-            </div>
-            <div class="lobby-status__resource lobby-status__resource--credit">
                 <small>CREDIT</small>
                 <strong><?php echo number_format($player_credit); ?></strong>
             </div>
-            <div class="lobby-status__resource lobby-status__resource--entry">
+            <div class="lobby-status__resource lobby-status__resource--credit">
                 <small>탐사 가능 횟수</small>
                 <strong>5 / 5</strong>
             </div>
-            <a class="lobby-status__add" href="<?php echo G5_URL; ?>/shop/" aria-label="상점에서 재화 충전">
+            <a class="lobby-status__add" href="<?php echo G5_URL; ?>/shop/" aria-label="탐사 횟수 보충">
                 <img src="<?php echo G5_IMG_URL; ?>/system/버튼_추가.png" alt="">
             </a>
         </section>

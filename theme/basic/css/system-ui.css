@@ -564,11 +564,14 @@ body.game-client-active {
 .lobby-login__frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
 .lobby-login__content {
     position: absolute;
-    inset: 9.5% 10% 9.5% 11%;
+    inset: 0;
     font-size: 0.58cqw;
 }
 .lobby-login__content h2 {
-    margin: 0 0 6%;
+    position: absolute;
+    top: 13.3%;
+    left: 10.5%;
+    margin: 0;
     font-family: "Barlow Condensed", sans-serif;
     font-size: 1.08cqw;
     font-weight: 600;
@@ -576,24 +579,31 @@ body.game-client-active {
     letter-spacing: 0.07em;
 }
 .lobby-login__content .re-login-logo { display: none; }
-.lobby-login__content form { display: grid; gap: 0.46cqw; }
+.lobby-login__content form { position: absolute; inset: 0; display: block; }
 .lobby-login__content .re-input {
-    width: 100%;
-    height: 2.15cqw;
+    position: absolute;
+    left: 19.2%;
+    width: 64.6%;
+    height: 12.5%;
     padding: 0 0.78cqw;
-    border: 1px solid rgba(73, 85, 101, 0.22);
+    border: 0;
     border-radius: 0;
     outline: 0;
-    background: rgba(255, 255, 255, 0.76);
+    background: rgba(255, 255, 255, 0.12);
     color: #171a20;
     font-family: "Barlow Condensed", "Malgun Gothic", sans-serif;
     font-size: 0.64cqw;
     letter-spacing: 0.05em;
     transition: border-color 140ms ease, background-color 140ms ease;
 }
+.lobby-login__content .re-input[type="text"] { top: 29.5%; }
+.lobby-login__content .re-input[type="password"] { top: 46.1%; }
 .lobby-login__content .re-input::placeholder { color: #6d7580; opacity: 1; }
-.lobby-login__content .re-input:focus { border-color: #46afff; background: #ffffff; }
+.lobby-login__content .re-input:focus { background: rgba(255, 255, 255, 0.72); box-shadow: inset 0 0 0 1px #46afff; }
 .lobby-login__content .re-save-id {
+    position: absolute;
+    top: 61.4%;
+    left: 19.2%;
     display: flex;
     align-items: center;
     gap: 0.42cqw;
@@ -603,14 +613,17 @@ body.game-client-active {
 .lobby-login__content .re-save-id input { width: 0.72cqw; height: 0.72cqw; margin: 0; accent-color: #46afff; }
 .lobby-login__content .re-login-btn,
 .lobby-login__content .re-character-empty {
+    position: absolute;
+    top: 70.7%;
+    left: 19.2%;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 2.12cqw;
-    border: 1px solid #258ff0;
+    width: 64.7%;
+    height: 13.1%;
+    border: 0;
     border-radius: 0;
-    background: #268ff2;
+    background: transparent;
     color: #ffffff;
     font-family: "Barlow Condensed", sans-serif;
     font-size: 0.72cqw;
@@ -620,22 +633,26 @@ body.game-client-active {
     transition: background-color 140ms ease, transform 140ms ease;
 }
 .lobby-login__content .re-login-links {
+    position: absolute;
+    top: 87.7%;
+    right: 16.2%;
+    left: 19.2%;
     display: flex;
     justify-content: center;
     gap: 0.68cqw;
-    margin-top: 0.75cqw;
+    margin: 0;
     color: #555f6c;
     line-height: 1;
 }
 .lobby-login__content .re-login-links a:focus-visible,
 .lobby-login__content .re-login-links a:hover { color: #167fd7; }
-.lobby-login__content .re-member-box { position: relative; display: grid; min-height: 7.6cqw; grid-template-columns: 3.5cqw 1fr; gap: 0.75cqw; align-items: center; }
+.lobby-login__content .re-member-box { position: absolute; top: 29.5%; right: 16.2%; bottom: 16.2%; left: 19.2%; display: grid; grid-template-columns: 3.5cqw 1fr; gap: 0.75cqw; align-items: start; padding-top: 0.3cqw; }
 .lobby-login__content .re-member-profile { grid-row: 1 / 3; }
 .lobby-login__content .re-character-thumb { display: grid; width: 3.5cqw; height: 4.2cqw; place-items: center; overflow: hidden; border: 1px solid #d7dce3; background: #f7f8fa; font-size: 7px; }
 .lobby-login__content .re-character-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .lobby-login__content .re-character-name { margin: 0.3cqw 0 0; font-weight: 700; }
 .lobby-login__content .re-member-name { margin: 0; font-weight: 700; }
-.lobby-login__content .re-member-links { position: absolute; right: 0; bottom: -2.15cqw; left: 0; z-index: 2; display: flex; align-items: center; justify-content: center; height: 2cqw; gap: 0.6cqw; margin: 0; padding: 0; color: #ffffff; list-style: none; }
+.lobby-login__content .re-member-links { position: absolute; right: 0; bottom: 0; left: 0; z-index: 2; display: flex; align-items: center; justify-content: center; height: 24%; gap: 0.6cqw; margin: 0; padding: 0; color: #ffffff; list-style: none; }
 .lobby-login__content .re-member-links i { margin-left: 0.2cqw; color: #167fd7; font-style: normal; }
 .lobby-login__content .re-admin-link { display: block; margin-top: 0.3cqw; color: #167fd7; font-size: 0.55cqw; }
 
@@ -673,24 +690,10 @@ body.game-client-active {
     font-family: "Barlow Condensed", "Malgun Gothic", sans-serif;
 }
 .lobby-status__frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
-.lobby-status__avatar {
-    position: absolute;
-    top: 26%;
-    left: 13.45%;
-    width: 7.2%;
-    height: 48%;
-    border-radius: 50%;
-    background-color: #eef4fa;
-    background-position: 50% 10%;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-.lobby-status__avatar.is-system-avatar { background-position: 50% 4%; background-size: 350%; }
 .lobby-status__player,
-.lobby-status__resource { position: absolute; top: 26%; display: grid; gap: 0.22cqw; line-height: 1; }
+.lobby-status__resource { position: absolute; top: 40%; display: grid; gap: 0.12cqw; line-height: 1; }
 .lobby-status__player { left: 21%; width: 17%; }
 .lobby-status__resource--credit { left: 42%; width: 13%; }
-.lobby-status__resource--entry { left: 56%; width: 14%; }
 .lobby-status small { color: #818a97; font-size: 0.46cqw; letter-spacing: 0.08em; }
 .lobby-status strong { overflow: hidden; font-size: 1.02cqw; font-weight: 600; letter-spacing: 0.03em; text-overflow: ellipsis; white-space: nowrap; }
 .lobby-status__add { position: absolute; top: 27%; left: 65.4%; width: 3.7%; aspect-ratio: 1; }
@@ -720,8 +723,8 @@ body.game-client-active {
 .quick-menu__item--shop { top: 51%; left: 57.4%; z-index: 27; width: 30.8%; }
 .quick-menu__item--room { top: 51.5%; left: 84.7%; z-index: 34; width: 12.6%; }
 .quick-menu__item--quest { top: 61%; left: 74.4%; z-index: 38; width: 14.7%; }
-.quick-menu__item--community { top: 69.2%; left: 66.6%; z-index: 39; width: 14.1%; }
-.quick-menu__item--archive { top: 69.4%; left: 76.8%; z-index: 40; width: 14.1%; }
+.quick-menu__item--community { top: 70%; left: 60.5%; z-index: 39; width: 12.1%; }
+.quick-menu__item--archive { top: 71.4%; left: 72.8%; z-index: 40; width: 12.1%; }
 
 .lobby-telemetry {
     position: absolute;
@@ -761,9 +764,9 @@ body.game-client-active {
 .lobby-baseline i { display: block; width: 100%; height: 0.5cqw; margin-top: 0.65cqw; border-top: 1px solid #d7dce3; border-bottom: 0.2cqw solid #d7dce3; }
 
 @media (hover: hover) and (pointer: fine) {
-    .quick-menu__item:hover { z-index: 60; transform: translate3d(0, -0.28cqw, 0); filter: brightness(1.045) contrast(1.015); }
+    .quick-menu__item:hover { transform: translate3d(0, -0.28cqw, 0); filter: brightness(1.045) contrast(1.015); }
     .quick-menu__item:hover::after { border-color: rgba(70, 175, 255, 0.58); }
-    .lobby-login__content .re-login-btn:hover { background: #167fd7; transform: translateY(-1px); }
+    .lobby-login__content .re-login-btn:hover { background: rgba(13, 111, 207, 0.2); transform: translateY(-1px); }
     .lobby-support a:hover { border-color: #46afff; color: #167fd7; }
 }
 .quick-menu__item:focus-visible { z-index: 61; transform: translate3d(0, -0.18cqw, 0); filter: brightness(1.04); }
