@@ -1,0 +1,2 @@
+[  915034ms] ReferenceError: $ is not defined
+    at http://localhost/avocado/gpt_main.php:111:1

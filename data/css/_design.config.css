@@ -2,7 +2,7 @@
 /***************************************************************
 	Design Manager Setting Style: 자동생성 CSS
 ---------------------------------------------------------------
-	- 최종 수정일 : 2026-09-22 22:04:08
+	- 최종 수정일 : 2026-09-30 10:59:58
 ***************************************************************/
 
 
@@ -14,13 +14,13 @@ a,
 
 @media all and (min-width: 1025px) { 
 	html.single:before	{
-		background-image: url('http://localhost/avo_Test/skin/member/basic/img/bak_admin_login_top_pattern.png');
+		background-image: url('http://localhost/avocado/skin/member/basic/img/bak_admin_login_top_pattern.png');
 		}
 }
 
 @media all and (max-width: 1024px) {
 	html.single:before	{
-		background-image: url('http://localhost/avo_Test/skin/member/basic/img/bak_admin_login_top_pattern.png');
+		background-image: url('http://localhost/avocado/skin/member/basic/img/bak_admin_login_top_pattern.png');
 		}
 }
 
@@ -52,27 +52,27 @@ a,
 
 
 
-
+#body	{ margin-left: 200px; }
 #header	{
-	position: relative;
-	margin: 0;
-	padding: 0;
-	clear: both;
-	height: 50px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	overflow-y: auto;
+	width: 200px;
+	
 }
-#header .fix-layout	{ height: 100%; }
 #logo	{
-	display: block;
-	position: absolute;
-	top: 50%;
-	left: 0%;
-	transform: translateY(-50%);
+	padding:20px 0;
+	text-align: center;
 }
+
+
 
 /*#gnb	{ float: right; }*/
 #gnb,
 #gnb *	{
-	color: #ffffff;
+	color: #17273a;
 	font-size: 14px;
 }
 #gnb a:hover {
