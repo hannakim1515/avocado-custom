@@ -204,8 +204,18 @@ function maze_start($session, $actor) {
     maze_log($session['ds_id'], $actor['dm_id'], 'START', '미궁 탐험을 시작했습니다.');
 }
 
+/** Called under the session lock, before exit movement or any clear settlement. */
+function maze_require_clear_allowed($session) {
+    $settings = maze_data($session['snapshot']);
+    $boss = maze_one('SELECT room_id FROM `'.maze_table('room').'` WHERE ds_id='.(int)$session['ds_id'].' AND is_boss=1 LIMIT 1');
+    if (empty($settings['boss']) && !$boss) return;
+    if (!$boss || $session['phase'] !== 'BOSS_RESULT') throw new RuntimeException('보스 처치 후 탈출해야 클리어할 수 있습니다.');
+    $battle = maze_one('SELECT room_id,state,hp FROM `'.maze_table('battle').'` WHERE ds_id='.(int)$session['ds_id'].' AND battle_id='.(int)$session['battle_id']);
+    if (!$battle || (int)$battle['room_id'] !== (int)$boss['room_id'] || $battle['state'] !== 'WON' || (int)$battle['hp'] > 0) throw new RuntimeException('보스 처치 기록을 확인할 수 없습니다.');
+}
 function maze_finish($session, $clear) {
     if (in_array($session['phase'], array('CLEAR','FAILED','CLOSED'), true)) return;
+    if ($clear) maze_require_clear_allowed($session);
     $party = maze_party($session['ds_id']);
     inventory_boundary_lock_owners(array_column($party, 'ch_id'));
     foreach ($party as $person) maze_settle_member($session, $person, $clear ? 'CLEAR' : 'FAILED', $clear);

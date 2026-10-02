@@ -43,6 +43,7 @@ function maze_move($session, $input) {
     elseif (in_array($direction, array('forward','left','right'), true)) $next = maze_one('SELECT * FROM `'.maze_table('room').'` WHERE ds_id='.(int)$session['ds_id'].' AND parent_id='.(int)$room['room_id'].' AND direction='.inventory_boundary_quote($direction));
     else throw new RuntimeException('올바른 이동 방향이 아닙니다.');
     if (!$next) throw new RuntimeException('그 방향으로 이동할 수 없습니다.');
+    if ($next['is_exit']) maze_require_clear_allowed($session);
     maze_update('room', array('visited' => 1), 'ds_id='.(int)$session['ds_id'].' AND room_id='.(int)$next['room_id']);
     maze_update('session', array('room_id' => $next['room_id'], 'version' => (int)$session['version'] + 1), 'ds_id='.(int)$session['ds_id']);
     $session['room_id'] = $next['room_id']; $session['version']++;
@@ -108,7 +109,10 @@ function maze_action($ds_id, $operation, $input) {
         }
         if ($session['phase'] === 'BATTLE') {
             $battle = maze_battle_current($session);
-            if ($battle['deadline_at'] && strtotime($battle['deadline_at']) <= time()) { maze_resolve($session, $battle, false); return; }
+            if ($battle['deadline_at'] && strtotime($battle['deadline_at']) <= time()) {
+                if ($operation === 'submit') maze_check_escape_vote($session, $input);
+                maze_resolve($session, $battle, false); return;
+            }
         }
         if ($operation === 'leave' || $operation === 'vote') {
             maze_version($session, $input);

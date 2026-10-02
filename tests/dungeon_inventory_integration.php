@@ -185,17 +185,65 @@ try {
     $escaped=maze_one('SELECT * FROM avo_dungeon_maze_battle WHERE battle_id='.(int)$timed['battle_id']);
     check((int)$escaped['hp']===10 && $escaped['state']==='ESCAPED','escape takes priority over submitted attack');
     maze_update('meta',array('action_timeout'=>null),'singleton=1');
+    $escape_settings['escape_percent']=0;
+    maze_update('session',array('snapshot'=>maze_json($escape_settings)),'ds_id=2');
+    maze_transaction(2,function($session) use($test_dungeon){maze_battle_begin($session,maze_room($session),$test_dungeon);});
+    $battle=maze_battle_current(maze_session(2));
+    maze_action(2,'submit',array('battle_id'=>$battle['battle_id'],'turn_no'=>1,'action'=>'ATTACK','escape_vote'=>1));
+    $failed_escape=maze_battle_current(maze_session(2));
+    check((int)$failed_escape['turn_no']===2 && (int)$failed_escape['hp']===10 && $failed_escape['state']==='ACTIVE','ordinary failed escape keeps battle active and skips submitted attack');
+    $escape_settings['escape_percent']=100;
+    maze_update('session',array('snapshot'=>maze_json($escape_settings)),'ds_id=2');
+    maze_action(2,'submit',array('battle_id'=>$battle['battle_id'],'turn_no'=>2,'action'=>'SKIP','escape_vote'=>1));
     $boss=$test_dungeon;$boss['dg_mon_hp']=5;
     maze_update('room',array('is_boss'=>1),'ds_id=2 AND room_id=2');
+    sql_query('CREATE TABLE avo_test_point (id INT AUTO_INCREMENT PRIMARY KEY,relation_key VARCHAR(255),amount INT) ENGINE=MyISAM');
+    $escape_settings['boss']=true;$escape_settings['points']=10;
+    $escape_settings['rewards']=array(array('it_id'=>2,'count'=>1,'percent'=>100));
+    maze_update('session',array('snapshot'=>maze_json($escape_settings)),'ds_id=2');
+    $before_exit=maze_session(2);
+    try{maze_action(2,'move',array('version'=>$before_exit['version'],'room_id'=>2,'direction'=>'forward'));check(false,'undefeated boss must block exit movement');}catch(RuntimeException $expected){}
+    check(maze_session(2)===$before_exit && !(int)maze_one('SELECT visited FROM avo_dungeon_maze_room WHERE ds_id=2 AND room_id=3')['visited'],'undefeated boss exit rejection preserves position, phase and exit visibility');
+    try{maze_transaction(2,function($session){maze_finish($session,true);});check(false,'direct clear must reject undefeated boss');}catch(RuntimeException $expected){}
+    try{maze_transaction(2,function($session){$session['phase']='BOSS_RESULT';maze_finish($session,true);});check(false,'boss result without a won boss battle must reject');}catch(RuntimeException $expected){}
+    check(!(int)maze_party(2)[0]['settled'] && !(int)maze_one('SELECT COUNT(*) AS n FROM avo_dungeon_maze_reward WHERE ds_id=2')['n'],'blocked boss clear never settles or creates rewards');
     $person=maze_party(2)[0];
-    maze_update('member',array('hp'=>1,'effects'=>maze_json(array('poison'=>array('remaining'=>3,'components'=>array(array('type'=>'DOT_HP','value'=>10)))))),'dm_id='.(int)$person['dm_id']);
     maze_transaction(2,function($session) use($boss){maze_battle_begin($session,maze_room($session),$boss);});
     $battle=maze_battle_current(maze_session(2));
-    maze_action(2,'submit',array('battle_id'=>$battle['battle_id'],'turn_no'=>1,'action'=>'ATTACK','escape_vote'=>0));
+    try{maze_action(2,'submit',array('battle_id'=>$battle['battle_id'],'turn_no'=>1,'action'=>'SKIP','escape_vote'=>1));check(false,'boss escape vote direct request must reject');}catch(RuntimeException $expected){}
+    check(!maze_actions($battle) && maze_session(2)['phase']==='BATTLE','boss escape vote is rejected before action storage');
+    maze_update('battle',array('deadline_at'=>date('Y-m-d H:i:s',time()-1)),'battle_id='.(int)$battle['battle_id']);
+    try{maze_action(2,'submit',array('battle_id'=>$battle['battle_id'],'turn_no'=>1,'action'=>'SKIP','escape_vote'=>1));check(false,'expired boss escape vote must reject');}catch(RuntimeException $expected){}
+    check((int)maze_battle_current(maze_session(2))['turn_no']===1 && !maze_actions($battle),'expired deadline does not bypass boss escape submission rejection');
+    maze_update('battle',array('deadline_at'=>null),'battle_id='.(int)$battle['battle_id']);
+    // Simulate a vote persisted before the rule change: resolve must still never flee.
+    maze_insert('action',array('battle_id'=>$battle['battle_id'],'turn_no'=>1,'dm_id'=>$person['dm_id'],'action'=>'SKIP','target_id'=>$person['dm_id'],'reference_id'=>0,'escape_vote'=>1));
+    maze_action(2,'resolve',array('battle_id'=>$battle['battle_id'],'turn_no'=>1));
+    $boss_active=maze_battle_current(maze_session(2));
+    check($boss_active['state']==='ACTIVE' && (int)$boss_active['hp']===5 && (int)$boss_active['turn_no']===2,'boss resolve ignores stored escape vote even at 100 percent');
+    maze_update('member',array('hp'=>1,'effects'=>maze_json(array('poison'=>array('remaining'=>3,'components'=>array(array('type'=>'DOT_HP','value'=>10)))))),'dm_id='.(int)$person['dm_id']);
+    maze_action(2,'submit',array('battle_id'=>$battle['battle_id'],'turn_no'=>2,'action'=>'ATTACK','escape_vote'=>0));
     check(maze_session(2)['phase']==='BOSS_RESULT' && (int)maze_party(2)[0]['hp']===1,'boss death freezes HP before end-of-turn DOT');
-    try{maze_action(2,'item',array());check(false,'boss result must block items');}catch(RuntimeException $expected){}
+    $defeated=maze_one('SELECT state,hp FROM avo_dungeon_maze_battle WHERE battle_id='.(int)$battle['battle_id']);
+    check($defeated['state']==='WON' && (int)$defeated['hp']===0,'boss result requires a defeated boss battle');
+    foreach(array('item','move','submit','resolve','event','leave','vote') as $blocked) {
+        try{maze_action(2,$blocked,array());check(false,'boss result must block '.$blocked);}catch(RuntimeException $expected){}
+    }
+    maze_action(2,'chat',array('message'=>'Boss defeated'));
+    maze_insert('member',array('ds_id'=>2,'ch_id'=>2,'mb_id'=>'other','name'=>'Dead participant','hp'=>0,'stats'=>'{}','skills'=>'{}','effects'=>'{}','joined_at'=>date('Y-m-d H:i:s')));
+    act_as(2);try{maze_action(2,'escape_final',array());check(false,'dead participant cannot trigger final exit');}catch(RuntimeException $expected){}act_as(1);
+    $reward_before=(int)maze_one('SELECT COUNT(*) AS n FROM avo_inventory WHERE ch_id=1 AND it_id=2')['n'];
+    $dead_reward_before=(int)maze_one('SELECT COUNT(*) AS n FROM avo_inventory WHERE ch_id=2 AND it_id=2')['n'];
     maze_action(2,'escape_final',array());
-    check(maze_session(2)['phase']==='CLEAR','boss escape uses common clear settlement');
+    check(maze_session(2)['phase']==='CLEAR','boss final exit uses common clear settlement');
+    $settled=array_column(maze_party(2,false),null,'ch_id');
+    check((int)$settled[1]['settled']===1 && (int)$settled[2]['settled']===1 && (int)$settled[1]['reward_eligible']===1 && (int)$settled[2]['reward_eligible']===0,'boss final exit settles everyone but rewards only survivors');
+    try{maze_action(2,'escape_final',array());check(false,'duplicate final exit must reject');}catch(RuntimeException $expected){}
+    maze_transaction(2,function($session){maze_finish($session,true);});maze_pay_rewards(2);
+    check((int)maze_one('SELECT COUNT(*) AS n FROM avo_inventory WHERE ch_id=1 AND it_id=2')['n']===$reward_before+1 && (int)maze_one('SELECT COUNT(*) AS n FROM avo_inventory WHERE ch_id=2 AND it_id=2')['n']===$dead_reward_before,'boss clear item reward is granted to survivor exactly once');
+    $boss_reward=maze_one('SELECT COUNT(*) AS n,SUM(amount) AS amount FROM avo_test_point WHERE relation_key LIKE \'%|clear:2\'');
+    check((int)$boss_reward['n']===1 && (int)$boss_reward['amount']===10 && (int)maze_one("SELECT COUNT(*) AS n FROM avo_dungeon_maze_reward WHERE ds_id=2 AND state='DONE'")['n']===1,'boss clear point journal pays survivor exactly once');
+    check((int)maze_one("SELECT COUNT(*) AS n FROM avo_dungeon_maze_log WHERE ds_id=2 AND kind='SETTLEMENT'")['n']===2,'boss final exit records one common settlement per participant');
     // Separate no-boss session verifies the ordinary exit path as well.
     maze_join(3);maze_action(3,'ready',array('ready'=>1));maze_action(3,'start',array());
     $step=maze_session(3);maze_action(3,'move',array('version'=>$step['version'],'room_id'=>1,'direction'=>'forward'));
@@ -203,7 +251,6 @@ try {
     maze_action(3,'move',array('version'=>$won['version'],'room_id'=>2,'direction'=>'forward'));
     check(maze_session(3)['phase']==='CLEAR','exit transition settles participant');
     check((int)sql_fetch('SELECT settled FROM avo_dungeon_maze_member WHERE ds_id=3')['settled']===1,'clear settlement recorded once');
-    sql_query('CREATE TABLE avo_test_point (id INT AUTO_INCREMENT PRIMARY KEY,relation_key VARCHAR(255),amount INT) ENGINE=MyISAM');
     $settings['points']=10;maze_update('config',array('settings'=>maze_json($settings)),'dg_id=2');
     add_inventory(1000);maze_join(4);maze_action(4,'ready',array('ready'=>1));maze_action(4,'start',array());
     add_inventory(1000);sql_query("UPDATE avo_inventory SET in_memo='conflicting new row' WHERE in_id=1000");
@@ -213,9 +260,9 @@ try {
     sql_query('DELETE FROM avo_inventory WHERE in_id=1000');
     maze_transaction(4,function($session){maze_finish($session,true);});
     maze_pay_rewards(4);maze_pay_rewards(4);
-    check((int)sql_fetch('SELECT COUNT(*) AS n FROM avo_test_point')['n']===1,'point journal pays once across repeated requests');
+    check((int)sql_fetch("SELECT COUNT(*) AS n FROM avo_test_point WHERE relation_key LIKE '%|clear:4'")['n']===1,'point journal pays once across repeated requests');
     maze_update('reward',array('state'=>'PENDING'),'ds_id=4');maze_pay_rewards(4);
-    check((int)sql_fetch('SELECT COUNT(*) AS n FROM avo_test_point')['n']===1,'deterministic point relation survives missing completion flag');
+    check((int)sql_fetch("SELECT COUNT(*) AS n FROM avo_test_point WHERE relation_key LIKE '%|clear:4'")['n']===1,'deterministic point relation survives missing completion flag');
     $test_dungeon['dg_count']=2;act_as(1);maze_join(5);act_as(2);maze_join(5);
     act_as(3);try{maze_join(5);check(false,'third participant must reject');}catch(RuntimeException $expected){}
     check(count(maze_party(5))===2,'maximum party size enforced on server');

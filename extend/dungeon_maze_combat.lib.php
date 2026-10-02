@@ -116,8 +116,12 @@ function maze_skill($person, $id) {
     foreach (maze_data($person['skills']) as $skill) if ((int)$skill['sh_id'] === (int)$id && $skill['sk_type'] !== '패시브') return $skill;
     throw new RuntimeException('출발 시 장착한 스킬이 아닙니다.');
 }
+function maze_check_escape_vote($session, $input) {
+    if (!empty($input['escape_vote']) && maze_room($session)['is_boss']) throw new RuntimeException('보스 전투에서는 도주할 수 없습니다.');
+}
 function maze_submit($session, $actor, $input) {
     $battle = maze_battle_current($session);
+    maze_check_escape_vote($session, $input);
     if ((int)$input['battle_id'] !== (int)$battle['battle_id'] || (int)$input['turn_no'] !== (int)$battle['turn_no']) throw new RuntimeException('이미 종료된 턴입니다.');
     if ($battle['deadline_at'] && strtotime($battle['deadline_at']) <= time()) throw new RuntimeException('행동 제출 시간이 지났습니다.');
     $action = $input['action'];
@@ -227,7 +231,8 @@ function maze_resolve($session, $battle, $skip_time) {
     if ($battle['deadline_at']) {
         if (strtotime($battle['deadline_at']) > time() && (!$skip_time || !$submitted)) throw new RuntimeException('아직 턴을 종료할 수 없습니다.');
     } elseif (!$submitted) throw new RuntimeException('모든 생존자의 행동을 기다리고 있습니다.');
-    $alive_at_start = array(); $escape = true;
+    $room = maze_room($session);
+    $alive_at_start = array(); $escape = !$room['is_boss'];
     foreach ($party as $id => $person) if ($person['hp'] > 0) { $alive_at_start[] = $id; if (empty($actions[$id]['escape_vote'])) $escape = false; }
     if (!$alive_at_start) { maze_finish($session, false); return; }
     $settings = maze_data($session['snapshot']); $monster = maze_data($battle['monster']);
@@ -272,7 +277,6 @@ function maze_resolve($session, $battle, $skip_time) {
         }
         unset($effect);$battle['monster']=maze_json($monster);
     }
-    $room = maze_room($session);
     $boss_killed = $battle['hp'] <= 0 && $room['is_boss'];
     foreach ($party as &$person) {
         if ($boss_killed) { maze_person_save($person); continue; }

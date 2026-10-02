@@ -809,6 +809,10 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 
 보스 사용 시 `rooms_min >= 2 * branches_max + 2`여야 한다. 위 값 9 >= 8은 유효하다. `weights` key 순서는 정확히 `EMPTY, SEARCH, TREASURE, TRAP`으로 만든다.
 
+`escape_percent`는 일반 몬스터 전투에만 적용한다. 모든 보스 encounter는 도주 불가이며 별도의 보스 도주 설정은 만들지 않는다. 일반 도주 성공/실패를 확정적으로 시험할 별도 QA 설정은 각각 `escape_percent=100`, `0`으로 만든다. 보스 전투에서는 도주 UI가 없고, 직접 `escape_vote=1`을 제출해도 서버가 거부해야 한다. 이전에 저장된 도주 표가 있어도 보스 resolve는 도주하지 않는다.
+
+보스가 있는 미궁은 미처치 상태의 출구 이동 및 직접 클리어 처리가 차단된다. 보스 HP가 0이 되어 `BOSS_RESULT`로 전환된 뒤에는 채팅과 생존자의 `escape_final`만 허용되고, 탈출 후 `CLEAR`로 정산한다. 생존자/전투불능 참가자를 함께 두어 전원 정산은 1회, 클리어 포인트·아이템 보상은 생존자에게만 1회인지 확인한다. 보스 없는 별도 QA 미궁(`boss=false`)도 준비하여 기존 `출구 → CLEAR`를 확인한다. 이 상태들은 SQL로 정산 완료를 선입력하지 말고 실제 행동으로 검증한다.
+
 ### monster pool
 
 최소 3개 object를 넣는다.

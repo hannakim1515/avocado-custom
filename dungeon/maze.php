@@ -122,7 +122,9 @@ if ($session['phase'] === 'BATTLE') {
 <label>행동 <select name="action"><?php foreach (array('ATTACK'=>'공격','GUARD'=>'방어','HEAL'=>'회복','SKILL'=>'스킬','ITEM'=>'아이템','SKIP'=>'대기') as $key=>$label) echo '<option value="'.$key.'"'.(isset($mine['action']) && $mine['action']===$key ? ' selected':'').'>'.$label.'</option>'; ?></select></label>
 <label>대상 <select name="target_id"><?php foreach ($party as $mate) echo '<option value="'.(int)$mate['dm_id'].'"'.((int)($mine['target_id'] ?? $person['dm_id'])===(int)$mate['dm_id']?' selected':'').'>'.maze_h($mate['name']).($mate['hp']<=0?' (전투불능)':'').'</option>'; ?></select></label>
 <label>스킬 또는 아이템 <select name="reference_id"><option value="0">선택하지 않음</option><optgroup label="스킬"><?php foreach (maze_data($person['skills']) as $skill) echo '<option value="'.(int)$skill['sh_id'].'"'.(($mine['action'] ?? '')==='SKILL' && (int)($mine['reference_id'] ?? 0)===(int)$skill['sh_id']?' selected':'').'>'.maze_h($skill['sk_name']).' (대기 '.(int)$skill['sh_limit'].'턴)</option>'; ?></optgroup><optgroup label="아이템"><?php foreach ($inventory as $stored) { $item=inventory_boundary_decode($stored['item_snapshot']); echo '<option value="'.(int)$stored['inventory_id'].'"'.(($mine['action'] ?? '')==='ITEM' && (int)($mine['reference_id'] ?? 0)===(int)$stored['inventory_id']?' selected':'').'>'.maze_h($item['it_name']).'</option>'; } ?></optgroup></select></label>
+<?php if (!maze_room($session)['is_boss']) { ?>
 <label><input type="checkbox" name="escape_vote" value="1" <?php echo !empty($mine['escape_vote'])?'checked':''; ?>> 도주 찬성 — 생존자 전원 찬성 시 일반 행동보다 먼저 판정</label>
+<?php } else { ?><p>보스 전투에서는 도주할 수 없습니다.</p><?php } ?>
 <button type="submit" class="ui-btn">행동 제출 / 수정</button>
 </form>
 <?php
