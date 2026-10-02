@@ -46,6 +46,7 @@ if(!sql_query(" DESC {$g5['map_table']} ")) {
 }
 map_ensure_column($g5['map_table'], 'ma_npc_img', "`ma_npc_img` varchar(255) NOT NULL DEFAULT '' AFTER `ma_img`");
 map_ensure_column($g5['map_table'], 'ma_npc_name', "`ma_npc_name` varchar(255) NOT NULL DEFAULT '' AFTER `ma_npc_img`");
+map_ensure_column($g5['map_table'], 'ma_npc_chance', "`ma_npc_chance` tinyint(3) unsigned NOT NULL DEFAULT '15' AFTER `ma_npc_name`");
 
 // 맵 이벤트 설정값이 없을 경우 생성
 if(!sql_query(" DESC {$g5['map_event_table']} ")) {
