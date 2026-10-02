@@ -1,0 +1,3035 @@
+{
+  "base": {
+    "exp": {
+      "columns": {
+        "ex_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ch_id": "varchar(20) NOT NULL DEFAULT ''",
+        "ch_name": "varchar(255) NOT NULL DEFAULT ''",
+        "ex_datetime": "datetime NOT NULL DEFAULT '0000-00-00 00:00:00'",
+        "ex_content": "varchar(255) NOT NULL DEFAULT ''",
+        "ex_point": "int(11) NOT NULL DEFAULT '0'",
+        "ex_ch_exp": "int(11) NOT NULL DEFAULT '0'",
+        "ex_rel_action": "varchar(255) NOT NULL DEFAULT ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ex_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "install/gnuboard5.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "character": {
+      "columns": {
+        "ch_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ch_name": "varchar(255) NOT NULL DEFAULT ''",
+        "ch_thumb": "varchar(255) NOT NULL DEFAULT ''",
+        "ch_head": "varchar(255) NOT NULL DEFAULT ''",
+        "ch_body": "varchar(255) NOT NULL DEFAULT ''",
+        "ch_title": "varchar(255) NOT NULL DEFAULT ''",
+        "mb_id": "varchar(255) NOT NULL DEFAULT ''",
+        "ch_side": "varchar(255) NOT NULL DEFAULT '0'",
+        "ch_class": "varchar(255) NOT NULL DEFAULT '0'",
+        "ch_rank": "char(4) NOT NULL DEFAULT ''",
+        "ch_exp": "int(11) NOT NULL DEFAULT '0'",
+        "ch_point": "int(11) NOT NULL DEFAULT '0'",
+        "ch_type": "varchar(255) NOT NULL DEFAULT ''",
+        "ch_search_date": "varchar(255) NOT NULL DEFAULT ''",
+        "ch_search": "int(11) NOT NULL DEFAULT '0'",
+        "ch_state": "varchar(255) NOT NULL DEFAULT ''",
+        "ma_id": "int(11) NOT NULL DEFAULT '0'",
+        "ch_order": "int(11) NOT NULL DEFAULT '0'",
+        "ch_skill_slot": "int(11) NOT NULL default '0'",
+        "ch_is_hide": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ch_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "install/gnuboard5.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "character_class": {
+      "columns": {
+        "cl_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "cl_name": "varchar(255) NOT NULL DEFAULT ''",
+        "cl_img": "varchar(255) NOT NULL DEFAULT ''",
+        "cl_auth": "int(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "cl_id"
+          ],
+          "unique": true
+        },
+        "cl_id": {
+          "columns": [
+            "cl_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/gnuboard5.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "character_side": {
+      "columns": {
+        "si_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "si_name": "varchar(255) NOT NULL DEFAULT ''",
+        "si_img": "varchar(255) NOT NULL DEFAULT ''",
+        "si_auth": "int(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "si_id"
+          ],
+          "unique": true
+        },
+        "si_id": {
+          "columns": [
+            "si_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/gnuboard5.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "inventory": {
+      "columns": {
+        "in_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "it_id": "varchar(255) NOT NULL DEFAULT ''",
+        "it_name": "varchar(255) NOT NULL DEFAULT ''",
+        "it_rel": "varchar(255) NOT NULL DEFAULT ''",
+        "ch_id": "varchar(255) NOT NULL DEFAULT ''",
+        "ch_name": "varchar(255) NOT NULL DEFAULT ''",
+        "se_ch_id": "varchar(255) NOT NULL DEFAULT ''",
+        "se_ch_name": "varchar(255) NOT NULL DEFAULT ''",
+        "re_ch_id": "varchar(255) NOT NULL DEFAULT ''",
+        "re_ch_name": "varchar(255) NOT NULL DEFAULT ''",
+        "in_sdatetime": "datetime NOT NULL DEFAULT '0000-00-00'",
+        "in_edatetime": "datetime NOT NULL DEFAULT '0000-00-00'",
+        "in_memo": "varchar(255) NOT NULL DEFAULT ''",
+        "in_use": "varchar(255) NOT NULL DEFAULT ''",
+        "in_1": "varchar(255) NOT NULL DEFAULT ''",
+        "in_2": "varchar(255) NOT NULL DEFAULT ''",
+        "in_3": "varchar(255) NOT NULL DEFAULT ''",
+        "in_4": "varchar(255) NOT NULL DEFAULT ''",
+        "in_5": "varchar(255) NOT NULL DEFAULT ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "in_id"
+          ],
+          "unique": true
+        },
+        "in_id": {
+          "columns": [
+            "in_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/gnuboard5.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "item": {
+      "columns": {
+        "it_id": "int(11) NOT NULL DEFAULT '0'",
+        "it_name": "varchar(255) NOT NULL DEFAULT ''",
+        "it_category": "varchar(255) NOT NULL DEFAULT ''",
+        "it_content": "varchar(255) NOT NULL DEFAULT ''",
+        "it_content2": "text NOT NULL",
+        "it_use_class": "varchar(255) NOT NULL DEFAULT ''",
+        "it_use_side": "varchar(255) NOT NULL DEFAULT ''",
+        "it_use_able": "varchar(255) NOT NULL DEFAULT ''",
+        "it_use_mmb_able": "int(4) NOT NULL DEFAULT '0'",
+        "it_img": "varchar(255) NOT NULL DEFAULT ''",
+        "it_has": "int(11) NOT NULL DEFAULT '0'",
+        "it_sell": "int(11) NOT NULL DEFAULT '0'",
+        "it_use_sell": "int(11) NOT NULL DEFAULT '0'",
+        "it_use_ever": "int(11) NOT NULL DEFAULT '0'",
+        "it_use": "char(4) NOT NULL DEFAULT ''",
+        "it_type": "varchar(255) NOT NULL DEFAULT ''",
+        "it_value": "varchar(255) NOT NULL DEFAULT ''",
+        "it_use_recepi": "int(11) NOT NULL DEFAULT '0'",
+        "it_seeker": "int(4) NOT NULL DEFAULT '0'",
+        "it_seeker_per_s": "int(11) NOT NULL DEFAULT '0'",
+        "it_seeker_per_e": "int(11) NOT NULL DEFAULT '0'",
+        "st_id": "int(11) NOT NULL DEFAULT '0'",
+        "it_1": "varchar(255) NOT NULL DEFAULT ''",
+        "it_2": "varchar(255) NOT NULL DEFAULT ''",
+        "it_3": "varchar(255) NOT NULL DEFAULT ''",
+        "it_4": "varchar(255) NOT NULL DEFAULT ''",
+        "it_5": "varchar(255) NOT NULL DEFAULT ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "it_id"
+          ],
+          "unique": true
+        },
+        "it_id": {
+          "columns": [
+            "it_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/gnuboard5.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "character_title": {
+      "columns": {
+        "ti_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ti_title": "varchar(255) NOT NULL DEFAULT ''",
+        "ti_img": "varchar(255) NOT NULL DEFAULT ''",
+        "ti_use": "char(4) NOT NULL DEFAULT ''",
+        "ti_value": "int(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ti_id"
+          ],
+          "unique": true
+        },
+        "ti_id": {
+          "columns": [
+            "ti_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/gnuboard5.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "has_title": {
+      "columns": {
+        "hi_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ti_id": "int(11) NOT NULL DEFAULT '0'",
+        "ch_id": "int(11) NOT NULL DEFAULT '0'",
+        "ch_name": "varchar(255) NOT NULL DEFAULT ''",
+        "hi_use": "int(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "hi_id"
+          ],
+          "unique": true
+        },
+        "hi_id": {
+          "columns": [
+            "hi_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/gnuboard5.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "level_setting": {
+      "columns": {
+        "lv_id": "INT(11) NOT NULL AUTO_INCREMENT",
+        "lv_name": "VARCHAR(255) NOT NULL DEFAULT ''",
+        "lv_exp": "INT(11) NOT NULL DEFAULT '0'",
+        "lv_add_state": "INT(11) NOT NULL DEFAULT '0'",
+        "lv_1": "VARCHAR(255) NOT NULL DEFAULT ''",
+        "lv_2": "VARCHAR(255) NOT NULL DEFAULT ''",
+        "lv_3": "VARCHAR(255) NOT NULL DEFAULT ''",
+        "lv_4": "VARCHAR(255) NOT NULL DEFAULT ''",
+        "lv_5": "VARCHAR(255) NOT NULL DEFAULT ''",
+        "lv_skill_limit": "text NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "lv_id"
+          ],
+          "unique": true
+        },
+        "lv_id": {
+          "columns": [
+            "lv_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/gnuboard5.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "status": {
+      "columns": {
+        "st_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "st_name": "varchar(255) NOT NULL DEFAULT ''",
+        "st_max": "int(11) NOT NULL DEFAULT '0'",
+        "st_min": "int(11) NOT NULL DEFAULT '0'",
+        "st_use_max": "int(11) NOT NULL DEFAULT '0'",
+        "st_order": "int(11) NOT NULL DEFAULT '0'",
+        "st_help": "varchar(255) NOT NULL DEFAULT ''",
+        "st_use_hp": "int(4) NOT NULL DEFAULT '0'",
+        "st_type10": "int(4) NOT NULL DEFAULT '0'",
+        "st_type9": "int(4) NOT NULL DEFAULT '0'",
+        "st_type8": "int(4) NOT NULL DEFAULT '0'",
+        "st_type7": "int(4) NOT NULL DEFAULT '0'",
+        "st_type6": "int(4) NOT NULL DEFAULT '0'",
+        "st_type5": "int(4) NOT NULL DEFAULT '0'",
+        "st_type4": "int(4) NOT NULL DEFAULT '0'",
+        "st_type3": "int(4) NOT NULL DEFAULT '0'",
+        "st_type2": "int(4) NOT NULL DEFAULT '0'",
+        "st_type1": "int(4) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "st_id"
+          ],
+          "unique": true
+        },
+        "lv_id": {
+          "columns": [
+            "st_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/gnuboard5.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "status_character": {
+      "columns": {
+        "sc_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "st_id": "int(11) NOT NULL DEFAULT '0'",
+        "ch_id": "int(11) NOT NULL DEFAULT '0'",
+        "sc_max": "int(11) NOT NULL DEFAULT '0'",
+        "sc_value": "int(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "sc_id"
+          ],
+          "unique": true
+        },
+        "sc_id": {
+          "columns": [
+            "sc_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/gnuboard5.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "status_extra": {
+      "columns": {
+        "ex_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ex_name": "varchar(255) NOT NULL default ''",
+        "ex_main_min": "int(11) NOT NULL default '0'",
+        "ex_main_max": "int(11) NOT NULL default '0'",
+        "ex_is_main_status": "int(11) NOT NULL default '0'",
+        "ex_main_status_type": "varchar(255) NOT NULL default ''",
+        "ex_main_status_per": "varchar(255) NOT NULL default ''",
+        "ex_cri": "int(11) NOT NULL default '0'",
+        "ex_is_cri_status": "int(11) NOT NULL default '0'",
+        "ex_cri_status_type": "varchar(255) NOT NULL default ''",
+        "ex_cri_status_per": "varchar(255) NOT NULL default ''",
+        "ex_cri_add_per": "varchar(255) NOT NULL default ''",
+        "ex_is_cri_add_status": "int(11) NOT NULL default '0'",
+        "ex_cri_add_status_type": "varchar(255) NOT NULL default ''",
+        "ex_cri_add_status_per": "varchar(255) NOT NULL default ''",
+        "ex_all_per": "varchar(255) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ex_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/status_extra.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "config": {
+      "columns": {
+        "cf_status_select_type": "text NOT NULL",
+        "cf_use_status_battle": "int(11) NOT NULL default '0'",
+        "cf_skill_count": "int(11) NOT NULL default '0'",
+        "cf_skill_count_max": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {},
+      "source": "extend/status_extra.lib.php",
+      "create": false
+    },
+    "battle_config": {
+      "columns": {
+        "bc_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "bc_proc": "varchar(255) NOT NULL default ''",
+        "bc_before": "varchar(255) NOT NULL default ''",
+        "bc_after": "varchar(255) NOT NULL default ''",
+        "bc_damage_proc": "varchar(255) NOT NULL default ''",
+        "bc_damage_type": "varchar(255) NOT NULL default ''",
+        "bc_damage_min_point": "int(11) NOT NULL default '0'",
+        "bc_damage_max_point": "int(11) NOT NULL default '0'",
+        "bc_damage_before": "varchar(255) NOT NULL default ''",
+        "bc_damage_after": "varchar(255) NOT NULL default ''",
+        "bc_reward_proc": "varchar(255) NOT NULL default ''",
+        "bc_reward_win_point": "int(11) NOT NULL default '0'",
+        "bc_reward_win_exp": "int(11) NOT NULL default '0'",
+        "bc_reward_win_item": "int(11) NOT NULL default '0'",
+        "bc_reward_lose_point": "int(11) NOT NULL default '0'",
+        "bc_reward_lose_exp": "int(11) NOT NULL default '0'",
+        "bc_reward_lose_item": "int(11) NOT NULL default '0'",
+        "bc_reward_both_point": "int(11) NOT NULL default '0'",
+        "bc_reward_both_exp": "int(11) NOT NULL default '0'",
+        "bc_reward_both_item": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "bc_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/status_battle.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "battle_log": {
+      "columns": {
+        "bl_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ch_id": "int(11) NOT NULL default '0'",
+        "ch_name": "varchar(255) NOT NULL default ''",
+        "re_ch_id": "int(11) NOT NULL default '0'",
+        "re_ch_name": "varchar(255) NOT NULL default ''",
+        "ch_point": "int(11) NOT NULL default '0'",
+        "re_ch_point": "int(11) NOT NULL default '0'",
+        "ch_damage": "int(11) NOT NULL default '0'",
+        "re_ch_damage": "int(11) NOT NULL default '0'",
+        "bl_win": "int(11) NOT NULL default '0'",
+        "bl_lose": "int(11) NOT NULL default '0'",
+        "bl_both": "int(11) NOT NULL default '0'",
+        "bl_log": "text NOT NULL",
+        "bl_datetime": "varchar(255) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "bl_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/status_battle.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "skill": {
+      "columns": {
+        "sk_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "sk_type": "varchar(255) NOT NULL default ''",
+        "sk_cate": "varchar(255) NOT NULL default ''",
+        "sk_name": "varchar(255) NOT NULL default ''",
+        "sk_img": "varchar(255) NOT NULL default ''",
+        "sk_status_code": "varchar(255) NOT NULL default ''",
+        "sk_limit": "int(11) NOT NULL default '0'",
+        "sk_keep_limit": "int(11) NOT NULL default '0'",
+        "sk_function": "varchar(255) NOT NULL default ''",
+        "sk_value_type": "varchar(255) NOT NULL default ''",
+        "sk_target": "varchar(255) NOT NULL default ''",
+        "sk_descript": "text NOT NULL",
+        "sk_mod_st_id": "varchar(255) NOT NULL default ''",
+        "sk_mod_code": "varchar(255) NOT NULL default ''",
+        "sk_mod_enermy": "varchar(255) NOT NULL default ''",
+        "sk_mod_type": "varchar(255) NOT NULL default ''",
+        "sk_effect_type": "varchar(12) NOT NULL default 'flat'",
+        "sk_def_type": "varchar(255) NOT NULL default ''",
+        "sk_def_code": "varchar(255) NOT NULL default ''",
+        "sk_def_enermy": "varchar(255) NOT NULL default ''",
+        "sk_use_single": "int(11) NOT NULL default '0'",
+        "sk_use_st_id": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "sk_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/skill.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "skill_has": {
+      "columns": {
+        "sh_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "sk_id": "int(11) NOT NULL default '0'",
+        "ch_id": "int(11) NOT NULL default '0'",
+        "sh_level": "int(11) NOT NULL default '0'",
+        "sh_limit": "int(11) NOT NULL default '0'",
+        "sh_name": "varchar(255) NOT NULL default ''",
+        "sh_descript": "text NOT NULL",
+        "sh_use": "int(11) NOT NULL default '0'",
+        "sh_datetime": "varchar(255) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "sh_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/skill.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "skill_level": {
+      "columns": {
+        "sl_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "sk_id": "int(11) NOT NULL default '0'",
+        "sl_level": "int(11) NOT NULL default '0'",
+        "sl_name": "varchar(255) NOT NULL default ''",
+        "sl_set_value": "varchar(255) NOT NULL default ''",
+        "sl_use_value": "varchar(255) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "sl_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/skill.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "member": {
+      "columns": {
+        "ch_id": "int(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {},
+      "source": "install/gnuboard5.sql",
+      "create": false
+    }
+  },
+  "map": {
+    "newmap_config": {
+      "columns": {
+        "ma_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ma_name": "varchar(255) NOT NULL default ''",
+        "ma_parent": "int(11) NOT NULL default '0'",
+        "ma_use_dungeon": "int(11) NOT NULL default '0'",
+        "ma_top": "int(111) NOT NULL default '0'",
+        "ma_left": "int(11) NOT NULL default '0'",
+        "ma_width": "int(11) NOT NULL default '0'",
+        "ma_height": "int(11) NOT NULL default '0'",
+        "ma_start": "int(11) NOT NULL default '0'",
+        "ma_img": "varchar(255) NOT NULL default ''",
+        "ma_npc_img": "varchar(255) NOT NULL default ''",
+        "ma_npc_name": "varchar(255) NOT NULL default ''",
+        "ma_npc_chance": "tinyint(3) unsigned NOT NULL default '15'",
+        "ma_content": "text NOT NULL",
+        "ma_move": "text NOT NULL",
+        "ma_use": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ma_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/map.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "newmap_event": {
+      "columns": {
+        "me_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ma_id": "int(11) NOT NULL default '0'",
+        "action_id": "int(11) NOT NULL default '0'",
+        "me_type": "varchar(255) NOT NULL default ''",
+        "me_title": "varchar(255) NOT NULL default ''",
+        "me_img": "varchar(255) NOT NULL default ''",
+        "me_content": "text NOT NULL",
+        "me_get_item": "int(11) NOT NULL default '0'",
+        "me_get_money": "int(11) NOT NULL default '0'",
+        "me_move_map": "int(11) NOT NULL default '0'",
+        "me_per_s": "int(11) NOT NULL default '0'",
+        "me_per_e": "int(11) NOT NULL default '0'",
+        "me_replay_cnt": "int(11) NOT NULL default '0'",
+        "me_now_cnt": "int(11) NOT NULL default '0'",
+        "me_use": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "me_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/map.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "newmap_action": {
+      "columns": {
+        "action_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ma_id": "int(11) NOT NULL default '0'",
+        "action_type": "varchar(50) NOT NULL default 'parttime'",
+        "action_name": "varchar(255) NOT NULL default ''",
+        "action_desc": "text NOT NULL",
+        "action_order": "int(11) NOT NULL default '0'",
+        "action_use": "int(11) NOT NULL default '1'",
+        "is_timed": "int(11) NOT NULL default '1'",
+        "duration_minutes": "int(11) NOT NULL default '240'",
+        "available_time_use": "int(11) NOT NULL default '0'",
+        "available_start": "varchar(5) NOT NULL default '00:00'",
+        "available_end": "varchar(5) NOT NULL default '00:00'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "action_id"
+          ],
+          "unique": true
+        },
+        "ma_id": {
+          "columns": [
+            "ma_id"
+          ],
+          "unique": false
+        },
+        "action_type": {
+          "columns": [
+            "action_type"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/map.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "newmap_work": {
+      "columns": {
+        "work_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ch_id": "int(11) NOT NULL default '0'",
+        "mb_id": "varchar(255) NOT NULL default ''",
+        "action_id": "int(11) NOT NULL default '0'",
+        "ma_id": "int(11) NOT NULL default '0'",
+        "started_at": "varchar(19) NOT NULL default ''",
+        "complete_at": "varchar(19) NOT NULL default ''",
+        "work_status": "varchar(20) NOT NULL default 'WORKING'",
+        "result_event_id": "int(11) NOT NULL default '0'",
+        "reward_claimed": "int(11) NOT NULL default '0'",
+        "claimed_at": "varchar(19) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "work_id"
+          ],
+          "unique": true
+        },
+        "ch_id": {
+          "columns": [
+            "ch_id"
+          ],
+          "unique": false
+        },
+        "action_id": {
+          "columns": [
+            "action_id"
+          ],
+          "unique": false
+        },
+        "reward_claimed": {
+          "columns": [
+            "reward_claimed"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/map.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "newmap_npc_place": {
+      "columns": {
+        "mn_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ma_id": "int(11) NOT NULL default '0'",
+        "npc_id": "int(11) NOT NULL default '0'",
+        "mn_weight": "int(11) NOT NULL default '1'",
+        "mn_order": "int(11) NOT NULL default '0'",
+        "mn_use": "int(11) NOT NULL default '1'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "mn_id"
+          ],
+          "unique": true
+        },
+        "ma_use": {
+          "columns": [
+            "ma_id",
+            "mn_use"
+          ],
+          "unique": false
+        },
+        "npc_id": {
+          "columns": [
+            "npc_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/map.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "newmap_npc_script": {
+      "columns": {
+        "script_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "mn_id": "int(11) NOT NULL default '0'",
+        "script_type": "varchar(20) NOT NULL default 'dialogue'",
+        "script_title": "varchar(255) NOT NULL default ''",
+        "script_content": "text NOT NULL",
+        "script_weight": "int(11) NOT NULL default '1'",
+        "script_favor_s": "int(11) NULL default NULL",
+        "script_favor_e": "int(11) NULL default NULL",
+        "script_favor_value": "int(11) NOT NULL default '0'",
+        "script_repeat_type": "varchar(20) NOT NULL default 'always'",
+        "script_cooldown": "int(11) NOT NULL default '0'",
+        "script_require_script_id": "int(11) NULL default NULL",
+        "script_order": "int(11) NOT NULL default '0'",
+        "script_use": "int(11) NOT NULL default '1'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "script_id"
+          ],
+          "unique": true
+        },
+        "mn_id": {
+          "columns": [
+            "mn_id"
+          ],
+          "unique": false
+        },
+        "script_type": {
+          "columns": [
+            "script_type"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/map.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "newmap_npc_choice": {
+      "columns": {
+        "choice_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "script_id": "int(11) NOT NULL default '0'",
+        "choice_text": "varchar(255) NOT NULL default ''",
+        "choice_result": "text NOT NULL",
+        "choice_fail_result": "text NOT NULL",
+        "choice_get_item": "int(11) NOT NULL default '0'",
+        "choice_get_money": "int(11) NOT NULL default '0'",
+        "choice_favor_value": "int(11) NOT NULL default '0'",
+        "choice_check_type": "varchar(30) NULL default NULL",
+        "choice_check_target": "varchar(100) NULL default NULL",
+        "choice_check_operator": "varchar(10) NULL default NULL",
+        "choice_check_value": "int(11) NULL default NULL",
+        "choice_fail_get_money": "int(11) NOT NULL default '0'",
+        "choice_fail_get_item": "int(11) NOT NULL default '0'",
+        "choice_fail_favor_value": "int(11) NOT NULL default '0'",
+        "choice_order": "int(11) NOT NULL default '0'",
+        "choice_use": "int(11) NOT NULL default '1'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "choice_id"
+          ],
+          "unique": true
+        },
+        "script_id": {
+          "columns": [
+            "script_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/map.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "newmap_npc_encounter": {
+      "columns": {
+        "enc_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ch_id": "int(11) NOT NULL default '0'",
+        "mb_id": "varchar(255) NOT NULL default ''",
+        "ma_id": "int(11) NOT NULL default '0'",
+        "mn_id": "int(11) NOT NULL default '0'",
+        "npc_id": "int(11) NOT NULL default '0'",
+        "script_id": "int(11) NOT NULL default '0'",
+        "script_type": "varchar(20) NOT NULL default ''",
+        "choice_id": "int(11) NOT NULL default '0'",
+        "reward_claimed": "int(11) NOT NULL default '0'",
+        "enc_status": "varchar(20) NOT NULL default 'START'",
+        "created_at": "varchar(19) NOT NULL default ''",
+        "claimed_at": "varchar(19) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "enc_id"
+          ],
+          "unique": true
+        },
+        "ch_script_status_time": {
+          "columns": [
+            "ch_id",
+            "script_id",
+            "enc_status",
+            "claimed_at"
+          ],
+          "unique": false
+        },
+        "npc_id": {
+          "columns": [
+            "npc_id"
+          ],
+          "unique": false
+        },
+        "script_id": {
+          "columns": [
+            "script_id"
+          ],
+          "unique": false
+        },
+        "reward_claimed": {
+          "columns": [
+            "reward_claimed"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/map.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "newmap_comment": {
+      "columns": {
+        "mc_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ma_id": "int(11) NOT NULL default '0'",
+        "ch_id": "int(11) NOT NULL default '0'",
+        "mc_content": "text NOT NULL",
+        "mc_datetime": "varchar(255) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "mc_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/map.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "newmap_log": {
+      "columns": {
+        "ml_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "me_id": "int(11) NOT NULL default '0'",
+        "ch_id": "int(11) NOT NULL default '0'",
+        "ch_name": "varchar(255) NOT NULL default ''",
+        "ml_log": "text NOT NULL",
+        "ml_datetime": "varchar(255) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ml_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/map.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "character": {
+      "columns": {
+        "ma_id": "INT(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {},
+      "source": "extend/map.lib.php",
+      "create": false
+    },
+    "config": {
+      "columns": {
+        "cf_use_map": "INT(11) NOT NULL DEFAULT '0'",
+        "cf_use_map_all": "INT(11) NOT NULL DEFAULT '0'",
+        "cf_map_all_img": "varchar(255) NOT NULL default ''",
+        "cf_map_all_w": "INT(11) NOT NULL DEFAULT '0'",
+        "cf_map_all_h": "INT(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {},
+      "source": "extend/map.lib.php",
+      "create": false
+    }
+  },
+  "npc": {
+    "npc_setting": {
+      "columns": {
+        "ns_id": "int(11) not null AUTO_INCREMENT",
+        "ns_name": "varchar(255) not null default ''",
+        "ns_talk": "text not null",
+        "ns_talk_item": "text not null",
+        "ns_talk_point": "int(11) not null default '0'",
+        "ns_talk_max": "int(11) not null default '0'",
+        "ns_talk_max_txt": "text not null",
+        "ns_talk_hate_point": "int(11) not null default '0'",
+        "ns_talk_hate": "int(11) not null default '0'",
+        "ns_talk_hate_txt": "text not null",
+        "ns_lv0_name": "varchar(255) not null default ''",
+        "ns_lv0_point": "int(11) not null default '0'",
+        "ns_lv0_txt": "text not null",
+        "ns_lv0_item": "int(11) not null default '0'",
+        "ns_lv0_cost": "varchar(11) not null default ''",
+        "ns_lv0_color": "varchar(255) not null default ''",
+        "ns_lv1_name": "varchar(255) not null default ''",
+        "ns_lv1_point": "int(11) not null null default '0'",
+        "ns_lv1_txt": "text not null",
+        "ns_lv1_item": "int(11) not null null default '0'",
+        "ns_lv1_cost": "varchar(11) not null default ''",
+        "ns_lv1_color": "varchar(255) not null default ''",
+        "ns_lv2_name": "varchar(255) not null default ''",
+        "ns_lv2_point": "int(11) not null null default '0'",
+        "ns_lv2_txt": "text not null",
+        "ns_lv2_item": "int(11) not null null default '0'",
+        "ns_lv2_cost": "varchar(11) not null default ''",
+        "ns_lv2_color": "varchar(11) not null default ''",
+        "ns_lv3_name": "varchar(255) not null default ''",
+        "ns_lv3_point": "int(11) not null null default '0'",
+        "ns_lv3_txt": "text not null",
+        "ns_lv3_item": "int(11) not null null default '0'",
+        "ns_lv3_cost": "varchar(11) not null default ''",
+        "ns_lv3_color": "varchar(11) not null default ''",
+        "ns_lv4_name": "varchar(255) not null default ''",
+        "ns_lv4_point": "int(11) not null null default '0'",
+        "ns_lv4_txt": "text not null",
+        "ns_lv4_item": "int(11) not null null default '0'",
+        "ns_lv4_cost": "varchar(11) not null default ''",
+        "ns_lv4_color": "varchar(11) not null default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ns_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/npc.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "npc_item": {
+      "columns": {
+        "ni_id": "INT(11) NOT NULL AUTO_INCREMENT",
+        "ch_id": "INT(11) NOT NULL default '0'",
+        "it_id": "INT(11) NOT NULL default '0'",
+        "it_name": "VARCHAR(255) NOT NULL default ''",
+        "ni_value": "INT(11) NOT NULL default '0'",
+        "ni_comment": "VARCHAR(255) NOT NULL default ''",
+        "ni_max_count": "INT(11) NOT NULL default '0'",
+        "ni_max_comment": "VARCHAR(255) NOT NULL default ''",
+        "ni_max_is_total": "INT(4) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ni_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/npc.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "npc_log": {
+      "columns": {
+        "nl_id": "INT(11) NOT NULL AUTO_INCREMENT",
+        "nl_item": "INT(11) NOT NULL default '0'",
+        "ns_id": "INT(11) NOT NULL default '0'",
+        "ni_id": "INT(11) NOT NULL default '0'",
+        "ch_id": "INT(11) NOT NULL default '0'",
+        "nl_log": "VARCHAR(255) NOT NULL default ''",
+        "nl_value": "INT(11) NOT NULL default '0'",
+        "it_id": "INT(11) NOT NULL default '0'",
+        "ns_state": "VARCHAR(255) NOT NULL default ''",
+        "nl_date": "VARCHAR(255) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "nl_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/npc.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "config": {
+      "columns": {
+        "cf_shop_npc": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {},
+      "source": "extend/npc.lib.php",
+      "create": false
+    }
+  },
+  "dungeon": {
+    "dungeon": {
+      "columns": {
+        "dg_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "dg_title": "varchar(255) NOT NULL default ''",
+        "dg_count": "int(11) NOT NULL default '0'",
+        "ma_id": "int(11) NOT NULL default '0'",
+        "ma_ids": "varchar(255) NOT NULL default ''",
+        "dg_rank": "varchar(255) NOT NULL default ''",
+        "dg_per_s": "int(11) NOT NULL default '0'",
+        "dg_per_e": "int(11) NOT NULL default '0'",
+        "dg_point": "int(11) NOT NULL default '0'",
+        "dg_status": "int(11) NOT NULL default '0'",
+        "dg_status_value": "varchar(11) NOT NULL default ''",
+        "dg_status_type": "varchar(11) NOT NULL default ''",
+        "dg_mon_name": "varchar(255) NOT NULL default ''",
+        "dg_mon_img": "varchar(255) NOT NULL default ''",
+        "dg_mon_hp": "int(11) NOT NULL default '0'",
+        "dg_mon_descript": "text NOT NULL",
+        "dg_defence": "int(11) NOT NULL default '0'",
+        "dg_d_attack_min": "int(11) NOT NULL default '0'",
+        "dg_d_attack_max": "int(11) NOT NULL default '0'",
+        "dg_d_attack_turn": "int(11) NOT NULL default '0'",
+        "dg_d_attack_count": "int(11) NOT NULL default '0'",
+        "dg_d_attack_comment": "varchar(255) NOT NULL default ''",
+        "dg_w_attack_min": "int(11) NOT NULL default '0'",
+        "dg_w_attack_max": "int(11) NOT NULL default '0'",
+        "dg_w_attack_turn": "int(11) NOT NULL default '0'",
+        "dg_w_attack_comment": "varchar(255) NOT NULL default ''",
+        "dg_strong_code": "varchar(255) NOT NULL default ''",
+        "dg_strong_value": "varchar(255) NOT NULL default ''",
+        "dg_weak_code": "varchar(255) NOT NULL default ''",
+        "dg_weak_value": "varchar(255) NOT NULL default ''",
+        "dg_weak_effect_count": "int(11) NOT NULL default '0'",
+        "dg_weak_effect_turn": "int(11) NOT NULL default '0'",
+        "dg_s1_attack_turn": "int(11) NOT NULL default '0'",
+        "dg_s1_attack_st_id": "int(11) NOT NULL default '0'",
+        "dg_s1_attack_st_value": "int(11) NOT NULL default '0'",
+        "dg_s1_attack_type": "varchar(255) NOT NULL default ''",
+        "dg_s1_attack_min": "int(11) NOT NULL default '0'",
+        "dg_s1_attack_max": "int(11) NOT NULL default '0'",
+        "dg_s1_attack_comment": "varchar(255) NOT NULL default ''",
+        "dg_s2_attack_turn": "int(11) NOT NULL default '0'",
+        "dg_s2_attack_st_id": "int(11) NOT NULL default '0'",
+        "dg_s2_attack_st_value": "int(11) NOT NULL default '0'",
+        "dg_s2_attack_type": "varchar(255) NOT NULL default ''",
+        "dg_s2_attack_min": "int(11) NOT NULL default '0'",
+        "dg_s2_attack_max": "int(11) NOT NULL default '0'",
+        "dg_s2_attack_comment": "varchar(255) NOT NULL default ''",
+        "dg_use": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "dg_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/dungeon.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "dungeon_item": {
+      "columns": {
+        "di_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "dg_id": "int(11) NOT NULL default '0'",
+        "it_id": "int(11) NOT NULL default '0'",
+        "di_count": "int(11) NOT NULL default '0'",
+        "di_per_s": "int(11) NOT NULL default '0'",
+        "di_per_e": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "di_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/dungeon.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "dungeon_state": {
+      "columns": {
+        "ds_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "dg_id": "int(11) NOT NULL default '0'",
+        "dg_title": "varchar(255) NOT NULL default ''",
+        "ds_ma_id": "int(11) NOT NULL default '0'",
+        "ds_state": "varchar(10) NOT NULL default ''",
+        "ds_hp": "int(11) NOT NULL default '0'",
+        "ds_hurt": "int(11) NOT NULL default '0'",
+        "ds_weak_count": "int(11) NOT NULL default '0'",
+        "ds_weak_turn": "int(11) NOT NULL default '0'",
+        "ds_datetime": "varchar(255) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ds_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/dungeon.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "dungeon_member": {
+      "columns": {
+        "dm_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ds_id": "int(11) NOT NULL default '0'",
+        "ch_id": "int(11) NOT NULL default '0'",
+        "dm_comment": "text NOT NULL",
+        "dm_evasion": "varchar(255) NOT NULL default ''",
+        "dm_aggro": "varchar(255) NOT NULL default ''",
+        "dm_aggro_per": "int(11) NOT NULL default '0'",
+        "dm_state": "char(4) NOT NULL default ''",
+        "dm_result": "text NOT NULL",
+        "dm_datetime": "varchar(255) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "dm_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/dungeon.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "dungeon_log": {
+      "columns": {
+        "dl_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ds_id": "int(11) NOT NULL default '0'",
+        "ch_id": "int(11) NOT NULL default '0'",
+        "ch_name": "varchar(255) NOT NULL default ''",
+        "dl_cate": "varchar(255) NOT NULL default ''",
+        "dl_function": "varchar(255) NOT NULL default ''",
+        "dl_keep_limit": "int(11) NOT NULL default '0'",
+        "dl_disposable": "int(11) NOT NULL default '0'",
+        "sk_id": "int(11) NOT NULL default '0'",
+        "sh_id": "int(11) NOT NULL default '0'",
+        "sh_level": "int(11) NOT NULL default '0'",
+        "sk_name": "varchar(255) NOT NULL default ''",
+        "sh_name": "varchar(255) NOT NULL default ''",
+        "st_id": "int(11) NOT NULL default '0'",
+        "st_code": "varchar(255) NOT NULL default ''",
+        "st_enermy": "varchar(255) NOT NULL default ''",
+        "dl_effect_type": "varchar(12) NOT NULL default 'flat'",
+        "dl_value": "int(11) NOT NULL default '0'",
+        "dl_log": "text NOT NULL",
+        "dl_is_turn": "int(11) NOT NULL default '0'",
+        "dl_is_ciritical": "int(11) NOT NULL default '0'",
+        "dl_datetime": "varchar(255) NOT NULL default ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "dl_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/dungeon.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "config": {
+      "columns": {
+        "cf_dungeon_open": "varchar(255) NOT NULL DEFAULT ''",
+        "cf_dungeon_map": "int(4) NOT NULL DEFAULT '0'",
+        "cf_dungeon_reset": "varchar(255) NOT NULL DEFAULT ''",
+        "cf_dungeon_time": "varchar(255) NOT NULL DEFAULT ''",
+        "cf_dungeon_count": "varchar(255) NOT NULL DEFAULT ''",
+        "cf_dungeon_enter": "varchar(255) NOT NULL DEFAULT ''"
+      },
+      "indexes": {},
+      "source": "extend/dungeon.lib.php",
+      "create": false
+    },
+    "item": {
+      "columns": {
+        "it_use_battle_able": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {},
+      "source": "extend/dungeon.lib.php",
+      "create": false
+    }
+  },
+  "k_battle": {
+    "k_battle_plugin_config": {
+      "columns": {
+        "cf_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "stat_list": "text NOT NULL",
+        "hp": "int(11) NOT NULL",
+        "hp_name": "varchar(11) NOT NULL DEFAULT 'hp'",
+        "mp": "int(11) NOT NULL",
+        "mp_name": "varchar(11) NOT NULL DEFAULT 'mp'",
+        "speed": "int(11) NOT NULL",
+        "skill_max": "int(11) NOT NULL DEFAULT 5",
+        "equip_max": "varchar(50) NOT NULL DEFAULT '5'",
+        "equip_type": "text NOT NULL",
+        "sample_target": "text NOT NULL",
+        "sample_unit": "text NOT NULL",
+        "limit_atk": "int(11) NOT NULL",
+        "limit_heal": "int(11) NOT NULL",
+        "limit_item": "int(11) NOT NULL",
+        "limit_skill": "int(11) NOT NULL",
+        "limit_equip": "int(11) NOT NULL DEFAULT 1",
+        "skill_img": "int(11) NOT NULL DEFAULT 1",
+        "equip_per_hide": "int(11) NOT NULL DEFAULT 0",
+        "upgrade_limit": "int(11) NOT NULL DEFAULT 0",
+        "ver_plugin": "varchar(20) NOT NULL DEFAULT '2.0.0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "cf_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "k_battle_equip_ch": {
+      "columns": {
+        "eq_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "it_id": "int(11) NOT NULL",
+        "in_id": "int(11) NOT NULL",
+        "eq_img": "text NOT NULL",
+        "eq_name": "text NOT NULL",
+        "eq_content": "text NOT NULL",
+        "eq_memo": "text NOT NULL",
+        "eq_memo_id": "int(11) NOT NULL",
+        "eq_use": "varchar(55) NOT NULL DEFAULT ''",
+        "ug_id": "int(11) NOT NULL DEFAULT 0",
+        "st_1": "int(11) NOT NULL DEFAULT 0",
+        "st_2": "int(11) NOT NULL DEFAULT 0",
+        "st_3": "int(11) NOT NULL DEFAULT 0",
+        "st_4": "int(11) NOT NULL DEFAULT 0",
+        "st_5": "int(11) NOT NULL DEFAULT 0",
+        "st_6": "int(11) NOT NULL DEFAULT 0",
+        "st_7": "int(11) NOT NULL DEFAULT 0",
+        "st_8": "int(11) NOT NULL DEFAULT 0",
+        "st_9": "int(11) NOT NULL DEFAULT 0",
+        "st_10": "int(11) NOT NULL DEFAULT 0"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "eq_id"
+          ],
+          "unique": true
+        },
+        "it_id": {
+          "columns": [
+            "it_id"
+          ],
+          "unique": false
+        },
+        "in_id": {
+          "columns": [
+            "in_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "k_battle_equip_ug": {
+      "columns": {
+        "ug_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ug_name": "varchar(255) NOT NULL",
+        "ug_per": "int(11) NOT NULL",
+        "ug_min": "int(11) NOT NULL",
+        "ug_max": "varchar(255) NOT NULL",
+        "ch_rank": "int(11) NOT NULL",
+        "ug_use_it": "int(11) NOT NULL",
+        "ug_use_money": "int(11) NOT NULL",
+        "ug_item": "int(11) NOT NULL",
+        "ug_money": "int(11) NOT NULL",
+        "ug_color": "varchar(50) NOT NULL",
+        "ug_tag_color": "varchar(50) NOT NULL",
+        "ug_bg_color": "varchar(50) NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ug_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "k_battle_equip_ug_log": {
+      "columns": {
+        "lo_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ch_id": "int(11) NOT NULL",
+        "ug_log": "varchar(255) NOT NULL",
+        "ug_name": "varchar(255) NOT NULL",
+        "ug_per": "varchar(255) NOT NULL",
+        "eq_id": "int(11) NOT NULL",
+        "st_id": "int(11) NOT NULL",
+        "ug_plus": "int(11) NOT NULL",
+        "ug_item": "int(11) NOT NULL",
+        "ug_money": "int(11) NOT NULL",
+        "ug_datetime": "varchar(255) NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "lo_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "k_battle_monster": {
+      "columns": {
+        "mo_id": "int NOT NULL AUTO_INCREMENT",
+        "mo_name": "varchar(255) NOT NULL",
+        "mo_thumb": "text NOT NULL",
+        "mo_hp": "int NOT NULL",
+        "mo_mp": "int NOT NULL",
+        "st_1": "int NOT NULL",
+        "st_2": "int NOT NULL",
+        "st_3": "int NOT NULL",
+        "st_4": "int NOT NULL",
+        "st_5": "int NOT NULL",
+        "st_6": "int NOT NULL",
+        "st_7": "int NOT NULL",
+        "st_8": "int NOT NULL",
+        "st_9": "int NOT NULL",
+        "st_10": "int NOT NULL",
+        "mo_1": "text NOT NULL",
+        "raid_type": "varchar(50) NOT NULL DEFAULT 'realtime'",
+        "mo_pattern": "int NOT NULL DEFAULT '1'",
+        "mo_default_act": "int NOT NULL DEFAULT '1'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "mo_id"
+          ],
+          "unique": true
+        },
+        "idx_raid_type": {
+          "columns": [
+            "raid_type"
+          ],
+          "unique": false
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "k_battle_skill": {
+      "columns": {
+        "sk_id": "int NOT NULL AUTO_INCREMENT",
+        "si_id": "int NOT NULL",
+        "sk_name": "varchar(255) NOT NULL",
+        "sk_content": "text NOT NULL",
+        "sk_info": "text NOT NULL",
+        "sk_value": "float(10,2) NOT NULL",
+        "default_calc": "varchar(255) NOT NULL",
+        "bonus_calc": "varchar(255) NOT NULL",
+        "sk_turn": "int NOT NULL",
+        "sk_cool": "int NOT NULL",
+        "sk_target": "varchar(255) NOT NULL",
+        "sk_target_cnt": "varchar(255) NOT NULL",
+        "sk_icon": "varchar(255) NOT NULL",
+        "sk_mp": "int NOT NULL",
+        "sc_id": "int NOT NULL",
+        "target_sc": "int NOT NULL",
+        "sk_use": "varchar(255) NOT NULL",
+        "unit_type": "varchar(10) NOT NULL DEFAULT ''",
+        "raid_type": "varchar(50) NOT NULL DEFAULT 'realtime'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "sk_id"
+          ],
+          "unique": true
+        },
+        "si_id": {
+          "columns": [
+            "si_id"
+          ],
+          "unique": false
+        },
+        "idx_raid_type": {
+          "columns": [
+            "raid_type"
+          ],
+          "unique": false
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "k_battle_skill_mo": {
+      "columns": {
+        "cs_id": "int NOT NULL AUTO_INCREMENT",
+        "mo_id": "int NOT NULL",
+        "sk_id": "int NOT NULL",
+        "cs_use": "int NOT NULL DEFAULT '1'",
+        "cs_name": "varchar(255) NOT NULL",
+        "cs_content": "text NOT NULL",
+        "cs_icon": "varchar(255) NOT NULL",
+        "cs_img": "text NOT NULL",
+        "cs_target_cnt": "int NOT NULL DEFAULT '1'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "cs_id"
+          ],
+          "unique": true
+        },
+        "idx_mo_id": {
+          "columns": [
+            "mo_id"
+          ],
+          "unique": false
+        },
+        "idx_sk_id": {
+          "columns": [
+            "sk_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "k_battle_skill_ch": {
+      "columns": {
+        "cs_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ch_id": "int(11) NOT NULL",
+        "sk_id": "int(11) NOT NULL",
+        "cs_use": "int(11) NOT NULL",
+        "cs_name": "varchar(255) NOT NULL",
+        "cs_content": "text NOT NULL",
+        "cs_icon": "varchar(255) NOT NULL",
+        "cs_img": "text NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "cs_id"
+          ],
+          "unique": true
+        },
+        "sk_id": {
+          "columns": [
+            "sk_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "k_battle_skill_info": {
+      "columns": {
+        "si_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "si_type": "varchar(255) NOT NULL",
+        "si_code": "varchar(255) NOT NULL",
+        "si_passive": "int(11) NOT NULL DEFAULT 0",
+        "si_category": "int(11) NOT NULL DEFAULT 0",
+        "si_default": "int(11) NOT NULL DEFAULT 0",
+        "si_use": "int(11) NOT NULL DEFAULT 1",
+        "si_1": "varchar(255) NOT NULL",
+        "si_info": "text NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "si_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "k_battle_stat_func": {
+      "columns": {
+        "sc_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "sc_name": "varchar(255) NOT NULL",
+        "sc_value": "varchar(255) NOT NULL",
+        "sc_type": "varchar(255) NOT NULL",
+        "sc_category": "varchar(255) NOT NULL",
+        "sc_1": "varchar(255) NOT NULL",
+        "sc_2": "varchar(255) NOT NULL",
+        "sc_3": "varchar(255) NOT NULL",
+        "sc_4": "varchar(255) NOT NULL",
+        "sc_5": "varchar(255) NOT NULL",
+        "sc_6": "varchar(255) NOT NULL",
+        "sc_7": "varchar(255) NOT NULL",
+        "sc_8": "varchar(255) NOT NULL",
+        "sc_9": "varchar(255) NOT NULL",
+        "sc_10": "varchar(255) NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "sc_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "k_battle_pattern_mo": {
+      "columns": {
+        "pt_id": "int NOT NULL AUTO_INCREMENT",
+        "mo_id": "int NOT NULL DEFAULT '0'",
+        "pt_turn": "int NOT NULL DEFAULT '0'",
+        "pt_skill": "varchar(255) NOT NULL DEFAULT ''",
+        "pt_skill_cnt": "int NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "pt_id"
+          ],
+          "unique": true
+        },
+        "idx_mo_id": {
+          "columns": [
+            "mo_id"
+          ],
+          "unique": false
+        },
+        "idx_turn": {
+          "columns": [
+            "pt_turn"
+          ],
+          "unique": false
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "k_raid_list": {
+      "columns": {
+        "li_id": "INT(11) NOT NULL AUTO_INCREMENT",
+        "li_title": "VARCHAR(255) NOT NULL DEFAULT ''",
+        "li_use": "TINYINT(1) NOT NULL DEFAULT '1'",
+        "raid_type": "VARCHAR(50) NOT NULL DEFAULT ''",
+        "ra_ids": "TEXT NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "li_id"
+          ],
+          "unique": true
+        },
+        "idx_raid_type": {
+          "columns": [
+            "raid_type"
+          ],
+          "unique": false
+        },
+        "idx_li_use": {
+          "columns": [
+            "li_use"
+          ],
+          "unique": false
+        }
+      },
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8",
+      "require_engine": true
+    },
+    "item": {
+      "columns": {
+        "ug_limit": "int(11) NOT NULL default 0",
+        "eq_type": "VARCHAR(50) NOT NULL default ''"
+      },
+      "indexes": {},
+      "source": "k_battle/extend/install/database_plugin.sql",
+      "create": false
+    }
+  },
+  "unified": {
+    "unified_combat_stat_map": {
+      "columns": {
+        "map_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "status_type": "varchar(255) NOT NULL",
+        "k_sc_id": "int(11) NOT NULL",
+        "is_active": "tinyint(1) NOT NULL DEFAULT '1'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "map_id"
+          ],
+          "unique": true
+        },
+        "uq_status_type": {
+          "columns": [
+            "status_type"
+          ],
+          "unique": true
+        },
+        "idx_k_sc_id": {
+          "columns": [
+            "k_sc_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/unified_stat.lib.php",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8",
+      "require_engine": true
+    },
+    "unified_combat_config": {
+      "columns": {
+        "uc_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "basic_atk_code": "varchar(255) NOT NULL DEFAULT ''",
+        "basic_heal_code": "varchar(255) NOT NULL DEFAULT ''",
+        "basic_guard_code": "varchar(255) NOT NULL DEFAULT ''",
+        "speed_status_type": "varchar(255) NOT NULL DEFAULT ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "uc_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/unified_stat.lib.php",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8",
+      "require_engine": true
+    },
+    "k_battle_skill": {
+      "columns": {
+        "unified_a_sk_id": "int(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "idx_unified_a_sk_id": {
+          "columns": [
+            "unified_a_sk_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/unified_skill.lib.php",
+      "create": false
+    },
+    "k_battle_skill_ch": {
+      "columns": {
+        "unified_a_sh_id": "int(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "idx_unified_a_sh_id": {
+          "columns": [
+            "unified_a_sh_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/unified_skill.lib.php",
+      "create": false
+    }
+  },
+  "realtime": {
+    "k_battle_realtime": {
+      "columns": {
+        "ra_id": "varchar(255) NOT NULL",
+        "ra_title": "text NOT NULL",
+        "ra_content": "text NOT NULL",
+        "ra_list_img": "text NOT NULL",
+        "ra_bg_img": "text NOT NULL",
+        "ra_state": "int NOT NULL",
+        "ra_limit": "int NOT NULL",
+        "ra_limit_now": "int NOT NULL",
+        "ra_reload": "varchar(255) NOT NULL",
+        "ra_reload_time": "int NOT NULL",
+        "ra_turn_type": "varchar(255) NOT NULL",
+        "ra_mo_auto": "varchar(50) NOT NULL DEFAULT ''",
+        "ra_type": "varchar(255) NOT NULL",
+        "ra_turn": "int NOT NULL",
+        "ra_count": "int NOT NULL",
+        "now_turn": "int NOT NULL",
+        "ra_system": "text NOT NULL",
+        "ra_time_limit": "int NOT NULL DEFAULT '0'",
+        "ra_time_start": "int NOT NULL DEFAULT '0'",
+        "ra_reward_money": "int DEFAULT NULL",
+        "ra_reward_exp": "int DEFAULT NULL",
+        "ra_reward_title": "int DEFAULT NULL",
+        "ra_reward_item": "varchar(50) DEFAULT NULL",
+        "ra_bgm": "varchar(225) DEFAULT NULL",
+        "ra_bgm_volume": "int DEFAULT '30'",
+        "ra_bgm_type": "varchar(50) DEFAULT 'single'",
+        "ra_system_msg": "varchar(255) DEFAULT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ra_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "k_battle/extend/install/database_realtime.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8",
+      "require_engine": true
+    },
+    "k_battle_realtime_buff": {
+      "columns": {
+        "bf_id": "int NOT NULL AUTO_INCREMENT",
+        "rm_id": "int NOT NULL DEFAULT '0'",
+        "si_code": "varchar(50) NOT NULL DEFAULT '0'",
+        "bf_value": "int NOT NULL DEFAULT '0'",
+        "sc_id": "varchar(50) NOT NULL DEFAULT '0'",
+        "cs_id": "int NOT NULL DEFAULT '0'",
+        "turn_left": "int NOT NULL DEFAULT '0'",
+        "ra_id": "varchar(55) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "bf_id"
+          ],
+          "unique": true
+        },
+        "ra_id": {
+          "columns": [
+            "ra_id"
+          ],
+          "unique": false
+        },
+        "rm_id": {
+          "columns": [
+            "rm_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "k_battle/extend/install/database_realtime.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8",
+      "require_engine": true
+    },
+    "k_battle_realtime_log": {
+      "columns": {
+        "lo_id": "int NOT NULL AUTO_INCREMENT",
+        "ra_id": "varchar(55) NOT NULL DEFAULT '0'",
+        "lo_content": "text NOT NULL",
+        "lo_1": "varchar(255) NOT NULL DEFAULT ''",
+        "lo_2": "varchar(255) NOT NULL DEFAULT ''",
+        "lo_3": "varchar(255) NOT NULL DEFAULT ''",
+        "lo_4": "varchar(255) NOT NULL DEFAULT ''",
+        "lo_5": "varchar(255) NOT NULL DEFAULT ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "lo_id"
+          ],
+          "unique": true
+        },
+        "ra_id": {
+          "columns": [
+            "ra_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "k_battle/extend/install/database_realtime.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8",
+      "require_engine": true
+    },
+    "k_battle_realtime_skill": {
+      "columns": {
+        "bs_id": "int NOT NULL AUTO_INCREMENT",
+        "rm_id": "int NOT NULL DEFAULT '0'",
+        "unit_id": "int NOT NULL DEFAULT '0'",
+        "unit_type": "varchar(10) NOT NULL DEFAULT ''",
+        "cs_id": "int NOT NULL DEFAULT '0'",
+        "sk_cool_now": "int NOT NULL DEFAULT '0'",
+        "ra_id": "varchar(55) NOT NULL DEFAULT '0'",
+        "unified_a_sk_id": "int(11) NOT NULL DEFAULT '0'",
+        "unified_value": "float NOT NULL DEFAULT '0'",
+        "unified_mp": "int(11) NOT NULL DEFAULT '0'",
+        "unified_turn": "int(11) NOT NULL DEFAULT '0'",
+        "unified_cool": "int(11) NOT NULL DEFAULT '0'",
+        "unified_def_code": "varchar(255) NOT NULL DEFAULT ''",
+        "unified_def_type": "char(1) NOT NULL DEFAULT '+'",
+        "unified_def_enermy": "varchar(20) NOT NULL DEFAULT ''",
+        "unified_mod_type": "char(1) NOT NULL DEFAULT ''",
+        "unified_effect_type": "varchar(12) NOT NULL DEFAULT 'flat'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "bs_id"
+          ],
+          "unique": true
+        },
+        "ra_id": {
+          "columns": [
+            "ra_id"
+          ],
+          "unique": false
+        },
+        "rm_id": {
+          "columns": [
+            "rm_id"
+          ],
+          "unique": false
+        },
+        "cs_id": {
+          "columns": [
+            "cs_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "k_battle/extend/install/database_realtime.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8",
+      "require_engine": true
+    },
+    "k_battle_realtime_unit": {
+      "columns": {
+        "rm_id": "int NOT NULL AUTO_INCREMENT",
+        "unit_type": "varchar(255) NOT NULL",
+        "unit_id": "int NOT NULL",
+        "hp_now": "int NOT NULL DEFAULT '0'",
+        "hp_max": "int NOT NULL DEFAULT '0'",
+        "mp_now": "int NOT NULL DEFAULT '0'",
+        "mp_max": "int NOT NULL DEFAULT '0'",
+        "st_1": "int NOT NULL DEFAULT '0'",
+        "st_2": "int NOT NULL DEFAULT '0'",
+        "st_3": "int NOT NULL DEFAULT '0'",
+        "st_4": "int NOT NULL DEFAULT '0'",
+        "st_5": "int NOT NULL DEFAULT '0'",
+        "st_6": "int NOT NULL DEFAULT '0'",
+        "st_7": "int NOT NULL DEFAULT '0'",
+        "st_8": "int NOT NULL DEFAULT '0'",
+        "st_9": "int NOT NULL DEFAULT '0'",
+        "st_10": "int NOT NULL DEFAULT '0'",
+        "is_stun": "int NOT NULL DEFAULT '0'",
+        "is_aggr": "int NOT NULL DEFAULT '0'",
+        "tt_done": "int NOT NULL DEFAULT '0'",
+        "ra_id": "varchar(55) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "rm_id"
+          ],
+          "unique": true
+        },
+        "ra_id": {
+          "columns": [
+            "ra_id"
+          ],
+          "unique": false
+        },
+        "unit_id": {
+          "columns": [
+            "unit_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "k_battle/extend/install/database_realtime.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8",
+      "require_engine": true
+    },
+    "k_battle_plugin_config": {
+      "columns": {
+        "ver_realtime": "varchar(20) NOT NULL DEFAULT '1.0.0'",
+        "realtime": "int(11) NOT NULL DEFAULT '1'"
+      },
+      "indexes": {},
+      "source": "adm/980_k_data_install.php; adm/982_k_realtime_config.php",
+      "create": false
+    }
+  },
+  "field": {
+    "field_player": {
+      "columns": {
+        "fp_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ch_id": "int(11) NOT NULL default '0'",
+        "fm_id": "varchar(50) NOT NULL default 'demo_forest'",
+        "fp_x": "int(11) NOT NULL default '2'",
+        "fp_y": "int(11) NOT NULL default '10'",
+        "fp_dir": "varchar(10) NOT NULL default 'down'",
+        "fp_datetime": "datetime NOT NULL default CURRENT_TIMESTAMP"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "fp_id"
+          ],
+          "unique": true
+        },
+        "idx_ch_id": {
+          "columns": [
+            "ch_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/field.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "field_log": {
+      "columns": {
+        "fl_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "ch_id": "int(11) NOT NULL default '0'",
+        "fm_id": "varchar(50) NOT NULL default ''",
+        "fl_key": "varchar(80) NOT NULL default ''",
+        "fl_type": "varchar(30) NOT NULL default ''",
+        "fl_datetime": "datetime NOT NULL default CURRENT_TIMESTAMP"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "fl_id"
+          ],
+          "unique": true
+        },
+        "idx_field_log": {
+          "columns": [
+            "ch_id",
+            "fm_id",
+            "fl_key"
+          ],
+          "unique": false
+        },
+        "idx_field_log_type": {
+          "columns": [
+            "ch_id",
+            "fm_id",
+            "fl_type"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/field.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "field_map": {
+      "columns": {
+        "fm_id": "varchar(50) NOT NULL default ''",
+        "fm_name": "varchar(255) NOT NULL default ''",
+        "fm_use": "int(11) NOT NULL default '1'",
+        "fm_img": "varchar(255) NOT NULL default ''",
+        "fm_tile_size": "int(11) NOT NULL default '32'",
+        "fm_start_x": "int(11) NOT NULL default '1'",
+        "fm_start_y": "int(11) NOT NULL default '1'",
+        "fm_start_dir": "varchar(10) NOT NULL default 'down'",
+        "fm_tiles": "text NOT NULL",
+        "fm_order": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "fm_id"
+          ],
+          "unique": true
+        },
+        "idx_fm_use": {
+          "columns": [
+            "fm_use",
+            "fm_order"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/field.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "field_event": {
+      "columns": {
+        "fe_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "fm_id": "varchar(50) NOT NULL default ''",
+        "fe_type": "varchar(30) NOT NULL default 'npc'",
+        "fe_x": "int(11) NOT NULL default '0'",
+        "fe_y": "int(11) NOT NULL default '0'",
+        "fe_name": "varchar(255) NOT NULL default ''",
+        "fe_text": "text NOT NULL",
+        "fe_it_id": "int(11) NOT NULL default '0'",
+        "fe_url": "varchar(255) NOT NULL default ''",
+        "fe_use": "int(11) NOT NULL default '1'",
+        "fe_order": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "fe_id"
+          ],
+          "unique": true
+        },
+        "idx_field_event": {
+          "columns": [
+            "fm_id",
+            "fe_x",
+            "fe_y",
+            "fe_use"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/field.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "field_fishing": {
+      "columns": {
+        "ff_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "fm_id": "varchar(50) NOT NULL default ''",
+        "ff_name": "varchar(255) NOT NULL default ''",
+        "ff_text": "varchar(255) NOT NULL default ''",
+        "ff_rate": "int(11) NOT NULL default '0'",
+        "ff_it_id": "int(11) NOT NULL default '0'",
+        "ff_use": "int(11) NOT NULL default '1'",
+        "ff_order": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ff_id"
+          ],
+          "unique": true
+        },
+        "idx_field_fishing": {
+          "columns": [
+            "fm_id",
+            "ff_use"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/field.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "field_encounter": {
+      "columns": {
+        "fc_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "fm_id": "varchar(50) NOT NULL default ''",
+        "fc_tile": "varchar(10) NOT NULL default 'G'",
+        "fc_name": "varchar(255) NOT NULL default ''",
+        "fc_rate": "int(11) NOT NULL default '0'",
+        "fc_url": "varchar(255) NOT NULL default ''",
+        "fc_use": "int(11) NOT NULL default '1'",
+        "fc_order": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "fc_id"
+          ],
+          "unique": true
+        },
+        "idx_field_encounter": {
+          "columns": [
+            "fm_id",
+            "fc_tile",
+            "fc_use"
+          ],
+          "unique": false
+        }
+      },
+      "source": "extend/field.lib.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    }
+  },
+  "room": {
+    "room": {
+      "columns": {
+        "ro_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "pair_id": "varchar(255) NOT NULL default ''",
+        "ro_img": "varchar(255) NOT NULL default ''",
+        "ro_top": "int(11) NOT NULL default '0'",
+        "ro_left": "int(11) NOT NULL default '0'",
+        "ro_order": "int(11) NOT NULL default '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ro_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "extend/room.config.php",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    },
+    "character": {
+      "columns": {
+        "ch_room_bak": "varchar(255) NOT NULL DEFAULT ''"
+      },
+      "indexes": {},
+      "source": "extend/room.config.php",
+      "create": false
+    }
+  },
+  "quest": {
+    "k_quest": {
+      "columns": {
+        "qu_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "qu_type": "enum('main','sub','member') NOT NULL DEFAULT 'sub'",
+        "qu_complete_type": "enum('log','item') NOT NULL DEFAULT 'log'",
+        "qu_submit_type": "enum('mmb','direct','admin') NOT NULL DEFAULT 'mmb'",
+        "qu_title": "varchar(255) NOT NULL DEFAULT ''",
+        "qu_content": "text",
+        "qu_content2": "text",
+        "qu_end_msg": "varchar(255) NOT NULL DEFAULT ''",
+        "qu_request_item": "int(11) NOT NULL DEFAULT 0",
+        "qu_request_item_count": "int(11) NOT NULL DEFAULT 1",
+        "qu_take_max": "int(11) NOT NULL DEFAULT 0",
+        "qu_take_now": "int(11) NOT NULL DEFAULT 0",
+        "qu_ch_id": "int(11) NOT NULL DEFAULT 0",
+        "qu_blind": "tinyint(1) NOT NULL DEFAULT 0",
+        "qu_money": "int(11) NOT NULL DEFAULT 0",
+        "qu_exp": "int(11) NOT NULL DEFAULT 0",
+        "it_id": "int(11) NOT NULL DEFAULT 0",
+        "ti_id": "int(11) NOT NULL DEFAULT 0",
+        "event_id": "varchar(100) NOT NULL DEFAULT ''",
+        "event_week": "varchar(100) NOT NULL DEFAULT ''",
+        "qu_state": "enum('hidden','active','done') NOT NULL DEFAULT 'active'",
+        "qu_view": "tinyint(1) NOT NULL DEFAULT 0",
+        "qu_datetime": "datetime DEFAULT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "qu_id"
+          ],
+          "unique": true
+        },
+        "idx_qu_type": {
+          "columns": [
+            "qu_type"
+          ],
+          "unique": false
+        },
+        "idx_qu_state": {
+          "columns": [
+            "qu_state"
+          ],
+          "unique": false
+        },
+        "idx_event_id": {
+          "columns": [
+            "event_id"
+          ],
+          "unique": false
+        },
+        "idx_qu_ch_id": {
+          "columns": [
+            "qu_ch_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "adm/993_quest_config.php",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "k_quest_has": {
+      "columns": {
+        "qh_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "qu_id": "int(11) NOT NULL DEFAULT 0",
+        "ch_id": "int(11) NOT NULL DEFAULT 0",
+        "qh_state": "enum('수행중','완료','실패') NOT NULL DEFAULT '수행중'",
+        "qh_starttime": "datetime DEFAULT NULL",
+        "qh_endtime": "datetime DEFAULT NULL",
+        "qh_log": "varchar(255) NOT NULL DEFAULT ''"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "qh_id"
+          ],
+          "unique": true
+        },
+        "uk_qu_ch": {
+          "columns": [
+            "qu_id",
+            "ch_id"
+          ],
+          "unique": true
+        },
+        "idx_ch_id": {
+          "columns": [
+            "ch_id"
+          ],
+          "unique": false
+        },
+        "idx_qh_state": {
+          "columns": [
+            "qh_state"
+          ],
+          "unique": false
+        },
+        "idx_qh_starttime": {
+          "columns": [
+            "qh_starttime"
+          ],
+          "unique": false
+        }
+      },
+      "source": "adm/993_quest_config.php",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "k_quest_config": {
+      "columns": {
+        "qc_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "qc_title": "varchar(50) NOT NULL DEFAULT '퀘스트'",
+        "qc_register_reward_type": "enum('exp','money','item') NOT NULL DEFAULT 'money'",
+        "qc_register_reward_value": "int(11) NOT NULL DEFAULT 30",
+        "qc_complete_reward_type": "enum('exp','money','item') NOT NULL DEFAULT 'money'",
+        "qc_complete_reward_value": "int(11) NOT NULL DEFAULT 5",
+        "qc_quarter_receive_max": "int(11) NOT NULL DEFAULT 3",
+        "qc_quarter_give_max": "int(11) NOT NULL DEFAULT 2",
+        "qc_member_take_max": "int(11) NOT NULL DEFAULT 3",
+        "qc_last_reset_date": "date DEFAULT NULL",
+        "qc_reset_days": "int(11) NOT NULL DEFAULT 7",
+        "qc_main_display_count": "int(11) NOT NULL DEFAULT 3",
+        "qc_member_quest_enabled": "tinyint(1) NOT NULL DEFAULT 1",
+        "qc_member_quest_type": "varchar(50) NOT NULL DEFAULT 'mmb,direct'",
+        "qc_main_color": "varchar(20) NOT NULL DEFAULT '#d4a373'",
+        "qc_sub_color": "varchar(20) NOT NULL DEFAULT '#8EACBB'",
+        "qc_member_color": "varchar(20) NOT NULL DEFAULT '#509164'",
+        "qc_main_text_color": "varchar(20) NOT NULL DEFAULT 'white'",
+        "qc_sub_text_color": "varchar(20) NOT NULL DEFAULT 'white'",
+        "qc_member_text_color": "varchar(20) NOT NULL DEFAULT 'white'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "qc_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "adm/993_quest_config.php",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "character": {
+      "columns": {
+        "ch_give_quest": "VARCHAR(100) NOT NULL DEFAULT '0'",
+        "ch_receive_quest": "VARCHAR(100) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {},
+      "source": "adm/993_quest_config.php",
+      "create": false
+    },
+    "inventory": {
+      "columns": {
+        "qu_id": "INT(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {},
+      "source": "adm/993_quest_config.php",
+      "create": false
+    },
+    "k_quest_inven": {
+      "columns": {
+        "in_id": "int(11) NOT NULL AUTO_INCREMENT",
+        "it_id": "varchar(255) NOT NULL DEFAULT ''",
+        "it_name": "varchar(255) NOT NULL DEFAULT ''",
+        "it_rel": "varchar(255) NOT NULL DEFAULT ''",
+        "ch_id": "varchar(255) NOT NULL DEFAULT ''",
+        "ch_name": "varchar(255) NOT NULL DEFAULT ''",
+        "se_ch_id": "varchar(255) NOT NULL DEFAULT ''",
+        "se_ch_name": "varchar(255) NOT NULL DEFAULT ''",
+        "re_ch_id": "varchar(255) NOT NULL DEFAULT ''",
+        "re_ch_name": "varchar(255) NOT NULL DEFAULT ''",
+        "in_sdatetime": "datetime NOT NULL DEFAULT '0000-00-00'",
+        "in_edatetime": "datetime NOT NULL DEFAULT '0000-00-00'",
+        "in_memo": "varchar(255) NOT NULL DEFAULT ''",
+        "in_use": "varchar(255) NOT NULL DEFAULT ''",
+        "in_1": "varchar(255) NOT NULL DEFAULT ''",
+        "in_2": "varchar(255) NOT NULL DEFAULT ''",
+        "in_3": "varchar(255) NOT NULL DEFAULT ''",
+        "in_4": "varchar(255) NOT NULL DEFAULT ''",
+        "in_5": "varchar(255) NOT NULL DEFAULT ''",
+        "qu_id": "int(11) NOT NULL DEFAULT '0'"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "in_id"
+          ],
+          "unique": true
+        },
+        "in_id": {
+          "columns": [
+            "in_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "adm/993_quest_config.php (CREATE LIKE inventory; current custom columns checked at runtime)",
+      "create": true,
+      "engine": "MyISAM",
+      "charset": "utf8",
+      "require_engine": false
+    }
+  },
+  "inventory_boundary": {
+    "inventory_guard": {
+      "columns": {
+        "ch_id": "int NOT NULL",
+        "active_journal": "bigint unsigned DEFAULT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ch_id"
+          ],
+          "unique": true
+        },
+        "active_journal": {
+          "columns": [
+            "active_journal"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/dungeon/002_inventory_boundary.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "inventory_journal": {
+      "columns": {
+        "journal_id": "bigint unsigned NOT NULL AUTO_INCREMENT",
+        "ch_id": "int NOT NULL",
+        "mb_id": "varchar(255) NOT NULL",
+        "operation": "varchar(100) NOT NULL",
+        "state": "varchar(16) NOT NULL",
+        "request_key": "varchar(64) NOT NULL",
+        "originals": "longtext NOT NULL",
+        "intent": "longtext NOT NULL",
+        "result_note": "text NOT NULL",
+        "created_at": "datetime NOT NULL",
+        "finished_at": "datetime DEFAULT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "journal_id"
+          ],
+          "unique": true
+        },
+        "request_key": {
+          "columns": [
+            "request_key"
+          ],
+          "unique": true
+        },
+        "owner_state": {
+          "columns": [
+            "ch_id",
+            "state"
+          ],
+          "unique": false
+        },
+        "review_queue": {
+          "columns": [
+            "state",
+            "created_at"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/dungeon/002_inventory_boundary.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    }
+  },
+  "labyrinth": {
+    "dungeon_maze_meta": {
+      "columns": {
+        "singleton": "tinyint NOT NULL",
+        "schema_version": "int NOT NULL",
+        "action_timeout": "int DEFAULT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "singleton"
+          ],
+          "unique": true
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_config": {
+      "columns": {
+        "dg_id": "int NOT NULL",
+        "settings": "longtext NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "dg_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_session": {
+      "columns": {
+        "ds_id": "int NOT NULL",
+        "dg_id": "int NOT NULL",
+        "phase": "varchar(16) NOT NULL DEFAULT 'WAITING'",
+        "version": "bigint NOT NULL DEFAULT 0",
+        "room_id": "int NOT NULL DEFAULT 0",
+        "battle_id": "bigint NOT NULL DEFAULT 0",
+        "snapshot": "longtext NOT NULL",
+        "expires_at": "datetime DEFAULT NULL",
+        "started_at": "datetime DEFAULT NULL",
+        "finished_at": "datetime DEFAULT NULL",
+        "created_at": "datetime NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ds_id"
+          ],
+          "unique": true
+        },
+        "phase_expiry": {
+          "columns": [
+            "phase",
+            "expires_at"
+          ],
+          "unique": false
+        },
+        "dungeon": {
+          "columns": [
+            "dg_id",
+            "ds_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_member": {
+      "columns": {
+        "dm_id": "bigint NOT NULL AUTO_INCREMENT",
+        "ds_id": "int NOT NULL",
+        "ch_id": "int NOT NULL",
+        "mb_id": "varchar(255) NOT NULL",
+        "name": "varchar(255) NOT NULL",
+        "state": "varchar(16) NOT NULL DEFAULT 'ACTIVE'",
+        "ready": "tinyint NOT NULL DEFAULT 0",
+        "hp": "int NOT NULL DEFAULT 1",
+        "max_hp": "int NOT NULL DEFAULT 1",
+        "stats": "longtext NOT NULL",
+        "skills": "longtext NOT NULL",
+        "effects": "longtext NOT NULL",
+        "settled": "tinyint NOT NULL DEFAULT 0",
+        "reward_eligible": "tinyint NOT NULL DEFAULT 0",
+        "joined_at": "datetime NOT NULL",
+        "exited_at": "datetime DEFAULT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "dm_id"
+          ],
+          "unique": true
+        },
+        "membership": {
+          "columns": [
+            "ds_id",
+            "ch_id"
+          ],
+          "unique": true
+        },
+        "character_active": {
+          "columns": [
+            "ch_id",
+            "state"
+          ],
+          "unique": false
+        },
+        "character_history": {
+          "columns": [
+            "ch_id",
+            "dm_id"
+          ],
+          "unique": false
+        },
+        "daily_settled": {
+          "columns": [
+            "ch_id",
+            "settled",
+            "exited_at"
+          ],
+          "unique": false
+        },
+        "party": {
+          "columns": [
+            "ds_id",
+            "state",
+            "dm_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_room": {
+      "columns": {
+        "ds_id": "int NOT NULL",
+        "room_id": "int NOT NULL",
+        "parent_id": "int NOT NULL",
+        "direction": "varchar(12) NOT NULL",
+        "depth": "int NOT NULL",
+        "kind": "varchar(16) NOT NULL",
+        "is_exit": "tinyint NOT NULL DEFAULT 0",
+        "is_boss": "tinyint NOT NULL DEFAULT 0",
+        "visited": "tinyint NOT NULL DEFAULT 0",
+        "resolved": "tinyint NOT NULL DEFAULT 0",
+        "encounter_done": "tinyint NOT NULL DEFAULT 0",
+        "payload": "longtext NOT NULL",
+        "result_text": "text NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ds_id",
+            "room_id"
+          ],
+          "unique": true
+        },
+        "parent": {
+          "columns": [
+            "ds_id",
+            "parent_id"
+          ],
+          "unique": false
+        },
+        "visited": {
+          "columns": [
+            "ds_id",
+            "visited",
+            "room_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_battle": {
+      "columns": {
+        "battle_id": "bigint NOT NULL AUTO_INCREMENT",
+        "ds_id": "int NOT NULL",
+        "room_id": "int NOT NULL",
+        "state": "varchar(16) NOT NULL DEFAULT 'ACTIVE'",
+        "turn_no": "int NOT NULL DEFAULT 1",
+        "deadline_at": "datetime DEFAULT NULL",
+        "monster": "longtext NOT NULL",
+        "hp": "int NOT NULL",
+        "weak_count": "int NOT NULL DEFAULT 0",
+        "weak_turn": "int NOT NULL DEFAULT 0"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "battle_id"
+          ],
+          "unique": true
+        },
+        "session": {
+          "columns": [
+            "ds_id",
+            "battle_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_action": {
+      "columns": {
+        "battle_id": "bigint NOT NULL",
+        "turn_no": "int NOT NULL",
+        "dm_id": "bigint NOT NULL",
+        "action": "varchar(16) NOT NULL DEFAULT ''",
+        "target_id": "bigint NOT NULL DEFAULT 0",
+        "reference_id": "bigint NOT NULL DEFAULT 0",
+        "escape_vote": "tinyint NOT NULL DEFAULT 0"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "battle_id",
+            "turn_no",
+            "dm_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_inventory": {
+      "columns": {
+        "inventory_id": "bigint NOT NULL AUTO_INCREMENT",
+        "ds_id": "int NOT NULL",
+        "dm_id": "bigint NOT NULL",
+        "ch_id": "int NOT NULL",
+        "it_id": "int NOT NULL",
+        "origin": "varchar(12) NOT NULL",
+        "original_id": "int DEFAULT NULL",
+        "active_original_id": "int DEFAULT NULL",
+        "original_row": "longtext NOT NULL",
+        "item_snapshot": "longtext NOT NULL",
+        "consumed": "tinyint NOT NULL DEFAULT 0",
+        "restored": "tinyint NOT NULL DEFAULT 0"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "inventory_id"
+          ],
+          "unique": true
+        },
+        "active_original": {
+          "columns": [
+            "active_original_id"
+          ],
+          "unique": true
+        },
+        "owner_items": {
+          "columns": [
+            "ds_id",
+            "dm_id",
+            "consumed",
+            "restored"
+          ],
+          "unique": false
+        },
+        "item_reference": {
+          "columns": [
+            "it_id",
+            "restored"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_vote": {
+      "columns": {
+        "ds_id": "int NOT NULL",
+        "target_id": "bigint NOT NULL",
+        "voter_id": "bigint NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ds_id",
+            "target_id",
+            "voter_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_log": {
+      "columns": {
+        "log_id": "bigint NOT NULL AUTO_INCREMENT",
+        "ds_id": "int NOT NULL",
+        "dm_id": "bigint NOT NULL DEFAULT 0",
+        "kind": "varchar(12) NOT NULL",
+        "message": "text NOT NULL",
+        "created_at": "datetime NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "log_id"
+          ],
+          "unique": true
+        },
+        "session_log": {
+          "columns": [
+            "ds_id",
+            "log_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_reward": {
+      "columns": {
+        "ds_id": "int NOT NULL",
+        "dm_id": "bigint NOT NULL",
+        "reward_type": "varchar(16) NOT NULL",
+        "state": "varchar(16) NOT NULL DEFAULT 'PENDING'",
+        "mb_id": "varchar(255) NOT NULL",
+        "amount": "int NOT NULL",
+        "completed_at": "datetime DEFAULT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "ds_id",
+            "dm_id",
+            "reward_type"
+          ],
+          "unique": true
+        },
+        "pending": {
+          "columns": [
+            "state",
+            "ds_id"
+          ],
+          "unique": false
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_status": {
+      "columns": {
+        "status_id": "int NOT NULL AUTO_INCREMENT",
+        "name": "varchar(255) NOT NULL",
+        "description": "text NOT NULL",
+        "duration": "int NOT NULL",
+        "enabled": "tinyint NOT NULL DEFAULT 1",
+        "components": "longtext NOT NULL"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "status_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    },
+    "dungeon_maze_item_effect": {
+      "columns": {
+        "it_id": "int NOT NULL",
+        "kind": "varchar(16) NOT NULL",
+        "status_id": "int NOT NULL DEFAULT 0",
+        "value": "int NOT NULL DEFAULT 1"
+      },
+      "indexes": {
+        "PRIMARY": {
+          "columns": [
+            "it_id"
+          ],
+          "unique": true
+        }
+      },
+      "source": "install/dungeon/003_labyrinth.manual.sql",
+      "create": true,
+      "engine": "InnoDB",
+      "charset": "utf8mb4",
+      "require_engine": true
+    }
+  },
+  "inventory_index": {
+    "inventory": {
+      "columns": {},
+      "indexes": {
+        "maze_owner_rows": {
+          "columns": [
+            "ch_id"
+          ],
+          "unique": false,
+          "prefix_ok": true,
+          "add_columns": [
+            "ch_id",
+            "in_id"
+          ]
+        }
+      },
+      "source": "install/dungeon/004_inventory_index.manual.sql",
+      "create": false
+    }
+  }
+}
