@@ -36,6 +36,8 @@ function get_inventory_item($in_id) {
 // 아이템 삭제
 function delete_inventory($in_id, $is_del = 0) {
 	global $g5;
+	// A boundary claim already removed this row before granting its effect.
+	if (!empty($GLOBALS['inventory_boundary_consumed'][(int)$in_id])) return;
 	if($is_del == '0') {
 		sql_query("delete from {$g5['inventory_table']} where in_id = '{$in_id}'");
 		sql_query("delete from {$g5['k_ch_equip_table']} where in_id = '{$in_id}'");

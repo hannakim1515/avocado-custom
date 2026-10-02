@@ -32,6 +32,11 @@ if ($_POST['act_button'] == "선택수정") {
 		$k = $_POST['chk'][$i];
 		$temp_ds_id = trim($_POST['ds_id'][$k]);
 		if (!$temp_ds_id) { return; }
+        $temp_ds_id = (int)$temp_ds_id;
+        if (maze_session($temp_ds_id)) {
+            // Canonical history and escrow must survive legacy instance deletion.
+            alert('미궁 관리 화면에서 공통 정산을 거쳐 강제 종료해 주세요.', './dungeon_maze.php?ds_id='.$temp_ds_id);
+        }
 		sql_query(" delete from {$g5['dungeon_state_table']} where ds_id = '{$temp_ds_id}'");
 	}
 }

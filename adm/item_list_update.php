@@ -51,15 +51,17 @@ if ($_POST['act_button'] == "선택수정") {
 		$temp_it_id = trim($_POST['it_id'][$k]);
 		if (!$temp_it_id) { return; }
 
+        $delete_claim = inventory_boundary_delete_or_alert('it_id', array((int)$temp_it_id));
 		$it = sql_fetch("select it_img from {$g5['item_table']} where it_id = '{$tmp_it_id}'");
 		
 		$prev_file_path = str_replace(G5_URL, G5_PATH, $it['it_img']);
 		@unlink($prev_file_path);
 		
 		sql_query(" delete from {$g5['item_table']} where it_id = '{$temp_it_id}'");
-		sql_query(" delete from {$g5['inventory_table']} where it_id = '{$temp_it_id}'");
+// Original inventory rows were removed by inventory_boundary_delete_scope.
 		sql_query(" delete from {$g5['order_table']} where it_id = '{$temp_it_id}'");
 		sql_query(" delete from {$g5['shop_table']} where it_id = '{$temp_it_id}'");
+        if ($delete_claim) inventory_boundary_done($delete_claim);
 	}
 }
 

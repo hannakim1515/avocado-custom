@@ -10,6 +10,7 @@ if($ch['mb_id'] != $member['mb_id'] && !$is_admin) {
 }
 
 
+$delete_claim = inventory_boundary_delete_or_alert('ch_id', array((int)$ch['ch_id']));
 $prev_file_path = str_replace(G5_URL, G5_PATH, $ch['ch_thumb']);
 @unlink($prev_file_path);
 $prev_file_path = str_replace(G5_URL, G5_PATH, $ch['ch_head']);
@@ -22,7 +23,7 @@ sql_query(" delete from {$g5['value_table']} where ch_id = '{$ch['ch_id']}' ");
 sql_query(" delete from {$g5['exp_table']} where ch_id = '{$ch['ch_id']}' ");
 sql_query(" delete from {$g5['title_has_table']} where ch_id = '{$ch['ch_id']}' ");
 sql_query(" delete from {$g5['closthes_table']} where ch_id = '{$ch['ch_id']}' ");
-sql_query(" delete from {$g5['inventory_table']} where ch_id = '{$ch['ch_id']}' ");
+// Original inventory rows were removed by inventory_boundary_delete_scope.
 
 $sql = " update {$g5['member_table']}
 			set ch_id = ''
@@ -30,5 +31,6 @@ $sql = " update {$g5['member_table']}
 sql_query($sql);
 
 
+if (!empty($delete_claim)) inventory_boundary_done($delete_claim);
 goto_url("./index.php");
 ?>

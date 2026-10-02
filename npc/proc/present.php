@@ -47,7 +47,7 @@ if($npc_item['ni_id']) {
 	$talk_index = rand(0, count($talk)-1);
 	$talk = trim($talk[$talk_index]);
 }
-delete_inventory($in_id);
+$claim = inventory_boundary_begin_or_alert(array($in_id), 'npc.present', array('npc_id' => (int)$npc_id), 'remove');
 
 $talk = str_replace("[이름]은", $character['ch_name'].j($character['ch_name'],'은'), $talk);
 $talk = str_replace("[이름]는", $character['ch_name'].j($character['ch_name'],'는'), $talk);
@@ -74,6 +74,7 @@ $log_data = array(
 	"log" => $talk
 );
 insert_npc_log($log_data);
+inventory_boundary_done($claim);
 
 $message = $talk;
 $npc_now_state = $npc['new_data']['state'];

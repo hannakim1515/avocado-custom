@@ -6,7 +6,8 @@ if($inven_function == "스킬지급(K)") {
         $check=sql_fetch (" SELECT * from {$g5['k_ch_skill_table']} where sk_id='{$in['it_value']}' and ch_id='{$ch['ch_id']}' ");
         if($check['cs_id']){
 			alert('이미 보유한 스킬입니다.', $return_url);
-        }else{
+		}else{
+			$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'inventory.k_skill');
             sql_query (" INSERT into {$g5['k_ch_skill_table']} 
                         set cs_name='{$sk['sk_name']}',
                         cs_icon='{$sk['sk_icon']}',
@@ -15,7 +16,7 @@ if($inven_function == "스킬지급(K)") {
                         sk_id = '{$in['it_value']}'
             " );
 			if(function_exists('unified_skill_sync_character')) unified_skill_sync_character($ch['ch_id']);
-            delete_inventory($in['in_id'], $in['it_use_ever']);
+            inventory_boundary_done($claim);
             alert('등록되었습니다.', $return_url);
         }
     }
@@ -28,6 +29,7 @@ if($inven_function =="스탯증가(K)"){
     if($sc['sc_max']>=$sl['st_max']){
         alert('이 스테이터스를 더 올릴 수 없습니다!', $return_url);
     }else{
+		$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'inventory.k_stat');
         $sc['sc_max'] = $sc['sc_max'] + $in['it_value']; 
 
         if($sc['sc_max'] >= $sl['st_max']) { 
@@ -39,7 +41,7 @@ if($inven_function =="스탯증가(K)"){
 		$modify_point=$ch['ch_point']+$in['it_value'];
         sql_query(" update {$g5['status_table']} set sc_max = '{$sc['sc_max']}' where sc_id = '{$sc['sc_id']}'"); 
 		sql_query(" update {$g5['character_table']} set ch_point='{$modify_point}' where ch_id='{$ch['ch_id']}'"); 
-        delete_inventory($in['in_id'], $in['it_use_ever']);
+        inventory_boundary_done($claim);
     }
 }
 

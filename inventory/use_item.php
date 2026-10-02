@@ -22,6 +22,8 @@ if($in['ch_id'] == $character['ch_id']) {
 if(!$in['in_id']) { 
 	echo "<p>아이템 보유 정보를 확인할 수 없습니다.</p>";
 } else {
+	try { inventory_boundary_owner((int)$in['ch_id']); }
+	catch (Throwable $error) { alert($error->getMessage()); }
 	$inven_function = $in['it_type'];
 
 	if($inven_function == "프로필수정") {
@@ -31,13 +33,17 @@ if(!$in['in_id']) {
 		include('./inc/add_item_form.php');
 	}
 	if($inven_function == "스탯회복") {
+		$recover_status = sql_fetch("SELECT sc_id FROM {$g5['status_table']} WHERE ch_id='".(int)$ch['ch_id']."' AND st_id='".(int)$in['st_id']."'");
+		if (empty($recover_status['sc_id'])) alert('회복할 스탯을 확인할 수 없습니다.');
+		$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'inventory.recover', array('required_type'=>'스탯회복','transactional_effect_tables'=>array($g5['status_table'])));
 		set_status($ch['ch_id'], $in['st_id'], ($in['it_value'] * -1));
-		delete_inventory($in['in_id'], $in['it_use_ever']);
+		inventory_boundary_done($claim);
 		echo location_url($return_url);
 	}
 	if($inven_function == "뽑기") {
+		$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'inventory.draw');
 		$result = get_item_explo($in['ch_id'], $in['it_id']);
-		delete_inventory($in['in_id'], $in['it_use_ever']);
+		inventory_boundary_done($claim, '추첨 처리 완료');
 
 		if($result['it_name']) {
 			alert("『{$result['it_name']}』 획득 성공!");

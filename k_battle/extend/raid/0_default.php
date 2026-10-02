@@ -560,13 +560,9 @@ function k_equip_upgrade($in_id, $ug_in_id = '')//장비 강화
             return $result;
         }
 
-        insert_point(
-            $member['mb_id'],
-            $ug['ug_money'] * (-1),
-            "[{$eq['eq_name']}] [{$ug['ug_name']}] 강화 시도"
-        );
     }
 
+    $upgrade_claim = null;
     // 재료 아이템 소모
     if ($ug['ug_use_it'] && !empty($ug['ug_item'])) {
         $ug_it = sql_fetch("
@@ -582,7 +578,13 @@ function k_equip_upgrade($in_id, $ug_in_id = '')//장비 강화
             return $result;
         }
 
-        delete_inventory($ug_in_id);
+        try { $upgrade_claim = inventory_boundary_begin((int)$character['ch_id'], array((int)$ug_in_id), 'equip.upgrade', array('eq_id' => (int)$eq['eq_id'], 'hold_ids' => array((int)$in_id), 'expected_it_id' => (int)$ug['ug_item']), 'remove'); }
+        catch (Throwable $error) { $result['result'] = 'alert'; $result['msg'] = $error->getMessage(); return $result; }
+    }
+
+    if ($ug['ug_use_money'] && !empty($ug['ug_money'])) {
+        insert_point($member['mb_id'], $ug['ug_money'] * (-1), "[{$eq['eq_name']}] [{$ug['ug_name']}] 강화 시도",
+            $upgrade_claim ? '@inventory' : '', $upgrade_claim ? (string)$upgrade_claim['journal_id'] : '', $upgrade_claim ? 'upgrade' : '');
     }
 
     // 성공 여부 판단
@@ -703,6 +705,7 @@ function k_equip_upgrade($in_id, $ug_in_id = '')//장비 강화
         )
     ", false);
 
+    if ($upgrade_claim) inventory_boundary_done($upgrade_claim);
     // 반환값
     $result['result'] = $ug_result;
     $result['msg']    = $ug_log;

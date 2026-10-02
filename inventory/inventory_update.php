@@ -1,5 +1,8 @@
 <?php
 include_once('./_common.php');
+$in_id = (int)$in_id;
+$ch_id = (int)$ch_id;
+$re_ch_id = (int)$re_ch_id;
 
 if($url) { 
 	$return_url = urldecode($url);
@@ -29,6 +32,7 @@ if(!$in['in_id']) {
 }
 
 if($in['in_id'] && $re_ch['ch_id']) { 
+	$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'inventory.transfer', array('receiver_ch_id' => (int)$re_ch['ch_id']), 'hold');
 
 	sql_query (" UPDATE {$g5['k_ch_equip_table']} 
 					set eq_use = ''
@@ -42,9 +46,9 @@ if($in['in_id'] && $re_ch['ch_id']) {
 						re_ch_id = '{$re_ch['ch_id']}',
 						re_ch_name = '{$re_ch['ch_name']}',
 						in_memo = '{$in_memo}'
-						{$add_sql}
-					where in_id = '{$in_id}'";
+					where in_id = '".(int)$in['in_id']."' and ch_id = '".(int)$character['ch_id']."'";
 	sql_query($inven_sql);
+	inventory_boundary_done($claim);
 
 	$recv_mb_id   = $re_ch['mb_id'];
 	$memo_content = "[ ".$se_ch['ch_name']."님이 보내신 《".$in['it_name']."》아이템이 도착 하였습니다. ] 캐릭터 인벤토리를 확인하세요.";

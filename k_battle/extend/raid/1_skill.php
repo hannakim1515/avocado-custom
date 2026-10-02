@@ -280,7 +280,7 @@ function use_k_skill($sk, $unit, $target_id, $target_type, $ra_id=0, $msg='', $o
 }
 function use_k_item($unit, $target_id, $ra_id=0, $msg='', $option='')//아이템사용
 {
-    global $g5, $kb_cf;
+    global $g5, $kb_cf, $character;
 
     $in = sql_fetch("
             SELECT it.it_value, it.it_type, inven.in_id, it.it_img, it.it_content, it.it_name
@@ -308,8 +308,10 @@ function use_k_item($unit, $target_id, $ra_id=0, $msg='', $option='')//아이템
     }
 
     if ($recover !== '') {
+        try { $claim = inventory_boundary_begin((int)$character['ch_id'], array((int)$target_id), 'raid.item', array('ra_id' => (int)$ra_id), 'remove'); }
+        catch (Throwable $error) { return $error->getMessage(); }
         set_k_dmg($unit, $recover, (int)$in['it_value']);
-        delete_inventory($target_id);
+        inventory_boundary_done($claim);
 
         $msg .= "<p class=\"act-title item\">아이템 사용</p>";
         $msg .= "<div class=\"sk-info\"><p class=\"sc-name\"><img src=\"{$in['it_img']}\">{$in['it_name']}</p><p class=\"sk-content\">{$in['it_content']}</p></div>";

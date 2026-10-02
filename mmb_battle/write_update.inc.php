@@ -103,12 +103,8 @@ if($w != 'cu') {
 	if($use_item) { 
 		$it = sql_fetch("select it.it_type, it.it_use_ever, it.it_name, it.it_id, it.it_value, it.it_content, it.it_content2 from {$g5['item_table']} it, {$g5['inventory_table']} inven where inven.in_id = '{$use_item}' and inven.it_id = it.it_id");
 
-		// 아이템 제거
-		if(!$it['it_use_ever']) { 
-			// 영구성 아이템이 아닐 시, 사용했을 때 인벤에서 제거한다.
-			delete_inventory($use_item);
-		}
-		
+		$claim = inventory_boundary_begin_or_alert(array($use_item), 'board.item', array('board' => $bo_table, 'wr_id' => (int)$temp_wr_id));
+
 		// 아이템이 뽑기 아이템의 경우 
 		if($it['it_type'] == '뽑기') { 
 			$seed = rand(0, 100);
@@ -137,6 +133,7 @@ if($w != 'cu') {
 			$item_log = "D||".$it['it_id']."||".$it['it_name']."||".$it['it_type']."||".$it['it_value']."||".$it['it_content']."||".$it['it_content2'];
 		}
 		$customer_sql .= " , wr_item = '{$it['it_id']}', wr_item_log = '{$item_log}'";
+		inventory_boundary_done($claim);
 
 	}
 
@@ -198,11 +195,13 @@ if($w != 'cu') {
 	//	조합
 	//----------------------------------------------------------
 	if($action == 'H') { 
+		$craft_ids = array((int)$make_1, (int)$make_2, (int)$make_3);
 		// 재료 정보 : make_1, make_2, make_3
 		$make_1 = get_inventory_item($make_1);
 		$make_2 = get_inventory_item($make_2);
 		$make_3 = get_inventory_item($make_3);
 
+		$craft_claim = inventory_boundary_begin_or_alert($craft_ids, 'board.craft', array('board' => $bo_table, 'wr_id' => (int)$temp_wr_id));
 		$re_item[0] = $make_1['it_id'];
 		$re_item[1] = $make_2['it_id'];
 		$re_item[2] = $make_3['it_id'];
@@ -222,9 +221,7 @@ if($w != 'cu') {
 
 		$customer_sql .= " , wr_log = '{$log}' ";
 
-		if(!$make_1['it_use_ever']) { delete_inventory($make_1['in_id']); }
-		if(!$make_2['it_use_ever']) { delete_inventory($make_2['in_id']); }
-		if(!$make_3['it_use_ever']) { delete_inventory($make_3['in_id']); }
+		inventory_boundary_done($craft_claim);
 	}
 }
 

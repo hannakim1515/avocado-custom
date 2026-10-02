@@ -16,20 +16,32 @@ $config['cf_dungeon_reset'] = set_reset_dungeon();
 
 $dungeon_list = array();
 $dungeon_sql = sql_query("select * from {$g5['dungeon_state_table']} ds, {$g5['dungeon_table']} dg where ds.ds_state = 'S' and ds.dg_id = dg.dg_id");
+while ($row=sql_fetch_array($dungeon_sql)) $dungeon_list[]=$row;
+$maze_index_sessions=array(); $maze_index_parties=array();
+if ($dungeon_list && maze_installed()) {
+    $instance_ids=implode(',',array_map('intval',array_column($dungeon_list,'ds_id')));
+    foreach(inventory_boundary_rows('SELECT ds_id,phase FROM `'.maze_table('session').'` WHERE ds_id IN ('.$instance_ids.')') as $row) $maze_index_sessions[(int)$row['ds_id']]=$row;
+    foreach(inventory_boundary_rows('SELECT m.ds_id,m.ch_id,m.name AS ch_name,c.ch_thumb,1 AS dm_state FROM `'.maze_table('member').'` m LEFT JOIN `'.$g5['character_table'].'` c ON c.ch_id=m.ch_id WHERE m.ds_id IN ('.$instance_ids.") AND m.state='ACTIVE' ORDER BY m.dm_id") as $row) $maze_index_parties[(int)$row['ds_id']][]=$row;
+}
 ?>
 
 <div class="dungeonListWrap">
 	<ul>
-		<? for($i=0; $dg = sql_fetch_array($dungeon_sql); $i++) { 
+		<? foreach($dungeon_list as $dg) {
 			$mon_hp = $dg['ds_hp'];
 			$mon_hp_now = ($dg['ds_hp'] - $dg['ds_hurt']) <= 0 ? 0 : $dg['ds_hp'] - $dg['ds_hurt'];
 			$mon_hp_per = $mon_hp_now == 0 ? 0 : ($mon_hp_now/$mon_hp) * 100;
 
 			$close_date = date('m/d H:i', strtotime($config['cf_dungeon_reset']." +{$config['cf_dungeon_time']} Hour"));
-			$ds_mem = get_dungeon_member($dg['ds_id'], "");
-
+            $indexed_session=$maze_index_sessions[(int)$dg['ds_id']] ?? null;
+            $ds_mem=$indexed_session ? ($maze_index_parties[(int)$dg['ds_id']] ?? array()) : get_dungeon_member($dg['ds_id'], "");
+            $maze_entry_label='입장하기';
+            if($indexed_session && $indexed_session['phase']!=='WAITING') {
+                $maze_entry_label='';
+                foreach($ds_mem as $participant) if((int)$participant['ch_id']===(int)$character['ch_id']) $maze_entry_label='미궁 이어하기';
+            }
 			$dg_url = "";
-			if($character['ch_state'] == '승인') { 
+			if($character['ch_state'] == '승인' && $maze_entry_label !== '') {
 				$dg_url = G5_URL."/dungeon/applicate.php?ds_id={$dg['ds_id']}";
 			}
 		?>
@@ -50,7 +62,7 @@ $dungeon_sql = sql_query("select * from {$g5['dungeon_state_table']} ds, {$g5['d
 							</div>
 							<? } ?>
 						</div>
-					
+
 						<div class="bar">
 							<span style="width:<?=$mon_hp_per?>%;"></span>
 							<div class="txt">
@@ -102,7 +114,7 @@ $dungeon_sql = sql_query("select * from {$g5['dungeon_state_table']} ds, {$g5['d
 				</div>
 
 				<? if($dg_url) { ?>
-				<div class="control"><button type='button' onclick="goto_dungeon_application('<?=$dg_url?>');"><span>입장하기</span></button></div>
+				<div class="control"><button type='button' onclick="goto_dungeon_application('<?=$dg_url?>');"><span><?=htmlspecialchars($maze_entry_label, ENT_QUOTES, 'UTF-8')?></span></button></div>
 				<? } ?>
 
 			</div>

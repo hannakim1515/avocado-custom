@@ -451,29 +451,32 @@ function complete_quest($qh_id, $ch_id, $log_link = '') {
         return $result;
     }
     
-    // 아이템 제출 퀘스트인 경우 아이템 보유 체크 및 차감
+    $material_claim = null;
     if ($qh['qu_complete_type'] == 'item' && $qh['qu_request_item']) {
-        $req_item_id = (int)$qh['qu_request_item'];
-        $req_item_count = (int)$qh['qu_request_item_count'];
-        if ($req_item_count < 1) $req_item_count = 1;
-        
-        // 보유 수량 확인
-        $owned = sql_fetch("SELECT COUNT(*) AS cnt FROM {$g5['inventory_table']} 
-                            WHERE ch_id = '{$ch_id}' AND it_id = '{$req_item_id}'");
-        
-        if ((int)$owned['cnt'] < $req_item_count) {
-            $req_item = get_item($req_item_id);
-            $result['message'] = '아이템이 부족합니다. (' . $req_item['it_name'] . ' ' . $owned['cnt'] . '/' . $req_item_count . '개)';
+        try {
+            $material_claim = inventory_boundary_begin($ch_id, array(), 'quest.submit',
+                array('qh_id' => $qh_id, 'idempotency_key' => $qh_id.':'.$qh['qh_starttime']),
+                'remove', array((int)$qh['qu_request_item'] => max(1, (int)$qh['qu_request_item_count'])));
+        } catch (Throwable $error) {
+            $result['message'] = $error->getMessage();
             return $result;
         }
-        
-        // 아이템 차감 (요구 수량만큼 한번에 삭제)
-        sql_query("DELETE FROM {$g5['inventory_table']} 
-                   WHERE ch_id = '{$ch_id}' AND it_id = '{$req_item_id}' 
-                   ORDER BY se_ch_id ASC 
-                   LIMIT {$req_item_count}");
     }
-    
+
+    $quest_reward_claim = null;
+    if ($qh['it_id'] && $qh['qu_type'] === 'member') {
+            $transfer_data = array('ch_id' => $ch_id, 'ch_name' => $character['ch_name']);
+            if ($qh['qu_ch_id'] && !$qh['qu_blind']) {
+                $giver = get_character($qh['qu_ch_id']);
+                $transfer_data += array('re_ch_id' => $ch_id, 're_ch_name' => $character['ch_name'],
+                    'se_ch_id' => $giver['ch_id'], 'se_ch_name' => $giver['ch_name'],
+                    'in_memo' => $qh['qu_end_msg']);
+            }
+            $move_result = move_quest_item($qh['qu_id'], 'reward', 0, 0, $transfer_data, true);
+            if (!$move_result['success']) throw new RuntimeException($move_result['message']);
+        $quest_reward_claim = isset($move_result['claim']) ? $move_result['claim'] : null;
+    }
+
     // 로그 링크 이스케이프
     $log_link_safe = sql_escape_string($log_link);
     $qu_action = '[' . $qh['qu_title'] . '] ' . $qc_title . ' 수행';
@@ -483,7 +486,10 @@ function complete_quest($qh_id, $ch_id, $log_link = '') {
     
     // 1. 포인트 보상
     if ($qh['qu_money']) {
-        insert_point($member['mb_id'], $qh['qu_money'], $qu_action, 'shop', time(), '지급');
+        $reward_claim = $material_claim ? $material_claim : $quest_reward_claim;
+        $point_result = insert_point($member['mb_id'], $qh['qu_money'], $qu_action,
+            $reward_claim ? '@inventory' : 'shop', $reward_claim ? (string)$reward_claim['journal_id'] : time(), 'quest:'.$qh_id);
+        if ($reward_claim && $point_result !== 1 && $point_result !== -1) throw new RuntimeException('퀘스트 포인트 지급을 확인할 수 없습니다.');
         $money_name = ses($config, 'cf_money', '화폐', 'raw');
         $reward_msgs[] = $money_name . ' ' . number_format($qh['qu_money']);
     }
@@ -499,28 +505,7 @@ function complete_quest($qh_id, $ch_id, $log_link = '') {
         $it = get_item($qh['it_id']);
         if ($qh['qu_type'] == 'member') {
             // 멤버 의뢰: k_quest_inven에서 아이템 이동
-            $move_result = move_quest_item($qh['qu_id'], 'reward', 0, 0);
-            if ($move_result['success']) {
-                $reward_msgs[] = $it['it_name'];
-            }
-            
-            // 기명인 경우: 의뢰자 정보 추가
-            if ($move_result['success'] && $qh['qu_ch_id'] && !$qh['qu_blind']) {
-                $re_ch = get_character($qh['qu_ch_id']);
-                $qu_end_msg_safe = sql_escape_string($qh['qu_end_msg']);
-                
-                // 방금 지급된 아이템 업데이트 (qu_id로 찾음)
-                sql_query("UPDATE {$g5['inventory_table']} SET 
-                            ch_id = '{$re_ch['ch_id']}' 
-                            re_ch_id = '{$ch_id}',
-                            re_ch_name = '{$character['ch_name']}',
-                            se_ch_id = '{$re_ch['ch_id']}',
-                            se_ch_name = '{$re_ch['ch_name']}',
-                            in_memo = '{$qu_end_msg_safe}',
-                            log_link = '{$log_link_safe}'
-                          WHERE ch_id = '{$ch_id}' AND it_id = '{$qh['it_id']}' AND qu_id = '{$qh['qu_id']}'
-                          ORDER BY in_id DESC LIMIT 1");
-            }
+            $reward_msgs[] = $it['it_name'];
         } else {
             // 일반 퀘스트: 새로운 아이템 생성
             sql_query("INSERT INTO {$g5['inventory_table']} SET 
@@ -576,6 +561,8 @@ function complete_quest($qh_id, $ch_id, $log_link = '') {
         }
     }
     
+    if ($material_claim) inventory_boundary_done($material_claim);
+    elseif ($quest_reward_claim) inventory_boundary_done($quest_reward_claim);
     $result['success'] = true;
     $result['message'] = $qh['qu_end_msg'];
     $result['reward_msg'] = count($reward_msgs) > 0 ? implode(', ', $reward_msgs) : '';
@@ -588,7 +575,7 @@ function complete_quest($qh_id, $ch_id, $log_link = '') {
 /**
  * 퀘스트 아이템 이동 함수
   */
-function move_quest_item($qu_id, $type, $it_id = 0, $limit = 0) {
+function move_quest_item($qu_id, $type, $it_id = 0, $limit = 0, $transfer_data = array(), $defer_done = false) {
     global $g5, $character;
     
     $qu_id = (int)$qu_id;
@@ -634,67 +621,49 @@ function move_quest_item($qu_id, $type, $it_id = 0, $limit = 0) {
             return $result;
         }
         
-        // 1. inventory에서 qu_id 업데이트 (퀘스트 미등록 아이템만)
-        sql_query("UPDATE {$g5['inventory_table']} 
-                   SET qu_id = '{$qu_id}' 
-                   WHERE it_id = '{$it_id}' 
-                   AND ch_id = '{$character['ch_id']}' 
-                   AND se_ch_id = '' 
-                   ORDER BY in_id ASC 
-                   LIMIT {$limit}");
-        
-        $updated = mysqli_affected_rows($g5['connect_db']);
-        
-        if ($updated > 0) {
-            // 2. k_quest_inven으로 복사 (공통 컬럼만)
-            sql_query("INSERT INTO {$g5['k_quest_inven_table']} ({$cols_str})
-                       SELECT {$cols_str} FROM {$g5['inventory_table']} 
-                       WHERE qu_id = '{$qu_id}' AND it_id = '{$it_id}'");
-            
-            // 3. 원본 삭제
-            sql_query("DELETE FROM {$g5['inventory_table']} 
-                       WHERE qu_id = '{$qu_id}' AND it_id = '{$it_id}'");
-            
+        try {
+            $claim = inventory_boundary_begin((int)$character['ch_id'], array(), 'quest.deposit',
+                array('qu_id' => $qu_id), 'remove', array($it_id => $limit), true);
+            foreach ($claim['rows'] as $original) {
+                $original['qu_id'] = $qu_id;
+                $values = array();
+                foreach ($common_cols as $column) $values[] = inventory_boundary_quote($original[$column]);
+                inventory_boundary_query("INSERT INTO {$g5['k_quest_inven_table']} ({$cols_str}) VALUES (".implode(',', $values).")");
+            }
+            inventory_boundary_done($claim);
             $result['success'] = true;
-            $result['message'] = "아이템을 퀘스트 보관함으로 이동했습니다. ({$updated}개)";
-            $result['count'] = $updated;
-        } else {
-            $result['message'] = '이동할 아이템이 없습니다.';
+            $result['count'] = count($claim['rows']);
+            $result['message'] = '아이템을 퀘스트 보관함으로 이동했습니다.';
+        } catch (Throwable $error) {
+            $result['message'] = $error->getMessage();
         }
-        
+
     } else {
         // k_quest_inven → inventory (return, reward)
         $limit_sql = ($type == 'reward') ? 'LIMIT 1' : '';
         $success_msg = ($type == 'reward') ? '아이템을 보상으로 지급했습니다.' : '아이템을 반환했습니다.';
         $error_msg = ($type == 'reward') ? '지급할 아이템이 없습니다.' : '반환할 아이템이 없습니다.';
         
-        // 1. 이동할 in_id 목록 선택
-        $in_ids = array();
-        $res = sql_query("SELECT in_id FROM {$g5['k_quest_inven_table']} 
-                          WHERE qu_id = '{$qu_id}' 
-                          ORDER BY in_id ASC {$limit_sql}");
-        while ($row = sql_fetch_array($res)) {
-            $in_ids[] = $row['in_id'];
-        }
-        
-        if (count($in_ids) > 0) {
-            $in_ids_str = implode(',', $in_ids);
-            
-            // 2. inventory로 복사 (공통 컬럼만)
-            sql_query("INSERT INTO {$g5['inventory_table']} ({$cols_str})
-                       SELECT {$cols_str} FROM {$g5['k_quest_inven_table']} 
-                       WHERE in_id IN ({$in_ids_str})");
-            
-            // 3. 원본 삭제
-            sql_query("DELETE FROM {$g5['k_quest_inven_table']} 
-                       WHERE in_id IN ({$in_ids_str})");
-            
+        try {
+            $claim = inventory_boundary_quest_release($qu_id, $type === 'reward');
+            if (!$claim) { $result['message'] = $error_msg; return $result; }
+            foreach ($claim['rows'] as $source) {
+                $original = array_intersect_key($source, array_flip($common_cols));
+                if ($type === 'reward') {
+                    $original = array_merge($original, array_intersect_key($transfer_data, array_flip($common_cols)));
+                    $original['ch_id'] = (int)$character['ch_id'];
+                    $original['ch_name'] = $character['ch_name'];
+                }
+                inventory_boundary_restore_row($original);
+            }
+            $ids = array_map('intval', array_column($claim['rows'], 'in_id'));
+            inventory_boundary_query("DELETE FROM `{$g5['k_quest_inven_table']}` WHERE qu_id={$qu_id} AND in_id IN (".implode(',', $ids).')');
+            if (!$claim['parent'] && !$defer_done) inventory_boundary_done($claim);
+            elseif (!$claim['parent']) $result['claim'] = $claim;
             $result['success'] = true;
-            $result['message'] = "{$success_msg} (" . count($in_ids) . "개)";
-            $result['count'] = count($in_ids);
-        } else {
-            $result['message'] = $error_msg;
-        }
+            $result['message'] = $success_msg;
+            $result['count'] = count($ids);
+        } catch (Throwable $error) { $result['message'] = $error->getMessage(); }
     }
     
     return $result;

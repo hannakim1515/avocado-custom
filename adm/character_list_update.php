@@ -87,17 +87,19 @@ if ($_POST['act_button'] == "선택수정") {
 		if (!$ch['ch_id']) {
 			$msg .= "{$ch['ch_id']} : 캐릭터 자료가 존재하지 않습니다.\\n";
 		} else {
+			$delete_claim = inventory_boundary_delete_or_alert('ch_id', array((int)$ch['ch_id']));
 			sql_query(" delete from {$g5['character_table']} where ch_id = '{$ch['ch_id']}' ");
 			sql_query(" delete from {$g5['value_table']} where ch_id = '{$ch['ch_id']}' ");
 			sql_query(" delete from {$g5['exp_table']} where ch_id = '{$ch['ch_id']}' ");
 			sql_query(" delete from {$g5['title_has_table']} where ch_id = '{$ch['ch_id']}' ");
 			sql_query(" delete from {$g5['closthes_table']} where ch_id = '{$ch['ch_id']}' ");
-			sql_query(" delete from {$g5['inventory_table']} where ch_id = '{$ch['ch_id']}' ");
+// Original inventory rows were removed by inventory_boundary_delete_scope.
 
 			$sql = " update {$g5['member_table']}
 						set ch_id = ''
 						where mb_id = '{$ch['mb_id']}' and ch_id = '{$ch['ch_id']}' ";
 			sql_query($sql);
+            if ($delete_claim) inventory_boundary_done($delete_claim);
 		}
 	}
 }

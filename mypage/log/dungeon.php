@@ -4,14 +4,19 @@ include_once('./_head.php');
 
 
 
-// 던전 참여 목록 불러오기
-$sql = "select *  order by dm.dm_datetime desc, dm.dm_id desc";
-$result = sql_query($sql);
 $dg_list = array();
-for($i=0; $dg = sql_fetch_array($result); $i++) {
-	$dg_list[] = $dg;
+if (function_exists('maze_installed') && maze_installed()) {
+    $maze_before = isset($_GET['maze_before']) ? max(0,(int)$_GET['maze_before']) : 0;
+    $maze_history = inventory_boundary_rows('SELECT m.dm_id,m.ds_id,m.state,m.settled,m.joined_at,s.phase,s.started_at,s.finished_at,s.snapshot FROM `'.maze_table('member').'` m JOIN `'.maze_table('session').'` s ON s.ds_id=m.ds_id WHERE m.ch_id='.(int)$character['ch_id'].' AND m.mb_id='.inventory_boundary_quote($member['mb_id']).($maze_before?' AND m.dm_id<'.$maze_before:'').' ORDER BY m.dm_id DESC LIMIT 20');
+    echo '<section><h2>미궁 기록</h2><ul>';
+    foreach ($maze_history as $entry) {
+        $history_settings=maze_data($entry['snapshot']);
+        echo '<li><a href="'.G5_URL.'/dungeon/maze.php?ds_id='.(int)$entry['ds_id'].'">'.htmlspecialchars(isset($history_settings['title'])?$history_settings['title']:'미궁 #'.$entry['ds_id'],ENT_QUOTES,'UTF-8').' · '.htmlspecialchars($entry['phase'].' / '.$entry['state'],ENT_QUOTES,'UTF-8').'</a> · 시작 '.htmlspecialchars((string)$entry['started_at'],ENT_QUOTES,'UTF-8').' · 종료 '.htmlspecialchars((string)$entry['finished_at'],ENT_QUOTES,'UTF-8').' · 참가자·획득 보상은 상세 기록에서 확인</li>';
+    }
+    echo '</ul>';
+    if(count($maze_history)===20) echo '<a href="?maze_before='.(int)$maze_history[19]['dm_id'].'">이전 미궁 기록</a>';
+    echo '</section>';
 }
-
 
 // 내가 쓴 자비란 로그 확인
 $sql_common = " from {$g5['dungeon_table']} dg, {$g5['dungeon_member_table']} dm, {$g5['dungeon_state_table']} ds where (dg.dg_title = ds.dg_title or dg.dg_id = ds.dg_id) and ds.ds_id = dm.ds_id and dm.ch_id = '{$character['ch_id']}'";

@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+if (maze_routes_instance((int)$ds_id)) goto_url('./maze.php?ds_id='.(int)$ds_id);
 $g5['title'] = "던전진행";
 include_once('./_head.sub.php');
 add_stylesheet('<link rel="stylesheet" href="'.G5_DUNGEON_URL.'/css/style.css?v=unified-20260922">', 0);

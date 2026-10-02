@@ -10,6 +10,7 @@ $room_key = $pair['co_id'] ? "pair_".$pair['co_id'] : "solo_".$character['ch_id'
 
 
 if($inven_function == "마이룸가구") {
+	$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'inventory.room_furniture');
     // 지정된 이미지를 가구로 추가합니다.
     // [수정] ch_id 대신 페어 키($room_key)를 기준으로 카운트하고 저장합니다.
     $count_row = sql_fetch("select MAX(ro_order) as cnt from {$g5['room_table']} where pair_id = '{$room_key}'");
@@ -18,7 +19,7 @@ if($inven_function == "마이룸가구") {
     // [수정] ch_id 컬럼 자리에 $room_key를 넣습니다. (DB 컬럼명이 pair_id로 바뀌었다고 가정)
     sql_query("insert into {$g5['room_table']} set ro_img='{$in['it_1']}', ro_order='{$next_order}', pair_id = '{$room_key}'");
     
-    delete_inventory($in['in_id'], $in['it_use_ever']);
+    inventory_boundary_done($claim);
 
     echo location_url($return_url);
 }
@@ -29,6 +30,7 @@ if($inven_function == "마이룸커스텀가구") {
 }
 
 if($inven_function == "마이룸배경") {
+	$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'inventory.room_background');
     // [수정] 배경화면은 페어 양쪽 캐릭터 모두에게 적용되도록 업데이트합니다.
     if($pair['co_id']) {
         // 페어인 경우 두 사람 모두의 배경을 바꿉니다.
@@ -38,7 +40,7 @@ if($inven_function == "마이룸배경") {
         sql_query("update {$g5['character_table']} set ch_room_bak = '{$in['it_1']}' where ch_id = '{$character['ch_id']}'");
     }
     
-    delete_inventory($in['in_id'], $in['it_use_ever']);
+    inventory_boundary_done($claim);
 
     echo location_url($return_url);
 }

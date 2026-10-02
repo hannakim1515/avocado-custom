@@ -20,6 +20,8 @@ if($w == 'u' && (!$is_mod_character && !$is_admin && $in['it_type'] != '프로�
 }
 
 $character_image_path = G5_DATA_PATH."/character/".$mb_id;
+$profile_claim = null;
+if ($in_id) $profile_claim = inventory_boundary_begin_or_alert(array($in_id), 'character.profile');
 $character_image_url = G5_DATA_URL."/character/".$mb_id;
 
 @mkdir($character_image_path, G5_DIR_PERMISSION);
@@ -265,9 +267,7 @@ if(count($st_id) > 0) {
 	}
 }
 
-if($in_id && !$in['it_use_ever']) {
-	delete_inventory($in_id);
-}
+if ($profile_claim) inventory_boundary_done($profile_claim);
 
 goto_url('./viewer.php?ch_id='.$ch_id, false);
 ?>

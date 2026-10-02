@@ -101,8 +101,10 @@ if ($type === 'atk' || $type === 'heal') {
     }
 
     if ($recover !== '') {
+        try { $claim = inventory_boundary_begin((int)$character['ch_id'], array((int)$target_id), 'raid.item', array('ra_id' => (int)$ra_id), 'remove'); }
+        catch (Throwable $error) { $data['warning'] = $error->getMessage(); return; }
         set_k_dmg($rm, $recover, (int)$in['it_value']);
-        delete_inventory($target_id);
+        inventory_boundary_done($claim);
 
         $msg .= "<p class=\"act-title item\">아이템 사용</p>";
         $msg .= "<div class=\"sk-info\"><p class=\"sc-name\"><img src=\"{$in['it_img']}\">{$in['it_name']}</p><p class=\"sk-content\">{$in['it_content']}</p></div>";

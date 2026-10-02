@@ -71,6 +71,7 @@ if ($act === "선택수정") {
         $temp_it_id = ses($_POST['it_id'], $k, 0, 'int');
         if ($temp_it_id <= 0) continue;
 
+        $delete_claim = inventory_boundary_delete_or_alert('it_id', array((int)$temp_it_id));
         // 이미지 경로 조회
         $it = sql_fetch("SELECT it_img FROM {$g5['item_table']} WHERE it_id = '{$temp_it_id}'");
 
@@ -85,9 +86,10 @@ if ($act === "선택수정") {
         // 연관 데이터 정리
         sql_query("DELETE FROM {$g5['item_table']}       WHERE it_id = '{$temp_it_id}'");
         sql_query("DELETE FROM {$g5['k_ch_equip_table']} WHERE it_id = '{$temp_it_id}'");
-        sql_query("DELETE FROM {$g5['inventory_table']}  WHERE it_id = '{$temp_it_id}'");
+// Original inventory rows were removed by inventory_boundary_delete_scope.
         sql_query("DELETE FROM {$g5['order_table']}      WHERE it_id = '{$temp_it_id}'");
         sql_query("DELETE FROM {$g5['shop_table']}       WHERE it_id = '{$temp_it_id}'");
+        if ($delete_claim) inventory_boundary_done($delete_claim);
     }
 }
 

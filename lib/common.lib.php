@@ -1495,6 +1495,10 @@ function sql_set_charset($charset, $link=null)
 function sql_query($sql, $error=G5_DISPLAY_SQL_ERROR, $link=null)
 {
 	global $g5;
+	// Only an explicit inventory effect boundary opts into checked SQL failures.
+	// Its durable journal retains originals if a mixed-engine effect cannot finish.
+	$inventory_effect_pending = !empty($GLOBALS['inventory_boundary_pending']);
+	if ($inventory_effect_pending) $error = false;
 
 	if(!$link)
 		$link = $g5['connect_db'];
@@ -1521,6 +1525,9 @@ function sql_query($sql, $error=G5_DISPLAY_SQL_ERROR, $link=null)
 		}
 	}
 
+	if ($result === false && $inventory_effect_pending) {
+		throw new RuntimeException('아이템 효과 처리가 완료되지 않았습니다. 관리자에게 처리 기록을 문의해 주세요.');
+	}
 	return $result;
 }
 

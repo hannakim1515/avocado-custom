@@ -52,13 +52,14 @@ if ($img = $_FILES['ro_img']['name']) {
 				@unlink($img_path);
 				alert("등록 가능한 사이즈를 초과하였습니다.");
 			} else {
+				$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'room.custom');
 				$room_img = $character_image_url."/".$image_name;
 				$count = sql_fetch("select MAX(ro_id) as cnt from {$g5['room_table']} where ch_id = '{$ch_id}'");
 				$count = $count['cnt']++;
 				sql_query("insert into {$g5['room_table']} set ro_img='{$room_img}', ro_order='{$count}', ch_id = '{$ch_id}'");
 
 				// 아이템 삭제
-				delete_inventory($in['in_id'], $in['it_use_ever']);
+				inventory_boundary_done($claim);
 			}
 		}
 	}

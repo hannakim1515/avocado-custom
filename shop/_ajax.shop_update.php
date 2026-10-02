@@ -122,6 +122,10 @@ if($character['ch_id'] && $character['ch_state'] == '승인') {
 		}
 
 		if($is_able_buy) {
+			$material_claim = null;
+			if ($use_inventory_item) {
+				$material_claim = inventory_boundary_begin_or_alert(array(), 'shop.exchange', array('sh_id' => (int)$sh_id), 'remove', array((int)$use_inventory_item => (int)$use_inventory_item_count));
+			}
 
 			// 구매 성공 시 아이템 인벤토리에 추가
 			// 인벤에 집어넣기
@@ -153,19 +157,12 @@ if($character['ch_id'] && $character['ch_state'] == '승인') {
 				insert_exp($character['ch_id'], $ex_point, $ex_content, $action);
 			}
 
-			if($use_inventory_item) {
-				// 아이템 제거
-				$item_result = sql_query("select in_id from {$g5['inventory_table']} where ch_id = '{$character['ch_id']}' and it_id = '{$use_inventory_item}' order by se_ch_name asc, in_id asc limit 0, {$use_inventory_item_count}");
-				for($k = 0; $in = sql_fetch_array($item_result); $k++) { 
-					// 인벤에서 제거
-					delete_inventory($in['in_id'], 0);
-				}
-			}
-
 			if($use_has_title) {
 				// 타이틀 제거
 				sql_query("delete from {$g5['title_has_table']} where hi_id = '{$use_has_title}'");
 			}
+
+			if($use_inventory_item) inventory_boundary_done($material_claim);
 
 			$msg = "《 ".$item['it_name']." 》 구매 되었습니다.";
 		}

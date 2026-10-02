@@ -3,6 +3,7 @@ error_reporting( E_ALL );
 ini_set( "display_errors", 1 );
 
 include_once('./_common.php');
+if (maze_routes_instance((int)$ds_id)) goto_url('./maze.php?ds_id='.(int)$ds_id);
 
 // 게이트 정보 가져오기
 $ds = get_dungeon_state($ds_id);

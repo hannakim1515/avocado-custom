@@ -10,15 +10,10 @@ $count = count($_POST['chk']);
 if(!$count)
 	alert($_POST['act_button'].' 하실 항목을 하나 이상 체크하세요.');
 
-for ($i=0; $i<$count; $i++)
-{
-	// 실제 번호를 넘김
-	$k = $_POST['chk'][$i];
-
-	// 아이템 내역삭제
-	$sql = " delete from {$g5['inventory_table']} where in_id = '{$_POST['in_id'][$k]}' ";
-	sql_query($sql);
-}
+$delete_ids = array();
+foreach ($_POST['chk'] as $key) $delete_ids[] = (int)$_POST['in_id'][$key];
+$delete_claim = inventory_boundary_delete_or_alert('in_id', $delete_ids);
+if ($delete_claim) inventory_boundary_done($delete_claim);
 
 goto_url('./inventory_list.php?'.$qstr);
 ?>

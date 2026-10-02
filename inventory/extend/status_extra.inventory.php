@@ -9,8 +9,9 @@ if($inven_function == "체력회복") {
 	}
 	
 	// 체력 스탯을 회복시킵니다.
+	$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'inventory.extra_hp');
 	set_extra_hp($character['ch_id'], $in['it_value']);
-	delete_inventory($in['in_id'], $in['it_use_ever']);
+	inventory_boundary_done($claim);
 
 	echo location_url($return_url);
 }
@@ -22,9 +23,10 @@ if($inven_function == "사망해제") {
 		alert("사망 상태인 경우에만 사용 가능합니다.");
 	}
 
+	$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'inventory.extra_revive');
 	set_extra_revive($character['ch_id']);
 
-	delete_inventory($in['in_id'], $in['it_use_ever']);
+	inventory_boundary_done($claim);
 	echo location_url($return_url);
 }
 

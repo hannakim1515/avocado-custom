@@ -1,0 +1,63 @@
+2026-10-02 / PHP 7.4.33 / disposable MariaDB 10.4.27
+PHP lint: 56 files; failures: 0
+Integration exit: 0; PASS assertions: 54
+PASS: complete migration is ready
+PASS: dungeon first: stale consumer rejected
+PASS: equipment, non-battle and foreign rows remain
+PASS: full original row restored including binary/custom columns and ID
+PASS: external acquisition preserved
+PASS: second settlement is a no-op
+PASS: sale first: duplicate sale/use rejected
+PASS: partial multi-item consumption rolls back
+PASS: foreign owner preserved
+PASS: same item concurrent consumer loses after row lock
+PASS: join creates WAITING without maze
+PASS: WAITING has no generated rooms
+PASS: validated start transitions to EXPLORE
+PASS: maze generated exactly once
+PASS: room item enters dungeon escrow immediately
+PASS: stale event cannot duplicate reward
+PASS: two synchronized turns defeat monster and return to exploration
+PASS: timed turn does not resolve just because everyone submitted
+PASS: revised action wins when remaining time is skipped
+PASS: duplicate resolve cannot advance another turn
+PASS: server deadline resolves unsubmitted actions as skips
+PASS: unanimous successful escape returns to exploration
+PASS: escape takes priority over submitted attack
+PASS: boss death freezes HP before end-of-turn DOT
+PASS: boss escape uses common clear settlement
+PASS: exit transition settles participant
+PASS: clear settlement recorded once
+PASS: restoration never overwrites a conflicting ID
+PASS: failed restoration leaves participant unsettled
+PASS: point journal pays once across repeated requests
+PASS: deterministic point relation survives missing completion flag
+PASS: maximum party size enforced on server
+PASS: two-person party needs one vote to kick the other member
+PASS: WAITING kick permits re-entry
+PASS: revive consumes owner item and restores configured HP percentage
+PASS: revived member has no action in the revival turn
+PASS: started exit settles once and blocks re-entry
+PASS: last participant exit terminates session
+PASS: dead member may vote; removing last living member fails and settles party
+PASS: 250 generated mazes satisfy tree, room, branch, direction, boss and exit invariants
+PASS: InnoDB effect stays in the inventory transaction
+PASS: effect failure rolls back inventory and InnoDB effect together
+PASS: atomic completion commits both consumption and effect
+PASS: MyISAM effect uses durable journal
+PASS: unfinished mixed-engine effect requires explicit reconciliation
+PASS: reconciliation restores the original row once
+PASS: concurrent multi-item claim fails without consuming remaining materials
+PASS: transfer holds sender and recipient boundaries until ownership change
+PASS: failed room creation rolls back inventory escrow and entire departure
+PASS: repeated administrator termination uses common settlement and legacy projection
+PASS: unconverted inventory blocks labyrinth readiness
+PASS: partial migration with missing action uniqueness is blocked
+PASS: missing required lookup index is blocked
+PASS: complete engine/schema/index contract enables readiness again
+All inventory integration checks passed.
+
+Legacy calculation arithmetic parity: PASS (original HEAD body, database fetches replaced by supplied inputs only)
+Maze JavaScript syntax: PASS (node --check; no browser/UI automation)
+git diff --check: PASS
+Final dungeon/index.php lint after batched lookup: PASS

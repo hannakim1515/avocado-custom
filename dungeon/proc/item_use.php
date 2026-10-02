@@ -26,6 +26,7 @@ if($ds['ds_state'] == 'E') {	// 참여 정보 체크
 	alert("토벌이 종료되었습니다.");
 }
 
+$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'dungeon.legacy_item', array('ds_id' => (int)$ds_id));
 switch($in['it_type']) {
 	case "스탯회복" :
 		$value = $in['it_value'];
@@ -42,7 +43,7 @@ switch($in['it_type']) {
 
 
 insert_dungeon_log("아이템", $ds, $dm, null, $value, 0, $log);
-delete_inventory($in['in_id'], $in['it_use_ever']);
+inventory_boundary_done($claim);
 
 //include(G5_PATH.'/dungeon/proc/inc/_active.cmm.php');
 

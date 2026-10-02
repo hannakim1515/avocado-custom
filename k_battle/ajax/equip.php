@@ -304,8 +304,10 @@ switch ($load) {
                 break;
             }
 
+            try { $claim = inventory_boundary_begin($ch_id_check2, array((int)$tg_id), 'equip.custom', array('eq_id' => (int)$eq['eq_id'], 'hold_ids' => array((int)$eq['in_id']), 'required_type' => '커스텀장비(K)'), 'remove'); }
+            catch (Throwable $error) { $data['result'] = 'alert'; $data['msg'] = $error->getMessage(); break; }
+            $in = array_merge($claim['items'][(int)$claim['rows'][0]['it_id']], $claim['rows'][0]);
             $data['result'] = '성공';
-            delete_inventory($tg_id);
             
             $in_it_img = ses($in, 'it_img', '');
             $in_it_name = ses($in, 'it_name', '');
@@ -323,6 +325,7 @@ switch ($load) {
                     eq_memo_id = '".$in_se_ch_id."'
                 WHERE eq_id = '".(int)$eq['eq_id']."'
             ");
+            inventory_boundary_done($claim);
             $data['msg']  = '장비 커스텀이 완료되었습니다.';
             $eq_lv = '';
             if (!empty($eq['ug_name'])) {

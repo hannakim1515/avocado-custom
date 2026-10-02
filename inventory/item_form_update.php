@@ -26,6 +26,7 @@ if($in['it_type'] != '아이템추가'&&$in['it_type'] != '커스텀장비제작
 	alert('올바른 아이템 정보가 아닙니다.');
 }
 
+$claim = inventory_boundary_begin_or_alert(array($in['in_id']), 'inventory.create_item', array(), 'remove');
 $tmp_row = sql_fetch(" select max(it_id) as max_it_id from {$g5['item_table']} ");
 $it_id = $tmp_row['max_it_id'] + 1;
 $sql_common = "";
@@ -65,7 +66,7 @@ $sql = " insert into {$g5['inventory_table']}
 sql_query($sql);
 
 // 아이템 삭제
-delete_inventory($in_id);
+inventory_boundary_done($claim);
 
 goto_url($return_url);
 ?>

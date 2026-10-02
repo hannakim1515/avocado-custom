@@ -12,7 +12,8 @@ if (!$ch['ch_id']) {
 	alert("{$ch['ch_id']} : 캐릭터 자료가 존재하지 않습니다.");
 } else {
 	
-	$prev_file_path = str_replace(G5_URL, G5_PATH, $ch['ch_thumb']);
+	$delete_claim = inventory_boundary_delete_or_alert('ch_id', array((int)$ch['ch_id']));
+$prev_file_path = str_replace(G5_URL, G5_PATH, $ch['ch_thumb']);
 	@unlink($prev_file_path);
 	$prev_file_path = str_replace(G5_URL, G5_PATH, $ch['ch_head']);
 	@unlink($prev_file_path);
@@ -24,7 +25,7 @@ if (!$ch['ch_id']) {
 	sql_query(" delete from {$g5['exp_table']} where ch_id = '{$ch['ch_id']}' ");
 	sql_query(" delete from {$g5['title_has_table']} where ch_id = '{$ch['ch_id']}' ");
 	sql_query(" delete from {$g5['closthes_table']} where ch_id = '{$ch['ch_id']}' ");
-	sql_query(" delete from {$g5['inventory_table']} where ch_id = '{$ch['ch_id']}' ");
+// Original inventory rows were removed by inventory_boundary_delete_scope.
 
 	$sql = " update {$g5['member_table']}
 				set ch_id = ''
@@ -32,5 +33,6 @@ if (!$ch['ch_id']) {
 	sql_query($sql);
 }
 
+if (!empty($delete_claim)) inventory_boundary_done($delete_claim);
 goto_url("./character_list.php?$qstr");
 ?>

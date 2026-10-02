@@ -202,7 +202,11 @@ function set_reset_dungeon() {
 
 		// 갱신 시간이 되었다. 던전 발동 구간
 		// 기존 발동되었던 던전들 close
-		sql_query("update {$g5['dungeon_state_table']} set ds_state = 'E'");
+		$maze_filter = '';
+		if (function_exists('maze_installed') && maze_installed()) {
+			$maze_filter = " WHERE ds_id NOT IN (SELECT ds_id FROM `".maze_table('session')."` WHERE phase IN ('EXPLORE','BATTLE','BOSS_RESULT'))";
+		}
+		sql_query("update {$g5['dungeon_state_table']} set ds_state = 'E'".$maze_filter);
 		//sql_query("update {$g5['dungeon_member_table']} set dm_state = 'E'");
 		sql_query("update {$g5['dungeon_member_table']} set dm_state = 'E', dm_result = '던전 공략에 실패하였습니다.' where dm_state != 'E' ");
 		// 스킬 쿨 타임 초기화 (스킬 시스템을 사용하고 있어야 합니다.)
@@ -366,6 +370,10 @@ function get_dungeon_member($ds_id, $state = 'S') {
 
 function get_dungeon_member_count($ds_id) {
 	global $g5;
+	if (function_exists('maze_session') && maze_session((int)$ds_id)) {
+		$row = maze_one('SELECT COUNT(*) AS cnt FROM `'.maze_table('member').'` WHERE ds_id='.(int)$ds_id." AND state='ACTIVE'");
+		return (int)$row['cnt'];
+	}
 	$result = sql_fetch("select count(*) as cnt from {$g5['dungeon_member_table']} where ds_id = '{$ds_id}'");
 
 	return $result['cnt'];
@@ -468,6 +476,10 @@ function is_able_hp($ds_id, $ch_id) {
 
 function is_has_dungeon($ch_id, $not_ds_id = 0, $ds_id = 0) {
 	global $g5;
+	if (function_exists('maze_installed') && maze_installed()) {
+		$where = $not_ds_id ? ' AND ds_id<>'.(int)$not_ds_id : ($ds_id ? ' AND ds_id='.(int)$ds_id : '');
+		if (maze_one('SELECT dm_id FROM `'.maze_table('member').'` WHERE ch_id='.(int)$ch_id." AND state='ACTIVE'".$where.' LIMIT 1')) return true;
+	}
 
 	if($not_ds_id) {
 		$result = sql_fetch("select count(*) as cnt from {$g5['dungeon_member_table']} where ch_id = '{$ch_id}' and dm_state != 'E' and ds_id != '{$not_ds_id}'");
@@ -483,6 +495,11 @@ function is_has_dungeon($ch_id, $not_ds_id = 0, $ds_id = 0) {
 // 던전 진행 가능 여부 체크하기
 function is_able_dungeon($ch_id, $ds_id, $is_opend = false, $ds = array()) {
 	global $g5, $config;
+	if (function_exists('maze_session') && ($maze = maze_session((int)$ds_id))) {
+		$person = maze_one('SELECT state FROM `'.maze_table('member').'` WHERE ds_id='.(int)$ds_id.' AND ch_id='.(int)$ch_id);
+		if ($person && $person['state'] === 'ACTIVE') return array('no_member'=>false,'state'=>'S','is_able'=>true,'message'=>'');
+		if ($maze['phase'] !== 'WAITING') return array('no_member'=>true,'state'=>'E','is_able'=>false,'message'=>'이미 출발했거나 종료된 미궁입니다.');
+	}
 
 	$is_able = true;
 	$is_no_member = false;
@@ -625,87 +642,14 @@ function get_status_dungeon_total($st_type, $ds_id, $ch_id, $dm = null) {
 	return $total;
 }
 
-function get_status_dungeon($code_name, $ds_id, $ch_id, $dm = null, $prev_value = 0, $last_value=0) {
-	global $g5;
-
-	if($dm == null) $dm = get_dungeon_character($ds_id, $ch_id);
-	if(!$dm['dm_id']) return;
-
-	$result = array();
-
-	$default_status = 0; // 기본 수치
-	$is_critical = false; // 크리티컬 여뷰
-	$critical_status = 0; // 크리티컬로 더해지는 추가 수치
-	$total_status = 0; // 최종 수치
-
-	// 연동코드 설정 가져오기
-	$ex = sql_fetch("select * from {$g5['status_extra_table']} where ex_name = '{$code_name}'");
-
-	// 기본 수치
-	$default_status = rand($ex['ex_main_min'], $ex['ex_main_max']);
-	$status = 0;
-	if($ex['ex_is_main_status']) {
-		// 스탯 연동을 사용할 경우
-		$status = get_status_dungeon_total($ex['ex_main_status_type'], $ds_id, $ch_id, $dm);
-		if($ex['ex_main_status_per']) {
-			$status = $status * $ex['ex_main_status_per'];
-		}
-	}
-	$default_status = (int)($default_status + $status + $prev_value);
-
-	// 변동수치
-	$cri_succed_per = $ex['ex_cri'];
-	$cri_succed_per2 = 0;
-	if($ex['ex_is_cri_status']) {
-		// 스탯 연동을 사용할 경우
-		$cri_succed_per2 = get_status_dungeon_total($ex['ex_cri_status_type'], $ds_id, $ch_id, $dm );
-		if($ex['ex_cri_status_per']) {
-			$cri_succed_per2 = $cri_succed_per2 * $ex['ex_cri_status_per'];
-		}
-	}
-	$cri_succed_per = $cri_succed_per + $cri_succed_per2;
-
-	// 변동 수치의 퍼센트가 0 보다 클때
-	if($cri_succed_per > 0) {
-		// 크리티컬 판정 여부 확인
-		$cri_succed_seed = rand(0, 100);
-		if($cri_succed_seed <= $cri_succed_per) {
-			// 크리티컬 성공
-			$is_critical = true;
-
-			// 크리티컬 성공할 경우 추가적으로 더해지는 수치를 계산한다.
-			// 이 경우에는 기본수치에 기반한 비율이 더해지므로, 비율 수치를 계산한다.
-			$add_status_per = $ex['ex_cri_add_per'];
-			$add_status_per2 = 0;
-			if($ex['ex_is_cri_add_status']) {
-				// 스탯 연동을 사용할 경우
-				$add_status_per2 = get_status_dungeon_total($ex['ex_cri_add_status_type'], $ds_id, $ch_id, $dm );
-				if($ex['ex_cri_add_status_per']) {
-					$add_status_per2 = $add_status_per2 * $ex['ex_cri_add_status_per'];
-				}
-			}
-			$temp_check_value = $add_status_per + $add_status_per2;
-			$critical_status = $temp_check_value > 0 ? (int)($default_status * ($temp_check_value/100)) : 0;
-		}
-	}
-
-	$total_status = $default_status + $critical_status;
-	if($ex['ex_all_per']) {
-		$total_status = (int)($total_status * $ex['ex_all_per']);
-	}
-
-	// 버프 코드 적용
-	$buff_code_value = get_status_buffer_code($ds_id, $ch_id, $code_name);
-	$total_status = $total_status + $buff_code_value;
-
-	$total_status = $total_status + $last_value;
-
-	$result['default'] = $default_status;
-	$result['is_cri'] = $is_critical;
-	$result['cri_value'] = $critical_status;
-	$result['value'] = $total_status;
-
-	return $result;
+function get_status_dungeon($code_name, $ds_id, $ch_id, $dm = null, $prev_value = 0, $last_value = 0) {
+    global $g5;
+    if ($dm === null) $dm = get_dungeon_character($ds_id, $ch_id);
+    if (empty($dm['dm_id'])) return;
+    $ex = sql_fetch("SELECT * FROM {$g5['status_extra_table']} WHERE ex_name='".sql_escape_string($code_name)."'");
+    return dungeon_formula_result($ex, function ($type) use ($ds_id, $ch_id, $dm) {
+        return get_status_dungeon_total($type, $ds_id, $ch_id, $dm);
+    }, $prev_value, $last_value, get_status_buffer_code($ds_id, $ch_id, $code_name));
 }
 
 /*

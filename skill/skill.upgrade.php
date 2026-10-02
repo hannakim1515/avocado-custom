@@ -24,8 +24,9 @@ if($sh['sh_id'] && $ch['ch_id'] && $ch['ch_id'] == $sh['ch_id'] && $ch['mb_id'] 
 	$next_level = $sh['sh_level'] +1;
 
 	if($max_level >= $next_level) {
+		$claim = inventory_boundary_begin_or_alert(array($item['in_id']), 'skill.upgrade', array('sh_id' => (int)$sh_id));
 		sql_query("update {$g5['skill_has_table']} set sh_level = '{$next_level}' where sh_id = '{$sh['sh_id']}'"); 
-		delete_inventory($item['in_id'], $item['it_use_ever']);
+		inventory_boundary_done($claim);
 	} else {
 		echo "F";
 		exit;
