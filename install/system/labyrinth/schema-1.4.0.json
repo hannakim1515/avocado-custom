@@ -1,0 +1,418 @@
+{
+  "dungeon_maze_meta": {
+    "columns": {
+      "singleton": "tinyint NOT NULL",
+      "schema_version": "int NOT NULL",
+      "action_timeout": "int DEFAULT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "singleton"
+        ],
+        "unique": true
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "dungeon_maze_config": {
+    "columns": {
+      "dg_id": "int NOT NULL",
+      "settings": "longtext NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "dg_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "dungeon_maze_session": {
+    "columns": {
+      "ds_id": "int NOT NULL",
+      "dg_id": "int NOT NULL",
+      "phase": "varchar(16) NOT NULL DEFAULT 'WAITING'",
+      "version": "bigint NOT NULL DEFAULT 0",
+      "room_id": "int NOT NULL DEFAULT 0",
+      "battle_id": "bigint NOT NULL DEFAULT 0",
+      "snapshot": "longtext NOT NULL",
+      "expires_at": "datetime DEFAULT NULL",
+      "started_at": "datetime DEFAULT NULL",
+      "finished_at": "datetime DEFAULT NULL",
+      "created_at": "datetime NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ds_id"
+        ],
+        "unique": true
+      },
+      "phase_expiry": {
+        "columns": [
+          "phase",
+          "expires_at"
+        ],
+        "unique": false
+      },
+      "dungeon": {
+        "columns": [
+          "dg_id",
+          "ds_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "dungeon_maze_member": {
+    "columns": {
+      "dm_id": "bigint NOT NULL AUTO_INCREMENT",
+      "ds_id": "int NOT NULL",
+      "ch_id": "int NOT NULL",
+      "mb_id": "varchar(255) NOT NULL",
+      "name": "varchar(255) NOT NULL",
+      "state": "varchar(16) NOT NULL DEFAULT 'ACTIVE'",
+      "ready": "tinyint NOT NULL DEFAULT 0",
+      "hp": "int NOT NULL DEFAULT 1",
+      "max_hp": "int NOT NULL DEFAULT 1",
+      "stats": "longtext NOT NULL",
+      "skills": "longtext NOT NULL",
+      "effects": "longtext NOT NULL",
+      "settled": "tinyint NOT NULL DEFAULT 0",
+      "reward_eligible": "tinyint NOT NULL DEFAULT 0",
+      "joined_at": "datetime NOT NULL",
+      "exited_at": "datetime DEFAULT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "dm_id"
+        ],
+        "unique": true
+      },
+      "membership": {
+        "columns": [
+          "ds_id",
+          "ch_id"
+        ],
+        "unique": true
+      },
+      "character_active": {
+        "columns": [
+          "ch_id",
+          "state"
+        ],
+        "unique": false
+      },
+      "character_history": {
+        "columns": [
+          "ch_id",
+          "dm_id"
+        ],
+        "unique": false
+      },
+      "daily_settled": {
+        "columns": [
+          "ch_id",
+          "settled",
+          "exited_at"
+        ],
+        "unique": false
+      },
+      "party": {
+        "columns": [
+          "ds_id",
+          "state",
+          "dm_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "dungeon_maze_room": {
+    "columns": {
+      "ds_id": "int NOT NULL",
+      "room_id": "int NOT NULL",
+      "parent_id": "int NOT NULL",
+      "direction": "varchar(12) NOT NULL",
+      "depth": "int NOT NULL",
+      "kind": "varchar(16) NOT NULL",
+      "is_exit": "tinyint NOT NULL DEFAULT 0",
+      "is_boss": "tinyint NOT NULL DEFAULT 0",
+      "visited": "tinyint NOT NULL DEFAULT 0",
+      "resolved": "tinyint NOT NULL DEFAULT 0",
+      "encounter_done": "tinyint NOT NULL DEFAULT 0",
+      "payload": "longtext NOT NULL",
+      "result_text": "text NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ds_id",
+          "room_id"
+        ],
+        "unique": true
+      },
+      "parent": {
+        "columns": [
+          "ds_id",
+          "parent_id"
+        ],
+        "unique": false
+      },
+      "visited": {
+        "columns": [
+          "ds_id",
+          "visited",
+          "room_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "dungeon_maze_battle": {
+    "columns": {
+      "battle_id": "bigint NOT NULL AUTO_INCREMENT",
+      "ds_id": "int NOT NULL",
+      "room_id": "int NOT NULL",
+      "state": "varchar(16) NOT NULL DEFAULT 'ACTIVE'",
+      "turn_no": "int NOT NULL DEFAULT 1",
+      "deadline_at": "datetime DEFAULT NULL",
+      "monster": "longtext NOT NULL",
+      "hp": "int NOT NULL",
+      "weak_count": "int NOT NULL DEFAULT 0",
+      "weak_turn": "int NOT NULL DEFAULT 0"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "battle_id"
+        ],
+        "unique": true
+      },
+      "session": {
+        "columns": [
+          "ds_id",
+          "battle_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "dungeon_maze_action": {
+    "columns": {
+      "battle_id": "bigint NOT NULL",
+      "turn_no": "int NOT NULL",
+      "dm_id": "bigint NOT NULL",
+      "action": "varchar(16) NOT NULL DEFAULT ''",
+      "target_id": "bigint NOT NULL DEFAULT 0",
+      "reference_id": "bigint NOT NULL DEFAULT 0",
+      "escape_vote": "tinyint NOT NULL DEFAULT 0"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "battle_id",
+          "turn_no",
+          "dm_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "dungeon_maze_inventory": {
+    "columns": {
+      "inventory_id": "bigint NOT NULL AUTO_INCREMENT",
+      "ds_id": "int NOT NULL",
+      "dm_id": "bigint NOT NULL",
+      "ch_id": "int NOT NULL",
+      "it_id": "int NOT NULL",
+      "origin": "varchar(12) NOT NULL",
+      "original_id": "int DEFAULT NULL",
+      "active_original_id": "int DEFAULT NULL",
+      "original_row": "longtext NOT NULL",
+      "item_snapshot": "longtext NOT NULL",
+      "consumed": "tinyint NOT NULL DEFAULT 0",
+      "restored": "tinyint NOT NULL DEFAULT 0"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "inventory_id"
+        ],
+        "unique": true
+      },
+      "active_original": {
+        "columns": [
+          "active_original_id"
+        ],
+        "unique": true
+      },
+      "owner_items": {
+        "columns": [
+          "ds_id",
+          "dm_id",
+          "consumed",
+          "restored"
+        ],
+        "unique": false
+      },
+      "item_reference": {
+        "columns": [
+          "it_id",
+          "restored"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "dungeon_maze_vote": {
+    "columns": {
+      "ds_id": "int NOT NULL",
+      "target_id": "bigint NOT NULL",
+      "voter_id": "bigint NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ds_id",
+          "target_id",
+          "voter_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "dungeon_maze_log": {
+    "columns": {
+      "log_id": "bigint NOT NULL AUTO_INCREMENT",
+      "ds_id": "int NOT NULL",
+      "dm_id": "bigint NOT NULL DEFAULT 0",
+      "kind": "varchar(12) NOT NULL",
+      "message": "text NOT NULL",
+      "created_at": "datetime NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "log_id"
+        ],
+        "unique": true
+      },
+      "session_log": {
+        "columns": [
+          "ds_id",
+          "log_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "dungeon_maze_reward": {
+    "columns": {
+      "ds_id": "int NOT NULL",
+      "dm_id": "bigint NOT NULL",
+      "reward_type": "varchar(16) NOT NULL",
+      "state": "varchar(16) NOT NULL DEFAULT 'PENDING'",
+      "mb_id": "varchar(255) NOT NULL",
+      "amount": "int NOT NULL",
+      "completed_at": "datetime DEFAULT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ds_id",
+          "dm_id",
+          "reward_type"
+        ],
+        "unique": true
+      },
+      "pending": {
+        "columns": [
+          "state",
+          "ds_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "dungeon_maze_status": {
+    "columns": {
+      "status_id": "int NOT NULL AUTO_INCREMENT",
+      "name": "varchar(255) NOT NULL",
+      "description": "text NOT NULL",
+      "duration": "int NOT NULL",
+      "enabled": "tinyint NOT NULL DEFAULT 1",
+      "components": "longtext NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "status_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "install/dungeon/003_labyrinth.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  }
+}

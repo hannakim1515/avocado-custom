@@ -8,24 +8,32 @@ if(!$ma['ma_id']) {
 	exit;
 }
 
-$open_dungeon = array();
-if($use_dungeon_map && function_exists('get_map_dungeon')) {
-	$open_dungeon = get_map_dungeon($ma['ma_id']);
+$open_dungeons = array();
+if($show_dungeon_map && function_exists('get_map_open_dungeons')) {
+	$open_dungeons = get_map_open_dungeons($ma['ma_id']);
 }
-$maze_entry_label = !empty($open_dungeon['ds_id']) ? maze_entry_label((int)$open_dungeon['ds_id'], (int)$character['ch_id']) : '';
 $is_current_map = ((int)$character['ma_id'] === (int)$ma['ma_id']);
 ?>
 
 <div class="map-pannel map-vn-pannel">
-	<? if(!empty($open_dungeon['ds_id']) && $open_dungeon['ds_state'] == 'S') { ?>
-		<div class="map-vn-dungeon-notice">
+	<? foreach($open_dungeons as $open_dungeon) {
+		$maze_entry_label = maze_entry_label((int)$open_dungeon['ds_id'], (int)$character['ch_id']);
+	?>
+		<div class="map-vn-dungeon-notice" data-dungeon-id="<?=(int)$open_dungeon['ds_id']?>">
 			<strong>던전 발생</strong>
 			<span><?=get_text($open_dungeon['dg_title'])?> · <?=get_text($open_dungeon['dg_mon_name'])?></span>
-			<? if($is_current_map && $character['ch_state'] == '승인' && $maze_entry_label !== '') { ?>
-				<button type="button" class="map-vn-action-choice dungeon-enter" onclick="if(confirm('열린 던전에 입장하시겠습니까?')) location.href='<?=G5_URL?>/dungeon/applicate.php?ds_id=<?=$open_dungeon['ds_id']?>';">
+			<? if(($is_current_map || !$use_dungeon_map) && $character['ch_state'] == '승인' && $maze_entry_label !== '') { ?>
+				<form method="post" action="<?=G5_URL?>/dungeon/maze.php" onsubmit="return confirm('열린 던전에 입장하시겠습니까?');">
+					<input type="hidden" name="token" value="<?=get_text(inventory_boundary_token())?>"><input type="hidden" name="ds_id" value="<?=(int)$open_dungeon['ds_id']?>"><input type="hidden" name="operation" value="join">
+				<button type="<?=$maze_entry_label==='입장하기'?'submit':'button'?>" class="map-vn-action-choice dungeon-enter" <?=$maze_entry_label==='입장하기'?'':'onclick="location.href=\''.G5_URL.'/dungeon/maze.php?ds_id='.(int)$open_dungeon['ds_id'].'\';"'?>>
 					<span><?=get_text($maze_entry_label)?></span>
-					<em>현재 지역에서 입장할 수 있습니다.</em>
+					<em><?=$use_dungeon_map?'현재 지역에서 입장할 수 있습니다.':'지역 제한 없이 입장할 수 있습니다.'?></em>
 				</button>
+				</form>
+			<? } elseif($maze_entry_label === '') { ?>
+				<p>탐험 진행 중 · 출발 후에는 새로 참가할 수 없습니다.</p>
+			<? } elseif($character['ch_state'] === '승인') { ?>
+				<p>이 지역으로 이동하면 입장할 수 있습니다.</p>
 			<? } ?>
 		</div>
 	<? } ?>

@@ -1,0 +1,170 @@
+{
+  "dungeon": {
+    "columns": {
+      "dg_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "dg_title": "varchar(255) NOT NULL default ''",
+      "dg_count": "int(11) NOT NULL default '0'",
+      "ma_id": "int(11) NOT NULL default '0'",
+      "ma_ids": "varchar(255) NOT NULL default ''",
+      "dg_rank": "varchar(255) NOT NULL default ''",
+      "dg_per_s": "int(11) NOT NULL default '0'",
+      "dg_per_e": "int(11) NOT NULL default '0'",
+      "dg_point": "int(11) NOT NULL default '0'",
+      "dg_status": "int(11) NOT NULL default '0'",
+      "dg_status_value": "varchar(11) NOT NULL default ''",
+      "dg_status_type": "varchar(11) NOT NULL default ''",
+      "dg_use": "int(11) NOT NULL default '0'",
+      "dg_description": "text NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "dg_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/dungeon.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "dungeon_item": {
+    "columns": {
+      "di_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "dg_id": "int(11) NOT NULL default '0'",
+      "it_id": "int(11) NOT NULL default '0'",
+      "di_count": "int(11) NOT NULL default '0'",
+      "di_per_s": "int(11) NOT NULL default '0'",
+      "di_per_e": "int(11) NOT NULL default '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "di_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/dungeon.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "dungeon_state": {
+    "columns": {
+      "ds_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "dg_id": "int(11) NOT NULL default '0'",
+      "dg_title": "varchar(255) NOT NULL default ''",
+      "ds_ma_id": "int(11) NOT NULL default '0'",
+      "ds_state": "varchar(10) NOT NULL default ''",
+      "ds_hp": "int(11) NOT NULL default '0'",
+      "ds_hurt": "int(11) NOT NULL default '0'",
+      "ds_weak_count": "int(11) NOT NULL default '0'",
+      "ds_weak_turn": "int(11) NOT NULL default '0'",
+      "ds_datetime": "varchar(255) NOT NULL default ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ds_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/dungeon.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "dungeon_member": {
+    "columns": {
+      "dm_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ds_id": "int(11) NOT NULL default '0'",
+      "ch_id": "int(11) NOT NULL default '0'",
+      "dm_comment": "text NOT NULL",
+      "dm_evasion": "varchar(255) NOT NULL default ''",
+      "dm_aggro": "varchar(255) NOT NULL default ''",
+      "dm_aggro_per": "int(11) NOT NULL default '0'",
+      "dm_state": "char(4) NOT NULL default ''",
+      "dm_result": "text NOT NULL",
+      "dm_datetime": "varchar(255) NOT NULL default ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "dm_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/dungeon.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "dungeon_log": {
+    "columns": {
+      "dl_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ds_id": "int(11) NOT NULL default '0'",
+      "ch_id": "int(11) NOT NULL default '0'",
+      "ch_name": "varchar(255) NOT NULL default ''",
+      "dl_cate": "varchar(255) NOT NULL default ''",
+      "dl_function": "varchar(255) NOT NULL default ''",
+      "dl_keep_limit": "int(11) NOT NULL default '0'",
+      "dl_disposable": "int(11) NOT NULL default '0'",
+      "sk_id": "int(11) NOT NULL default '0'",
+      "sh_id": "int(11) NOT NULL default '0'",
+      "sh_level": "int(11) NOT NULL default '0'",
+      "sk_name": "varchar(255) NOT NULL default ''",
+      "sh_name": "varchar(255) NOT NULL default ''",
+      "st_id": "int(11) NOT NULL default '0'",
+      "st_code": "varchar(255) NOT NULL default ''",
+      "st_enermy": "varchar(255) NOT NULL default ''",
+      "dl_effect_type": "varchar(12) NOT NULL default 'flat'",
+      "dl_value": "int(11) NOT NULL default '0'",
+      "dl_log": "text NOT NULL",
+      "dl_is_turn": "int(11) NOT NULL default '0'",
+      "dl_is_ciritical": "int(11) NOT NULL default '0'",
+      "dl_datetime": "varchar(255) NOT NULL default ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "dl_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/dungeon.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "config": {
+    "columns": {
+      "cf_dungeon_open": "varchar(255) NOT NULL DEFAULT ''",
+      "cf_dungeon_map": "int(4) NOT NULL DEFAULT '0'",
+      "cf_dungeon_reset": "varchar(255) NOT NULL DEFAULT ''",
+      "cf_dungeon_time": "varchar(255) NOT NULL DEFAULT ''",
+      "cf_dungeon_count": "varchar(255) NOT NULL DEFAULT ''",
+      "cf_dungeon_enter": "varchar(255) NOT NULL DEFAULT ''"
+    },
+    "indexes": {},
+    "source": "extend/dungeon.lib.php",
+    "create": false
+  },
+  "item": {
+    "columns": {
+      "it_use_battle_able": "int(11) NOT NULL default '0'"
+    },
+    "indexes": {},
+    "source": "extend/dungeon.lib.php",
+    "create": false
+  }
+}

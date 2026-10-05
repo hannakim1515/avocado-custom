@@ -1,5 +1,6 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
+require_once dirname(__DIR__).'/lib/item_effect.lib.php';
 
 /** Caller holds the session row and ALL participant owner guards in its transaction. */
 function maze_inventory_isolate($session, $participants) {
@@ -23,16 +24,15 @@ function maze_inventory_isolate($session, $participants) {
     $equipment = array();
     // Exclude every equipment reference, including temporarily unequipped gear.
     foreach (inventory_boundary_rows("SELECT in_id FROM `{$g5['k_ch_equip_table']}` WHERE in_id IN (".implode(',', $ids).')') as $row) $equipment[(int)$row['in_id']] = true;
-    $effects = array();
-    foreach (inventory_boundary_rows('SELECT * FROM `'.maze_table('item_effect').'` WHERE it_id IN ('.implode(',', $item_ids).')') as $row) $effects[(int)$row['it_id']] = $row;
     $remove = array(); $escrow = array();
     foreach ($rows as $row) {
         $id = (int)$row['in_id']; $it_id = (int)$row['it_id'];
         if (!empty($row['in_use']) || isset($equipment[$id]) || empty($items[$it_id]['it_use_battle_able']) || $items[$it_id]['it_type'] === '장비(K)') continue;
-        if ($items[$it_id]['it_type'] !== '스탯회복' && !isset($effects[$it_id])) continue;
+        $effect = item_recovery_effect($items[$it_id]);
+        if ($items[$it_id]['it_type'] !== '스탯회복' && !$effect) continue;
         $actor = $by_owner[(int)$row['ch_id']];
         $snapshot = $items[$it_id];
-        $snapshot['maze_effect'] = isset($effects[$it_id]) ? $effects[$it_id] : null;
+        $snapshot['maze_effect'] = $effect;
         $escrow[] = array('ds_id' => $session['ds_id'], 'dm_id' => $actor['dm_id'], 'ch_id' => $actor['ch_id'],
             'it_id' => $it_id, 'origin' => 'ORIGINAL', 'original_id' => $id, 'active_original_id' => $id,
             'original_row' => inventory_boundary_json($row), 'item_snapshot' => inventory_boundary_json($snapshot));
@@ -45,10 +45,7 @@ function maze_inventory_isolate($session, $participants) {
 /** Newly found items never enter the ordinary inventory before settlement. */
 function maze_inventory_gain($session, $participant, $item, $count = 1) {
     if ($count < 1 || $count > 100 || empty($item['it_id'])) throw new RuntimeException('획득 아이템 설정이 잘못되었습니다.');
-    static $effect_cache = array();
-    $key = (int)$item['it_id'];
-    if (!array_key_exists($key,$effect_cache)) $effect_cache[$key] = maze_one('SELECT * FROM `'.maze_table('item_effect').'` WHERE it_id='.$key);
-    $effect = $effect_cache[$key];
+    $effect = item_recovery_effect($item);
     $item['maze_effect'] = $effect;
     $gains=array();
     for ($i = 0; $i < $count; $i++) $gains[]=array('ds_id' => $session['ds_id'], 'dm_id' => $participant['dm_id'],
@@ -105,7 +102,7 @@ function maze_settle_member($session, $participant, $reason, $clear_reward = fal
             $reward_catalog[$catalog_key]=true;
         }
         foreach ($settings['rewards'] as $reward) {
-            if (random_int(1, 10000) > (int)round($reward['percent'] * 100)) continue;
+            if (!dungeon_reward_won($reward['percent'])) continue;
             $item = isset($settings['reward_items'][(int)$reward['it_id']]) ? $settings['reward_items'][(int)$reward['it_id']] : get_item((int)$reward['it_id']);
             if (empty($item['it_id'])) throw new RuntimeException('클리어 보상 아이템 정의가 없습니다.');
             $reward_summary[] = $item['it_name'].' × '.(int)$reward['count'];

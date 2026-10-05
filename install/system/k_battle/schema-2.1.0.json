@@ -1,0 +1,399 @@
+{
+  "k_battle_plugin_config": {
+    "columns": {
+      "cf_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "stat_list": "text NOT NULL",
+      "hp": "int(11) NOT NULL",
+      "hp_name": "varchar(11) NOT NULL DEFAULT 'hp'",
+      "mp": "int(11) NOT NULL",
+      "mp_name": "varchar(11) NOT NULL DEFAULT 'mp'",
+      "speed": "int(11) NOT NULL",
+      "skill_max": "int(11) NOT NULL DEFAULT 5",
+      "equip_max": "varchar(50) NOT NULL DEFAULT '5'",
+      "equip_type": "text NOT NULL",
+      "sample_target": "text NOT NULL",
+      "sample_unit": "text NOT NULL",
+      "limit_atk": "int(11) NOT NULL",
+      "limit_heal": "int(11) NOT NULL",
+      "limit_item": "int(11) NOT NULL",
+      "limit_skill": "int(11) NOT NULL",
+      "limit_equip": "int(11) NOT NULL DEFAULT 1",
+      "skill_img": "int(11) NOT NULL DEFAULT 1",
+      "equip_per_hide": "int(11) NOT NULL DEFAULT 0",
+      "upgrade_limit": "int(11) NOT NULL DEFAULT 0",
+      "ver_plugin": "varchar(20) NOT NULL DEFAULT '2.0.0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "cf_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "k_battle_equip_ch": {
+    "columns": {
+      "eq_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "it_id": "int(11) NOT NULL",
+      "in_id": "int(11) NOT NULL",
+      "eq_img": "text NOT NULL",
+      "eq_name": "text NOT NULL",
+      "eq_content": "text NOT NULL",
+      "eq_memo": "text NOT NULL",
+      "eq_memo_id": "int(11) NOT NULL",
+      "eq_use": "varchar(55) NOT NULL DEFAULT ''",
+      "ug_id": "int(11) NOT NULL DEFAULT 0",
+      "st_1": "int(11) NOT NULL DEFAULT 0",
+      "st_2": "int(11) NOT NULL DEFAULT 0",
+      "st_3": "int(11) NOT NULL DEFAULT 0",
+      "st_4": "int(11) NOT NULL DEFAULT 0",
+      "st_5": "int(11) NOT NULL DEFAULT 0",
+      "st_6": "int(11) NOT NULL DEFAULT 0",
+      "st_7": "int(11) NOT NULL DEFAULT 0",
+      "st_8": "int(11) NOT NULL DEFAULT 0",
+      "st_9": "int(11) NOT NULL DEFAULT 0",
+      "st_10": "int(11) NOT NULL DEFAULT 0"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "eq_id"
+        ],
+        "unique": true
+      },
+      "it_id": {
+        "columns": [
+          "it_id"
+        ],
+        "unique": false
+      },
+      "in_id": {
+        "columns": [
+          "in_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "k_battle_equip_ug": {
+    "columns": {
+      "ug_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ug_name": "varchar(255) NOT NULL",
+      "ug_per": "int(11) NOT NULL",
+      "ug_min": "int(11) NOT NULL",
+      "ug_max": "varchar(255) NOT NULL",
+      "ch_rank": "int(11) NOT NULL",
+      "ug_use_it": "int(11) NOT NULL",
+      "ug_use_money": "int(11) NOT NULL",
+      "ug_item": "int(11) NOT NULL",
+      "ug_money": "int(11) NOT NULL",
+      "ug_color": "varchar(50) NOT NULL",
+      "ug_tag_color": "varchar(50) NOT NULL",
+      "ug_bg_color": "varchar(50) NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ug_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "k_battle_equip_ug_log": {
+    "columns": {
+      "lo_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ch_id": "int(11) NOT NULL",
+      "ug_log": "varchar(255) NOT NULL",
+      "ug_name": "varchar(255) NOT NULL",
+      "ug_per": "varchar(255) NOT NULL",
+      "eq_id": "int(11) NOT NULL",
+      "st_id": "int(11) NOT NULL",
+      "ug_plus": "int(11) NOT NULL",
+      "ug_item": "int(11) NOT NULL",
+      "ug_money": "int(11) NOT NULL",
+      "ug_datetime": "varchar(255) NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "lo_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "k_battle_skill": {
+    "columns": {
+      "sk_id": "int NOT NULL AUTO_INCREMENT",
+      "si_id": "int NOT NULL",
+      "sk_name": "varchar(255) NOT NULL",
+      "sk_content": "text NOT NULL",
+      "sk_info": "text NOT NULL",
+      "sk_value": "float(10,2) NOT NULL",
+      "default_calc": "varchar(255) NOT NULL",
+      "bonus_calc": "varchar(255) NOT NULL",
+      "sk_turn": "int NOT NULL",
+      "sk_cool": "int NOT NULL",
+      "sk_target": "varchar(255) NOT NULL",
+      "sk_target_cnt": "varchar(255) NOT NULL",
+      "sk_icon": "varchar(255) NOT NULL",
+      "sk_mp": "int NOT NULL",
+      "sc_id": "int NOT NULL",
+      "target_sc": "int NOT NULL",
+      "sk_use": "varchar(255) NOT NULL",
+      "unit_type": "varchar(10) NOT NULL DEFAULT ''",
+      "raid_type": "varchar(50) NOT NULL DEFAULT 'realtime'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "sk_id"
+        ],
+        "unique": true
+      },
+      "si_id": {
+        "columns": [
+          "si_id"
+        ],
+        "unique": false
+      },
+      "idx_raid_type": {
+        "columns": [
+          "raid_type"
+        ],
+        "unique": false
+      }
+    },
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "k_battle_skill_mo": {
+    "columns": {
+      "cs_id": "int NOT NULL AUTO_INCREMENT",
+      "mo_id": "int NOT NULL",
+      "sk_id": "int NOT NULL",
+      "cs_use": "int NOT NULL DEFAULT '1'",
+      "cs_name": "varchar(255) NOT NULL",
+      "cs_content": "text NOT NULL",
+      "cs_icon": "varchar(255) NOT NULL",
+      "cs_img": "text NOT NULL",
+      "cs_target_cnt": "int NOT NULL DEFAULT '1'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "cs_id"
+        ],
+        "unique": true
+      },
+      "idx_mo_id": {
+        "columns": [
+          "mo_id"
+        ],
+        "unique": false
+      },
+      "idx_sk_id": {
+        "columns": [
+          "sk_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "k_battle_skill_ch": {
+    "columns": {
+      "cs_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ch_id": "int(11) NOT NULL",
+      "sk_id": "int(11) NOT NULL",
+      "cs_use": "int(11) NOT NULL",
+      "cs_name": "varchar(255) NOT NULL",
+      "cs_content": "text NOT NULL",
+      "cs_icon": "varchar(255) NOT NULL",
+      "cs_img": "text NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "cs_id"
+        ],
+        "unique": true
+      },
+      "sk_id": {
+        "columns": [
+          "sk_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "k_battle_skill_info": {
+    "columns": {
+      "si_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "si_type": "varchar(255) NOT NULL",
+      "si_code": "varchar(255) NOT NULL",
+      "si_passive": "int(11) NOT NULL DEFAULT 0",
+      "si_category": "int(11) NOT NULL DEFAULT 0",
+      "si_default": "int(11) NOT NULL DEFAULT 0",
+      "si_use": "int(11) NOT NULL DEFAULT 1",
+      "si_1": "varchar(255) NOT NULL",
+      "si_info": "text NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "si_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "k_battle_stat_func": {
+    "columns": {
+      "sc_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "sc_name": "varchar(255) NOT NULL",
+      "sc_value": "varchar(255) NOT NULL",
+      "sc_type": "varchar(255) NOT NULL",
+      "sc_category": "varchar(255) NOT NULL",
+      "sc_1": "varchar(255) NOT NULL",
+      "sc_2": "varchar(255) NOT NULL",
+      "sc_3": "varchar(255) NOT NULL",
+      "sc_4": "varchar(255) NOT NULL",
+      "sc_5": "varchar(255) NOT NULL",
+      "sc_6": "varchar(255) NOT NULL",
+      "sc_7": "varchar(255) NOT NULL",
+      "sc_8": "varchar(255) NOT NULL",
+      "sc_9": "varchar(255) NOT NULL",
+      "sc_10": "varchar(255) NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "sc_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "k_battle_pattern_mo": {
+    "columns": {
+      "pt_id": "int NOT NULL AUTO_INCREMENT",
+      "mo_id": "int NOT NULL DEFAULT '0'",
+      "pt_turn": "int NOT NULL DEFAULT '0'",
+      "pt_skill": "varchar(255) NOT NULL DEFAULT ''",
+      "pt_skill_cnt": "int NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "pt_id"
+        ],
+        "unique": true
+      },
+      "idx_mo_id": {
+        "columns": [
+          "mo_id"
+        ],
+        "unique": false
+      },
+      "idx_turn": {
+        "columns": [
+          "pt_turn"
+        ],
+        "unique": false
+      }
+    },
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "k_raid_list": {
+    "columns": {
+      "li_id": "INT(11) NOT NULL AUTO_INCREMENT",
+      "li_title": "VARCHAR(255) NOT NULL DEFAULT ''",
+      "li_use": "TINYINT(1) NOT NULL DEFAULT '1'",
+      "raid_type": "VARCHAR(50) NOT NULL DEFAULT ''",
+      "ra_ids": "TEXT NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "li_id"
+        ],
+        "unique": true
+      },
+      "idx_raid_type": {
+        "columns": [
+          "raid_type"
+        ],
+        "unique": false
+      },
+      "idx_li_use": {
+        "columns": [
+          "li_use"
+        ],
+        "unique": false
+      }
+    },
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8",
+    "require_engine": true
+  },
+  "item": {
+    "columns": {
+      "ug_limit": "int(11) NOT NULL default 0",
+      "eq_type": "VARCHAR(50) NOT NULL default ''"
+    },
+    "indexes": {},
+    "source": "k_battle/extend/install/database_plugin.sql",
+    "create": false
+  }
+}

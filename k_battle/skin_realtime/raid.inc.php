@@ -182,7 +182,7 @@ if ($time_limit > 0 && $time_start > 0) {
                             <span style="width:<?php echo $hp_pct ?>%"></span>
                             <i><?php echo $hp_now ?>/<?php echo max(1, $hp_max) ?></i>
                         </p>
-                        <?php if (!empty($kb_cf['mp'])): ?>
+                        <?php if (!empty($kb_cf['mp']) && ($rm['unit_type']??'')!=='mo'): ?>
                         <p class="unit-mp">
                             <span style="width:<?php echo $mp_pct ?>%"></span>
                             <i><?php echo $mp_now ?>/<?php echo max(1, $mp_max) ?></i>

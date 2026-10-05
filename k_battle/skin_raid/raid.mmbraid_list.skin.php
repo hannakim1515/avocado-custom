@@ -194,7 +194,7 @@ while ($row = sql_fetch_array($sc_sql)) {
                 <i><?php echo $rm_hp_now ?>/<?php echo max(1, $rm_hp_max) ?></i>
             </div>
 
-            <?php if (!empty($kb_cf['mp'])): ?>
+            <?php if (!empty($kb_cf['mp']) && ($rm['unit_type']??'')!=='mo'): ?>
                 <div class="mp-bar">
                     <span class="bar-inner" style="width:<?php echo $rm_mp_pct ?>%"></span>
                     <i><?php echo $rm_mp_now ?>/<?php echo max(1, $rm_mp_max) ?></i>

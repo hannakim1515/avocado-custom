@@ -510,92 +510,6 @@ function unified_active_effect_value($base, $flat = 0, $percent = 0, $final_mult
     return max(0, (int)round($value));
 }
 
-function unified_dungeon_stat_bonuses($ds_id, $ch_id)
-{
-    global $g5;
-    $result = array('flat' => array(), 'percent' => array(), 'final' => array());
-    $ds_id = (int)$ds_id;
-    $ch_id = (int)$ch_id;
-    if ($ds_id <= 0 || $ch_id <= 0 || empty($g5['dungeon_log_table']) || !unified_table_exists($g5['dungeon_log_table'])) return $result;
-
-    /* 한 행동 안에서는 동일 대상의 활성 효과가 바뀌지 않는다. 여러 연동 코드가
-     * 같은 스탯을 요청해도 dungeon_log를 다시 읽지 않도록 요청 범위에서만 보관한다. */
-    static $cache = array();
-    $cache_key = $ds_id.'|'.$ch_id;
-    if (isset($cache[$cache_key])) return $cache[$cache_key];
-
-    /* 스탯마다 SUM을 실행하지 않고 현재 효과를 한 번에 읽는다. final은 순서를
-     * 보존해 특수 배율만 별도로 적용하고, 일반 percent는 같은 층에서 합산한다. */
-    $query = sql_query(
-        "SELECT st_id, dl_value, dl_effect_type
-         FROM {$g5['dungeon_log_table']}
-         WHERE ds_id = '{$ds_id}' AND ch_id = '{$ch_id}'
-           AND dl_cate = '효과' AND dl_function = '스탯강화' AND dl_keep_limit > 0
-         ORDER BY dl_id ASC",
-        false
-    );
-    if ($query) while ($row = sql_fetch_array($query)) {
-        $st_id = (int)$row['st_id'];
-        if ($st_id <= 0) continue;
-        $type = isset($row['dl_effect_type']) ? $row['dl_effect_type'] : 'flat';
-        if ($type === 'percent') {
-            $result['percent'][$st_id] = (isset($result['percent'][$st_id]) ? (int)$result['percent'][$st_id] : 0) + (int)$row['dl_value'];
-        } elseif ($type === 'final') {
-            if (!isset($result['final'][$st_id])) $result['final'][$st_id] = array();
-            $result['final'][$st_id][] = (float)$row['dl_value'] / 100;
-        } else {
-            $result['flat'][$st_id] = (isset($result['flat'][$st_id]) ? (int)$result['flat'][$st_id] : 0) + (int)$row['dl_value'];
-        }
-    }
-    return $cache[$cache_key] = $result;
-}
-
-function unified_dungeon_k_stat_value($ds_id, $ch_id, $dm, $k_sc_id)
-{
-    if (!is_array($dm) || empty($dm['dm_id'])) return 0;
-
-    $buffs = unified_dungeon_stat_bonuses($ds_id, $ch_id);
-    $base_stats = array();
-    foreach (unified_status_config_rows() as $row) {
-        $st_id = (int)$row['st_id'];
-        $base = (int)$dm['st_id_'.$st_id] + (int)$dm['st_id_'.$st_id.'_mod'] - (int)$dm['st_id_'.$st_id.'_use'];
-        $base_stats[$st_id] = unified_active_effect_value(
-            $base,
-            isset($buffs['flat'][$st_id]) ? $buffs['flat'][$st_id] : 0,
-            isset($buffs['percent'][$st_id]) ? $buffs['percent'][$st_id] : 0,
-            isset($buffs['final'][$st_id]) ? $buffs['final'][$st_id] : array()
-        );
-    }
-
-    /*
-     * 통합 슬롯은 K 수식이 아니라 A 타입 그 자체를 표시하는 용도다.
-     * 던전에서는 입장 스냅샷과 던전 내 스탯 버프를 합친 값으로 계산해야
-     * 레이드·1:1과 같은 원본을 바라본다. 기존의 `unified` 자리표시 K 수식을
-     * 재실행하면 결과가 0이 되는 문제가 있었다.
-     */
-    $status_type = unified_status_type_for_k_stat((int)$k_sc_id);
-    if ($status_type !== '' && function_exists('get_status_type_filed')) {
-        $field = get_status_type_filed($status_type);
-        if (preg_match('/^st_type(?:[1-9]|10)$/', $field)) {
-            $total = 0;
-            foreach (unified_status_config_rows() as $row) {
-                $st_id = (int)$row['st_id'];
-                if (!empty($row[$field])) $total += isset($base_stats[$st_id]) ? (int)$base_stats[$st_id] : 0;
-            }
-            return max(0, (int)$total);
-        }
-    }
-
-    $derived = array();
-    foreach (unified_k_stat_definitions() as $id => $definition) {
-        $derived[(int)$id] = unified_k_stat_formula_value((int)$id, $base_stats);
-    }
-
-    $k_sc_id = (int)$k_sc_id;
-    $value = isset($derived[$k_sc_id]) ? $derived[$k_sc_id] : 0;
-    $value += unified_k_passive_bonus($ch_id, $k_sc_id, $derived);
-    return max(0, (int)$value);
-}
 
 function unified_stat_total_by_type($status_type, $ch_id)
 {
@@ -674,6 +588,15 @@ function unified_monster_base_stats($monster)
     if (empty($monster['mo_id'])) return array();
 
     $mo_id = (int)$monster['mo_id'];
+    // Shared monsters keep every A stat by ID. K's ten input columns are a compatibility cache.
+    if(function_exists('monster_ready') && monster_ready()) {
+        $shared_row=sql_fetch('SELECT profile FROM `'.G5_TABLE_PREFIX.'monster_master` WHERE raid_id='.$mo_id,false);
+        $shared_profile=json_decode($shared_row['profile']??'',true);
+        if(isset($shared_profile['shared']['stats']) && is_array($shared_profile['shared']['stats'])) {
+            $cache[$mo_id]=array_map(function($v){return max(0,(int)$v);},$shared_profile['shared']['stats']);
+            return $cache[$mo_id];
+        }
+    }
     $values = array();
     $rows = array_slice(unified_status_config_rows(), 0, 10, true);
     $index = 0;

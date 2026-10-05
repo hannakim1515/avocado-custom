@@ -62,7 +62,7 @@ if($sk['si_category']==980){
                 $result=k_guard_damage_value($target[$i], $result);
             }
             
-            $dead_msg=set_k_dmg($target[$i], 'hp', $result, $sk['si_code'], $func_type=='atk');
+            $dead_msg=set_k_dmg($target[$i], 'hp', $result, $sk['si_code'], $func_type=='atk', $unit);
             $result_type = $result < 0 ? 'atk' : $func_type;
             $sk_effect.="<p><span class=\"name\">{$target[$i]['unit_name']}</span> 의 {$kb_cf['hp_name']}{$turn}<span class=\"dmg {$result_type}\">".abs($result)."</span> {$dead_msg}</p>";
             
@@ -75,6 +75,11 @@ if($sk['si_category']==980){
         //기절-지정된 턴 동안 타겟이 행동할 수 없다.
         $rand=rand(1,100);
         if($rand<=$bonus){
+            if($sk['si_code']==='aggr' && ($unit['unit_type']??'')==='ch') {
+                require_once G5_PATH.'/lib/monster_shared.lib.php';
+                // Existing self/party provoke buffs redirect attacks to their recipients.
+                foreach($target as $provoke_target)if(($provoke_target['unit_type']??'')==='ch')monster_shared_raid_credit($ra_id,$provoke_target['rm_id'],0,null,true);
+            }
            
             if($target_id=='all'){
                 if($sk['si_code']=='aggr'){

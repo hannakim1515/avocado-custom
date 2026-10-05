@@ -3,7 +3,7 @@ include_once('./_common.php');
 $g5['title'] = "지역";
 include_once('./_head.sub.php');
 
-add_stylesheet('<link rel="stylesheet" href="'.G5_MAP_URL.'/css/style.css?v=26092301">', 0);
+add_stylesheet('<link rel="stylesheet" href="'.G5_MAP_URL.'/css/style.css?v=26100501">', 0);
 
 $ma_id = 0;
 $pma_id = 0;
@@ -21,7 +21,7 @@ for($i=0; $m_rows = sql_fetch_array($map_config_result); $i++) {
 		$start_map = $m_rows;
 	}
 
-	if($m_rows['ma_parent'] != $m_rows['ma_id']) {
+	if((int)$m_rows['ma_parent'] > 0 && $m_rows['ma_parent'] != $m_rows['ma_id']) {
 		// 하위 지역일 경우, 부모 지역의 id 값을 index 로 하는 배열에 값을 추가한다.
 		$map_sub_list[$m_rows['ma_parent']][] = $m_rows;
 	} else {
@@ -35,12 +35,12 @@ for($i=0; $m_rows = sql_fetch_array($map_config_result); $i++) {
 if($character['ma_id']) {
 	$ma_id = $character['ma_id'];
 	$map = $map_config[$ma_id];
-	$pma_id = $map['ma_parent'];
+	$pma_id = (int)$map['ma_parent'] > 0 ? $map['ma_parent'] : $map['ma_id'];
 } else {
 	// 시작 지역 가져오기
 	$map = $start_map;
 	$ma_id = $map['ma_id'];
-	$pma_id = $map['ma_parent'];
+	$pma_id = (int)$map['ma_parent'] > 0 ? $map['ma_parent'] : $map['ma_id'];
 
 	sql_query(" update {$g5['character_table']} set ma_id = '{$ma_id}' where ch_id = '{$character['ch_id']}'"); 
 	$character['ma_id'] = $ma_id;
@@ -48,7 +48,7 @@ if($character['ma_id']) {
 
 if(!$pma_id) {alert("지역정보를 확인할 수 없습니다.");}
 
-if($use_dungeon_map && function_exists('set_reset_dungeon')) {
+if($show_dungeon_map && function_exists('set_reset_dungeon')) {
 	// 게이트변동 및 업데이트
 	$config['cf_dungeon_reset'] = set_reset_dungeon();
 }
@@ -56,11 +56,13 @@ if($use_dungeon_map && function_exists('set_reset_dungeon')) {
 // The global map displays parent areas, while dungeon_state stores the exact
 // child-area id. Index open dungeons for each visible area and its children.
 $open_dungeons_by_map = array();
-if($use_dungeon_map && !empty($g5['dungeon_state_table'])) {
-	$open_dungeon_sql = sql_query("select ds.* from {$g5['dungeon_state_table']} ds where ds.ds_state = 'S' and ds.ds_ma_id > 0", false);
+$unrestricted_dungeons = array();
+if($show_dungeon_map && !empty($g5['dungeon_state_table'])) {
+	$open_dungeon_sql = sql_query("select ds.* from {$g5['dungeon_state_table']} ds join {$g5['dungeon_table']} dg on dg.dg_id=ds.dg_id where ds.ds_state = 'S' and dg.dg_use = 1", false);
 	if($open_dungeon_sql) {
 		for($i = 0; $open_dungeon = sql_fetch_array($open_dungeon_sql); $i++) {
 			$current_area_id = (int)$open_dungeon['ds_ma_id'];
+			if(!$current_area_id && !$use_dungeon_map) { $unrestricted_dungeons[] = $open_dungeon; continue; }
 			$seen_area_ids = array();
 			while($current_area_id && isset($map_config[$current_area_id]) && !isset($seen_area_ids[$current_area_id])) {
 				$seen_area_ids[$current_area_id] = true;
@@ -97,7 +99,7 @@ if($config['cf_use_map_all'] && !$now_idx) {
 	// 전체 지도를 사용하지 않으면서 현재 선택된 지역 정보가 없을 경우
 	// 현재 위치한 장소의 지도를 가져온다.
 	$_now_map = $map;
-	$now_map = $map_config[$_now_map['ma_parent']];
+	$now_map = $map_config[$pma_id];
 
 	$now_map_img = $now_map['ma_img'];
 	$scene_map_img = trim(isset($_now_map['ma_img']) ? $_now_map['ma_img'] : '') !== '' ? $_now_map['ma_img'] : $now_map_img;
@@ -118,7 +120,8 @@ if($config['cf_use_map_all'] && !$now_idx) {
 	}
 	$original_width = $now_map['ma_width'];
 	$original_height = $now_map['ma_height'];
-	$now_map_list = isset($map_sub_list[$now_map['ma_parent']]) ? $map_sub_list[$now_map['ma_parent']] : array();
+	$selected_parent_id = (int)$now_map['ma_parent'] > 0 ? $now_map['ma_parent'] : $now_map['ma_id'];
+	$now_map_list = isset($map_sub_list[$selected_parent_id]) ? $map_sub_list[$selected_parent_id] : array();
 	$is_global_map = false;
 }
 
@@ -137,6 +140,7 @@ $character_map = $map_config[$character['ma_id']];
 <? if($is_global_map) { ?>
 <div class="map_wrap none-trans">
 	<a href="<?=G5_URL?>/main.php" class="map-close"><img src="<?=G5_MAP_URL?>/img/btn_close_map.png" alt="메인으로" /></a>
+	<? if($unrestricted_dungeons) { ?><a class="map-unrestricted-dungeons ui-btn" href="<?=G5_URL?>/dungeon/"><span>열린 던전 <?=count($unrestricted_dungeons)?>개 · 입장하기</span></a><? } ?>
 
 	<div class="map-img-viewer">
 		<div class="bak">
@@ -203,7 +207,7 @@ $character_map = $map_config[$character['ma_id']];
 				<?
 					for($i=0; $i < count($now_map_list); $i++) {
 						$ma = $now_map_list[$i];
-						$is_group = ($ma['ma_id'] == $ma['ma_parent']);
+						$is_group = ((int)$ma['ma_parent'] === 0 || $ma['ma_id'] == $ma['ma_parent']);
 						$is_current = ($character['ma_id'] == $ma['ma_id']);
 						$is_parent_current = ($pma_id == $ma['ma_id']);
 						$btn_class = $is_current || $is_parent_current ? "current" : "";

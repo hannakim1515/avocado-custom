@@ -56,7 +56,12 @@ if (ses($board, 'bo_1_subj', '') === 'mmbraid' && ses($board, 'bo_1', '') === 't
                 $act_effect = '';
                 $target = array();
 
-                if ($admin_action === 'allatk') {
+                if ($admin_action === 'pattern') {
+                    require_once G5_PATH.'/lib/monster_adapters.lib.php';
+                    try {
+                        if(!monster_shared_mmb_step($unit,$ra_id,$option))$data['warning']='행동 가능한 공용 몬스터가 없습니다. 몬스터 관리의 패턴과 레이드 몬스터 등록을 확인하세요.';
+                    } catch(Throwable $error) {$data['warning']=$error->getMessage();}
+                } elseif ($admin_action === 'allatk') {
                     $target = get_k_unit_list('ch', $ra_id, $selectCh, 'AND unit.hp_now>0', '', true);
 
                 } elseif ($admin_action === 'randatk' || $admin_action === 'randstun') {
@@ -114,7 +119,7 @@ if (ses($board, 'bo_1_subj', '') === 'mmbraid' && ses($board, 'bo_1', '') === 't
                 }
             }
 
-            if ($admin_turn) {
+            if ($admin_turn && empty($data['warning'])) {
                 k_turn_change($ra_id, $option);
             }
 

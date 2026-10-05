@@ -286,6 +286,7 @@ $skill_function = array("공격", "도발", "회피", "방어", "스탯강화", 
 			<th rowspan="2">제한</th>
 			<td class="bo-left bo-right txt-center">사용대상</td>
 			<td>
+                <?php if(monster_ready()){ ?><label>던전 공격 범위 <select name="dungeon_target_mode"><?php foreach(array('SINGLE'=>'선택한 적 하나','ALL'=>'살아 있는 적 전체','RANDOM'=>'무작위 적 하나') as $key=>$label)echo '<option value="'.$key.'"'.(($skill['sk_dungeon_target_mode']??'SINGLE')===$key?' selected':'').'>'.$label.'</option>'; ?></select></label><?php } ?>
 				<select name="sk_target" style="min-width:100px;" onchange="fn_function_setting(this);">
 					<option value="자신" <?=$skill['sk_target'] == "자신" ? "selected" : ""?>>자신</option>
 					<option value="아군" <?=$skill['sk_target'] == "아군" ? "selected" : ""?>>아군</option>

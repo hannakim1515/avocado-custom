@@ -1,7 +1,7 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가 
 
-$open_dungeons = function_exists('get_map_open_dungeons') ? get_map_open_dungeons($ma['ma_id'], true) : array();
+$open_dungeons = $show_dungeon_map && function_exists('get_map_open_dungeons') ? get_map_open_dungeons($ma['ma_id'], true) : array();
 ?>
 
 <div class="map-pannel">
@@ -24,10 +24,15 @@ $open_dungeons = function_exists('get_map_open_dungeons') ? get_map_open_dungeon
 		<div class="map-open-dungeon-list">
 			<strong>던전 발생</strong>
 			<ul>
-			<? for($i = 0; $i < count($open_dungeons); $i++) { $open_dungeon = $open_dungeons[$i]; ?>
+			<? for($i = 0; $i < count($open_dungeons); $i++) {
+				$open_dungeon = $open_dungeons[$i];
+				$entry_label = maze_entry_label((int)$open_dungeon['ds_id'], (int)$character['ch_id']);
+			?>
 				<li>
-					<span><?=get_text(get_map_name($open_dungeon['ds_ma_id']))?></span>
-					<em><?=get_text($open_dungeon['dg_mon_name'])?></em>
+					<span><?=get_text($open_dungeon['dg_title'])?> · <?=get_text($open_dungeon['ds_ma_id'] ? get_map_name($open_dungeon['ds_ma_id']) : '지역 제한 없음')?></span>
+					<? if($entry_label !== '' && $character['ch_state'] === '승인' && (!$use_dungeon_map || (int)$open_dungeon['ds_ma_id'] === (int)$character['ma_id'])) { ?>
+						<?php if($entry_label==='입장하기') { ?><form method="post" action="<?=G5_URL?>/dungeon/maze.php" onsubmit="return confirm('던전에 입장하시겠습니까?');"><input type="hidden" name="token" value="<?=get_text(inventory_boundary_token())?>"><input type="hidden" name="ds_id" value="<?=(int)$open_dungeon['ds_id']?>"><input type="hidden" name="operation" value="join"><button type="submit" class="ui-btn">입장하기</button></form><?php } else { ?><a class="ui-btn" href="<?=G5_URL?>/dungeon/applicate.php?ds_id=<?=(int)$open_dungeon['ds_id']?>"><?=get_text($entry_label)?></a><?php } ?>
+					<? } else { ?><em><?=$entry_label === '' ? '탐험 진행 중' : '해당 지역에서 입장'?></em><? } ?>
 				</li>
 			<? } ?>
 			</ul>

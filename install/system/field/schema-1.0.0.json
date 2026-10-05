@@ -1,0 +1,207 @@
+{
+  "field_player": {
+    "columns": {
+      "fp_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ch_id": "int(11) NOT NULL default '0'",
+      "fm_id": "varchar(50) NOT NULL default 'demo_forest'",
+      "fp_x": "int(11) NOT NULL default '2'",
+      "fp_y": "int(11) NOT NULL default '10'",
+      "fp_dir": "varchar(10) NOT NULL default 'down'",
+      "fp_datetime": "datetime NOT NULL default CURRENT_TIMESTAMP"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "fp_id"
+        ],
+        "unique": true
+      },
+      "idx_ch_id": {
+        "columns": [
+          "ch_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/field.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "field_log": {
+    "columns": {
+      "fl_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ch_id": "int(11) NOT NULL default '0'",
+      "fm_id": "varchar(50) NOT NULL default ''",
+      "fl_key": "varchar(80) NOT NULL default ''",
+      "fl_type": "varchar(30) NOT NULL default ''",
+      "fl_datetime": "datetime NOT NULL default CURRENT_TIMESTAMP"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "fl_id"
+        ],
+        "unique": true
+      },
+      "idx_field_log": {
+        "columns": [
+          "ch_id",
+          "fm_id",
+          "fl_key"
+        ],
+        "unique": false
+      },
+      "idx_field_log_type": {
+        "columns": [
+          "ch_id",
+          "fm_id",
+          "fl_type"
+        ],
+        "unique": false
+      }
+    },
+    "source": "extend/field.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "field_map": {
+    "columns": {
+      "fm_id": "varchar(50) NOT NULL default ''",
+      "fm_name": "varchar(255) NOT NULL default ''",
+      "fm_use": "int(11) NOT NULL default '1'",
+      "fm_img": "varchar(255) NOT NULL default ''",
+      "fm_tile_size": "int(11) NOT NULL default '32'",
+      "fm_start_x": "int(11) NOT NULL default '1'",
+      "fm_start_y": "int(11) NOT NULL default '1'",
+      "fm_start_dir": "varchar(10) NOT NULL default 'down'",
+      "fm_tiles": "text NOT NULL",
+      "fm_order": "int(11) NOT NULL default '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "fm_id"
+        ],
+        "unique": true
+      },
+      "idx_fm_use": {
+        "columns": [
+          "fm_use",
+          "fm_order"
+        ],
+        "unique": false
+      }
+    },
+    "source": "extend/field.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "field_event": {
+    "columns": {
+      "fe_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "fm_id": "varchar(50) NOT NULL default ''",
+      "fe_type": "varchar(30) NOT NULL default 'npc'",
+      "fe_x": "int(11) NOT NULL default '0'",
+      "fe_y": "int(11) NOT NULL default '0'",
+      "fe_name": "varchar(255) NOT NULL default ''",
+      "fe_text": "text NOT NULL",
+      "fe_it_id": "int(11) NOT NULL default '0'",
+      "fe_url": "varchar(255) NOT NULL default ''",
+      "fe_use": "int(11) NOT NULL default '1'",
+      "fe_order": "int(11) NOT NULL default '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "fe_id"
+        ],
+        "unique": true
+      },
+      "idx_field_event": {
+        "columns": [
+          "fm_id",
+          "fe_x",
+          "fe_y",
+          "fe_use"
+        ],
+        "unique": false
+      }
+    },
+    "source": "extend/field.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "field_fishing": {
+    "columns": {
+      "ff_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "fm_id": "varchar(50) NOT NULL default ''",
+      "ff_name": "varchar(255) NOT NULL default ''",
+      "ff_text": "varchar(255) NOT NULL default ''",
+      "ff_rate": "int(11) NOT NULL default '0'",
+      "ff_it_id": "int(11) NOT NULL default '0'",
+      "ff_use": "int(11) NOT NULL default '1'",
+      "ff_order": "int(11) NOT NULL default '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ff_id"
+        ],
+        "unique": true
+      },
+      "idx_field_fishing": {
+        "columns": [
+          "fm_id",
+          "ff_use"
+        ],
+        "unique": false
+      }
+    },
+    "source": "extend/field.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "field_encounter": {
+    "columns": {
+      "fc_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "fm_id": "varchar(50) NOT NULL default ''",
+      "fc_tile": "varchar(10) NOT NULL default 'G'",
+      "fc_name": "varchar(255) NOT NULL default ''",
+      "fc_rate": "int(11) NOT NULL default '0'",
+      "fc_url": "varchar(255) NOT NULL default ''",
+      "fc_use": "int(11) NOT NULL default '1'",
+      "fc_order": "int(11) NOT NULL default '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "fc_id"
+        ],
+        "unique": true
+      },
+      "idx_field_encounter": {
+        "columns": [
+          "fm_id",
+          "fc_tile",
+          "fc_use"
+        ],
+        "unique": false
+      }
+    },
+    "source": "extend/field.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  }
+}

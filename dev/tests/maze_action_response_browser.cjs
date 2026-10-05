@@ -1,0 +1,54 @@
+﻿const {chromium}=require('../../artifacts/system-browser/node_modules/playwright');
+const check=(ok,label)=>{if(!ok)throw Error(label);console.log('PASS '+label);};
+(async()=>{const b=await chromium.launch({channel:'chrome',headless:true});try{
+ const p=await b.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));
+ await p.goto('http://127.0.0.1:38082/_fixture_login.php');
+ await p.goto('http://127.0.0.1:38082/dungeon/maze.php?ds_id=31');
+ await p.waitForSelector('#maze-turn-resolve');
+ const read=()=>p.evaluate(async()=>(await fetch('maze_state.php?ds_id=31')).json());
+ const before=await read();check(before.phase==='BATTLE','isolated active combat');
+ await p.locator('#chat-message').fill('draft retained');
+ let incoming,signalPost;const postSeen=new Promise(resolve=>signalPost=resolve);
+ const operations=[];
+ await p.route('**/dungeon/maze.php',async route=>{
+   if(route.request().method()!=='POST')return route.continue();
+   const op=new URLSearchParams(route.request().postData()).get('operation');operations.push(op);
+   const response=await route.fetch();
+   if(op==='submit')await new Promise(resolve=>setTimeout(resolve,800));
+   await route.fulfill({response});
+ });
+ await p.route('**/maze_state.php?*',async route=>{await new Promise(resolve=>setTimeout(resolve,3000));try{await route.continue();}catch{}});
+ // Force a background refresh before the action; the POST must preempt it.
+ await p.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));
+ const posted=p.waitForResponse(r=>r.request().method()==='POST'&&r.url().includes('/dungeon/maze.php'));
+ p.on('request',r=>{if(r.method()==='POST'&&r.url().includes('/dungeon/maze.php'))signalPost(Date.now());});
+ const clicked=Date.now();await p.getByRole('button',{name:'방어',exact:true}).click();
+ check(await p.locator('#maze-turn-resolve').isEnabled(),'turn completion enabled while action response is pending');
+ check(!operations.includes('resolve'),'selecting action does not automatically finish turn');
+ const resolved=p.waitForResponse(r=>r.request().method()==='POST'&&r.request().postData().includes('operation=resolve'));
+ await p.locator('#maze-turn-resolve').click();
+ check(!operations.includes('resolve'),'early turn click waits for successful action save');
+ check((await postSeen)-clicked<1200,'action POST preempts slow background poll');
+ incoming=await (await posted).json();check(incoming.state?.battle,'POST includes current state');
+ check(await p.locator('#chat-message').inputValue()==='draft retained','action keeps chat draft');
+ const after=(await (await resolved).json()).state;
+ check(operations.join(',')==='submit,resolve','action save precedes exactly one explicit turn completion');
+ await p.waitForFunction(turn=>document.querySelector('#maze-turn').textContent.includes(String(turn)),after.battle.turn);
+ check(after.battle.turn===before.battle.turn+1,'explicit turn completion advances exactly once');
+ const actor=after.party.find(x=>x.id===after.actor);
+ check((await p.locator('#maze-party').innerText()).includes(`${actor.hp} / ${actor.max_hp}`),'POST response immediately updates party HP');
+ await p.unroute('**/dungeon/maze.php');
+ let failedResolves=0;
+ await p.route('**/dungeon/maze.php',async route=>{
+   if(route.request().method()!=='POST')return route.continue();
+   const op=new URLSearchParams(route.request().postData()).get('operation');
+   if(op==='resolve')failedResolves++;
+   await new Promise(resolve=>setTimeout(resolve,400));
+   await route.fulfill({status:400,contentType:'application/json',body:JSON.stringify({error:'Fixture action rejected'})});
+ });
+ await p.getByRole('button',{name:'대기',exact:true}).click();await p.locator('#maze-turn-resolve').click();
+ await p.waitForFunction(()=>document.querySelector('#maze-error').textContent==='Fixture action rejected');
+ await p.waitForFunction(()=>!document.querySelector('#maze-controls button[data-action=SKIP]').disabled);
+ check(failedResolves===0,'failed action save cancels queued turn completion');
+ check(errors.length===0,'no JavaScript errors');
+}finally{await b.close();}})().catch(e=>{console.error(e);process.exit(1);});

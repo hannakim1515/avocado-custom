@@ -1,0 +1,87 @@
+{
+  "unified_combat_stat_map": {
+    "columns": {
+      "map_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "status_type": "varchar(255) NOT NULL",
+      "k_sc_id": "int(11) NOT NULL",
+      "is_active": "tinyint(1) NOT NULL DEFAULT '1'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "map_id"
+        ],
+        "unique": true
+      },
+      "uq_status_type": {
+        "columns": [
+          "status_type"
+        ],
+        "unique": true
+      },
+      "idx_k_sc_id": {
+        "columns": [
+          "k_sc_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "extend/unified_stat.lib.php",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8",
+    "require_engine": true
+  },
+  "unified_combat_config": {
+    "columns": {
+      "uc_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "basic_atk_code": "varchar(255) NOT NULL DEFAULT ''",
+      "basic_heal_code": "varchar(255) NOT NULL DEFAULT ''",
+      "basic_guard_code": "varchar(255) NOT NULL DEFAULT ''",
+      "speed_status_type": "varchar(255) NOT NULL DEFAULT ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "uc_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/unified_stat.lib.php",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8",
+    "require_engine": true
+  },
+  "k_battle_skill": {
+    "columns": {
+      "unified_a_sk_id": "int(11) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "idx_unified_a_sk_id": {
+        "columns": [
+          "unified_a_sk_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "extend/unified_skill.lib.php",
+    "create": false
+  },
+  "k_battle_skill_ch": {
+    "columns": {
+      "unified_a_sh_id": "int(11) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "idx_unified_a_sh_id": {
+        "columns": [
+          "unified_a_sh_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "extend/unified_skill.lib.php",
+    "create": false
+  }
+}

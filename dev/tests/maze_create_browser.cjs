@@ -1,0 +1,27 @@
+const {chromium}=require('../../artifacts/system-browser/node_modules/playwright');
+const {execFileSync}=require('child_process');
+const inspect=(op,id=0)=>JSON.parse(execFileSync('C:/xampp/php/php.exe',['dev/tests/admin_catalog_fixture.php',op,String(id)],{encoding:'utf8'}));
+const check=(ok,label)=>{if(!ok)throw Error(label);console.log('PASS '+label);};
+(async()=>{const b=await chromium.launch({channel:'chrome',headless:true});try{
+ const p=await b.newPage({viewport:{width:1440,height:1000}}),errors=[];p.on('pageerror',e=>errors.push(e.message));
+ const base='http://127.0.0.1:38082';await p.goto(base+'/_fixture_login.php');await p.goto(base+'/adm/dungeon_maze.php');
+ await p.locator('#bo_add').click();const form=p.locator('#fdungeonform');
+ check(await form.getAttribute('enctype')==='multipart/form-data'&&await form.locator('[name=dg_id]').inputValue()==='0','Maze add opens a blank separate multipart form');
+ const total=inspect('maze_count').total;
+ const rejected=await form.evaluate(async form=>{const body=new FormData(form);body.set('dg_title','');return (await fetch(form.action,{method:'POST',body})).text();});
+ check(rejected.includes('이름을 입력')&&inspect('maze_count').total===total,'invalid creation leaves no new definition');
+ const name='New Maze '+Date.now();await form.locator('[name=dg_title]').fill(name);await form.locator('#description').fill('New maze description');await form.locator('[name=dg_count]').fill('3');
+ await form.locator('[name=dg_rank]').fill('A');if(await form.locator('[name="ma_ids[]"]').count())await form.locator('[name="ma_ids[]"]').first().check();
+ await form.locator('[name=rooms_min]').fill('9');await form.locator('[name=rooms_max]').fill('11');await form.locator('[name=branches_max]').fill('2');
+ await Promise.all([p.waitForNavigation(),form.locator('input[type=submit]').first().click()]);
+ const id=Number(new URL(p.url()).searchParams.get('dg_id')),created=inspect('maze_definition',id),settings=JSON.parse(created.config.settings);
+ check(id>0&&inspect('maze_count').total==Number(total)+1,'new Maze creates exactly one definition');
+ check(created.definition.dg_title===name&&Number(created.definition.dg_count)===3&&settings.title===name&&settings.max_players===3&&settings.rooms_min===9&&settings.rooms_max===11,'base information and settings persist together');
+ check((await p.locator('[role=status]').innerText()).includes('저장'),'creation redirects to the new edit page');
+ await p.locator('[name=dg_title]').fill(name+' edited');await p.locator('[name=rooms_max]').fill('12');
+ await Promise.all([p.waitForNavigation(),p.locator('input[type=submit]').first().click()]);await p.reload();
+ const updated=inspect('maze_definition',id);
+ check(inspect('maze_count').total==Number(total)+1&&updated.definition.dg_title===name+' edited'&&JSON.parse(updated.config.settings).rooms_max===12,'edit updates the same Maze without duplicating it');
+ await p.goto(base+'/adm/dungeon_maze.php');check((await p.getByRole('table',{name:'미궁 목록',exact:true}).innerText()).includes(name+' edited'),'created Maze appears in the list');
+ check(errors.length===0,'no JavaScript errors');
+}finally{await b.close();}})().catch(e=>{console.error(e);process.exit(1);});

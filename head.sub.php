@@ -4,13 +4,13 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 check_site_auth($is_member);
 
 // extend 라이브러리 로드
-if(is_file(G5_EXTEND_PATH.'/status_extra.lib.php')) {
+if(!defined('G5_SYSTEM_INSTALLER') && is_file(G5_EXTEND_PATH.'/status_extra.lib.php')) {
 	include_once(G5_EXTEND_PATH.'/status_extra.lib.php');
 }
-if(is_file(G5_EXTEND_PATH.'/status_battle.lib.php')) {
+if(!defined('G5_SYSTEM_INSTALLER') && is_file(G5_EXTEND_PATH.'/status_battle.lib.php')) {
 	include_once(G5_EXTEND_PATH.'/status_battle.lib.php');
 }
-if(is_file(G5_EXTEND_PATH.'/k_status_bridge.lib.php')) {
+if(!defined('G5_SYSTEM_INSTALLER') && is_file(G5_EXTEND_PATH.'/k_status_bridge.lib.php')) {
 	include_once(G5_EXTEND_PATH.'/k_status_bridge.lib.php');
 }
 
@@ -53,8 +53,10 @@ if (defined('_INDEX_')) {
 
 
 <?php
-if (G5_IS_MOBILE) {
-    echo '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">'.PHP_EOL;
+if (G5_IS_MOBILE || defined('G5_SYSTEM_INSTALLER')) {
+    echo defined('G5_SYSTEM_INSTALLER')
+        ? '<meta name="viewport" content="width=device-width,initial-scale=1.0">'.PHP_EOL
+        : '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">'.PHP_EOL;
     echo '<meta name="HandheldFriendly" content="true">'.PHP_EOL;
     echo '<meta name="format-detection" content="telephone=no">'.PHP_EOL;
 } else {

@@ -1,6 +1,13 @@
 <?php
 $sub_menu = '980411';
 include_once('./_common.php');
+require_once G5_PATH.'/lib/monster_shared.lib.php';
+if(monster_shared_ready()) {
+    $common_mo=(int)($_GET['mo_id']??0);
+    $common_row=$common_mo?sql_fetch('SELECT monster_id FROM `'.monster_table('monster_master').'` WHERE raid_id='.$common_mo):null;
+    goto_url('./monster.php'.($common_row?'?monster_id='.(int)$common_row['monster_id']:''));
+}
+
 if(!isset($page)||$page<1) $page = 1;
 $token = get_token();
 

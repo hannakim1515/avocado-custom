@@ -77,7 +77,11 @@ $cs_img_js  = json_encode(ses($sk, 'cs_img', '', 'raw')); // onclick 안전
 
 <div class="info-footer">
     <p class="asset-content2"><?php echo $sk_info ?></p>
+    <?php if (($sk['unit_type']??'')==='mo'): ?>
+    <p class="sk-duration">지속 <?php echo $sk_turn ?>턴</p>
+    <?php else: ?>
     <p class="sk-mp"><?php echo $mp_name ?> <?php echo $sk_mp ?> | 쿨타임 <?php echo $sk_cool ?> | 지속 <?php echo $sk_turn ?>턴</p>
+    <?php endif; ?>
 </div>
 
 <script>

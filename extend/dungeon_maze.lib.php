@@ -1,7 +1,8 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
 
-function maze_table($name) { return G5_TABLE_PREFIX.'dungeon_maze_'.$name; }
+function maze_table($name) { return G5_TABLE_PREFIX.($name === 'session' ? 'dungeon_state' : 'dungeon_maze_'.$name); }
+require_once __DIR__.'/../lib/dungeon_reward.lib.php';
 function maze_json($value) {
     $json = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     if ($json === false) throw new RuntimeException('미궁 데이터를 저장할 수 없습니다.');
@@ -14,6 +15,7 @@ function maze_data($value) {
 }
 function maze_one($sql) { $rows = inventory_boundary_rows($sql); return $rows ? $rows[0] : null; }
 function maze_update($table, $data, $where) {
+    if($table==='session' && isset($data['phase']))$data['ds_state']=in_array($data['phase'],array('CLEAR','FAILED','CLOSED'),true)?'E':'S';
     $sets = array();
     foreach ($data as $key => $value) $sets[] = '`'.$key.'`='.inventory_boundary_quote($value);
     inventory_boundary_query('UPDATE `'.maze_table($table).'` SET '.implode(',', $sets).' WHERE '.$where);
@@ -52,25 +54,18 @@ function maze_installed() {
 }
 function maze_session($ds_id, $lock = false) {
     if (!maze_installed()) return null;
-    return maze_one('SELECT * FROM `'.maze_table('session').'` WHERE ds_id='.(int)$ds_id.($lock ? ' FOR UPDATE' : ''));
+    return maze_one('SELECT * FROM `'.maze_table('session').'` WHERE snapshot IS NOT NULL AND ds_id='.(int)$ds_id.($lock ? ' FOR UPDATE' : ''));
 }
-function maze_routes_instance($ds_id) {
+function maze_routes_instance($ds_id) { return maze_installed(); }
+function maze_is_configured_instance($ds_id) {
     global $g5;
-    if (maze_session((int)$ds_id)) return true;
-    $legacy = sql_fetch('SELECT dm_id FROM `'.$g5['dungeon_member_table'].'` WHERE ds_id='.(int)$ds_id.' LIMIT 1');
-    return empty($legacy['dm_id']);
+    return maze_installed() && (bool)maze_one('SELECT ds_id FROM `'.$g5['dungeon_state_table'].'` WHERE ds_id='.(int)$ds_id);
 }
 function maze_entry_label($ds_id, $ch_id) {
     $session = maze_session((int)$ds_id);
     if (!$session || $session['phase'] === 'WAITING') return '입장하기';
     $person = maze_one('SELECT state FROM `'.maze_table('member').'` WHERE ds_id='.(int)$ds_id.' AND ch_id='.(int)$ch_id);
     return $person && $person['state'] === 'ACTIVE' ? '미궁 이어하기' : '';
-}
-function maze_sync_legacy_state($ds_id) {
-    global $g5;
-    $session = maze_session((int)$ds_id);
-    if ($session && in_array($session['phase'],array('EXPLORE','BATTLE','BOSS_RESULT'),true)) inventory_boundary_query('UPDATE `'.$g5['dungeon_state_table'].'` SET ds_state=\'S\' WHERE ds_id='.(int)$ds_id." AND ds_state<>'S'");
-    if ($session && in_array($session['phase'],array('CLEAR','FAILED','CLOSED'),true)) inventory_boundary_query('UPDATE `'.$g5['dungeon_state_table'].'` SET ds_state=\'E\' WHERE ds_id='.(int)$ds_id." AND ds_state<>'E'");
 }
 function maze_readiness() {
     static $result = null;
@@ -83,22 +78,22 @@ function maze_readiness() {
     elseif(preg_match('/^(\d+\.\d+\.\d+)/',$version,$match)) $persistent=version_compare($match[1],'8.0.0','>=');
     if(!$persistent)$result['errors'][]='원본 ID 보관에는 재시작 후 AUTO_INCREMENT가 유지되는 DB가 필요합니다 (MariaDB 10.2.4+ / MySQL 8.0+).';
     $contract = array(
-        'meta' => 'singleton schema_version action_timeout', 'config' => 'dg_id settings',
+        'meta' => 'singleton schema_version action_timeout',
         'session' => 'ds_id dg_id phase version room_id battle_id snapshot expires_at started_at finished_at created_at',
         'member' => 'dm_id ds_id ch_id mb_id name state ready hp max_hp stats skills effects settled reward_eligible joined_at exited_at',
         'room' => 'ds_id room_id parent_id direction depth kind is_exit is_boss visited resolved encounter_done payload result_text',
-        'battle' => 'battle_id ds_id room_id state turn_no deadline_at monster hp weak_count weak_turn',
-        'action' => 'battle_id turn_no dm_id action target_id reference_id escape_vote',
+        'battle' => 'battle_id ds_id room_id encounter_id state turn_no deadline_at monster hp weak_count weak_turn',
+        'action' => 'battle_id turn_no dm_id action target_id monster_id reference_id escape_vote',
         'inventory' => 'inventory_id ds_id dm_id ch_id it_id origin original_id active_original_id original_row item_snapshot consumed restored',
         'vote' => 'ds_id target_id voter_id', 'log' => 'log_id ds_id dm_id kind message created_at',
         'reward' => 'ds_id dm_id reward_type state mb_id amount completed_at',
-        'status' => 'status_id name description duration enabled components', 'item_effect' => 'it_id kind status_id value'
+        'status' => 'status_id name description duration enabled components'
     );
-    $keys = array('meta' => array('singleton'), 'config' => array('dg_id'), 'session' => array('ds_id'),
+    $keys = array('meta' => array('singleton'), 'session' => array('ds_id'),
         'member' => array('ds_id','ch_id'), 'room' => array('ds_id','room_id'), 'battle' => array('battle_id'),
         'action' => array('battle_id','turn_no','dm_id'), 'inventory' => array('active_original_id'),
         'vote' => array('ds_id','target_id','voter_id'), 'log' => array('log_id'), 'reward' => array('ds_id','dm_id','reward_type'),
-        'status' => array('status_id'), 'item_effect' => array('it_id'));
+        'status' => array('status_id'));
     $names = array();
     foreach ($contract as $name => $fields) $names[] = inventory_boundary_quote(maze_table($name));
     $filter = ' TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN ('.implode(',', $names).')';
@@ -143,16 +138,17 @@ function maze_require_ready() {
 }
 function maze_defaults($dg) {
     global $g5;
-    $rewards=array();
-    if(!empty($g5['dungeon_item_table']) && !empty($dg['dg_id'])) foreach(inventory_boundary_rows('SELECT it_id,di_count,di_per_s,di_per_e FROM `'.$g5['dungeon_item_table'].'` WHERE dg_id='.(int)$dg['dg_id']) as $reward) {
-        $outcomes=max(0,min(100,(int)$reward['di_per_e'])-max(0,(int)$reward['di_per_s'])+1);
-        if((int)$reward['di_count']>0)$rewards[]=array('it_id'=>(int)$reward['it_id'],'count'=>(int)$reward['di_count'],'percent'=>round($outcomes*100/101,2));
+    $rewards=!empty($dg['dg_id']) ? dungeon_rewards($dg['dg_id']) : array();
+    $monsters=array();$boss=false;$encounters=false;
+    if(!empty($dg['dg_id']))foreach(monster_rows('SELECT * FROM `'.monster_table('dungeon_monster_pool').'` WHERE dg_id='.(int)$dg['dg_id'].' ORDER BY monster_id') as $entry) {
+        $monsters[]=array('monster_id'=>(int)$entry['monster_id'],'weight'=>(int)$entry['weight'],'enabled'=>(bool)$entry['enabled'],'boss'=>(bool)$entry['is_boss'],'min_count'=>(int)($entry['min_count']??1),'max_count'=>(int)($entry['max_count']??1));
+        if($entry['enabled'] && $entry['weight']>0){if($entry['is_boss'])$boss=true;else $encounters=true;}
     }
-    return array('min_players' => 1, 'max_players' => max(1, (int)$dg['dg_count']),
+    return array('background'=>'','title'=>$dg['dg_title']??'미궁','description'=>$dg['dg_description']??'', 'min_players' => 1, 'max_players' => max(1, (int)$dg['dg_count']),
         'rooms_min' => 9, 'rooms_max' => 15, 'branches_min' => 1, 'branches_max' => 3,
         'weights' => array('EMPTY' => 3, 'SEARCH' => 3, 'TREASURE' => 2, 'TRAP' => 1),
-        'dead_end_percent' => 20, 'encounter_percent' => 30, 'escape_percent' => 50, 'trap_damage' => 10,
-        'boss' => false, 'points' => (int)$dg['dg_point'], 'monsters' => array(array('weight' => 1, 'boss' => false, 'enabled' => true, 'data' => $dg)),
+        'dead_end_percent' => 20, 'encounter_percent' => $encounters?30:0, 'escape_percent' => 50, 'trap_damage' => 10,
+        'boss' => $boss, 'points' => (int)$dg['dg_point'], 'monsters' => $monsters,
         'events' => array(), 'rewards' => $rewards);
 }
 function maze_weighted($rows, $field = 'weight') {
@@ -163,6 +159,25 @@ function maze_weighted($rows, $field = 'weight') {
     foreach ($rows as $row) { $roll -= max(0, (int)$row[$field]); if ($roll <= 0) return $row; }
     return null;
 }
+/** The departure pool authorizes every encounter, including event results. */
+function maze_pool_monster($id,$monsters) {
+    $id=(int)$id;if($id<1)return null;
+    foreach($monsters as $entry)if((int)($entry['monster_id']??$entry['data']['monster_id']??0)===$id && !empty($entry['enabled']) && (int)($entry['weight']??1)>0)return $entry;
+    return null;
+}
+function maze_event_monster_id($event) { return (int)($event['monster_id']??$event['monster']['monster_id']??0); }
+function maze_event_result_allowed($event,$monsters) {
+    return ($event['type']??'')!=='MONSTER' || maze_pool_monster(maze_event_monster_id($event),$monsters)!==null;
+}
+/** Preserve choice keys so already generated rooms keep their request indexes. */
+function maze_event_for_pool($event,$monsters) {
+    if(!$event || (array_key_exists('enabled',$event) && empty($event['enabled'])))return null;
+    if(!empty($event['choices'])) {
+        $event['choices']=array_filter($event['choices'],function($choice)use($monsters){return maze_event_result_allowed($choice,$monsters);});
+        if(!$event['choices'])return null;
+    } elseif(!maze_event_result_allowed($event,$monsters))return null;
+    return $event;
+}
 /** A rooted tree with exactly B branching nodes; no graph search on refresh. */
 function maze_generate($settings) {
     $count = random_int((int)$settings['rooms_min'], (int)$settings['rooms_max']);
@@ -171,6 +186,11 @@ function maze_generate($settings) {
     $branches = random_int((int)$settings['branches_min'], $branch_max);
     $rooms = array(1 => array('room_id' => 1, 'parent_id' => 0, 'direction' => 'forward', 'depth' => 0));
     $leaves = array(1); $branch_nodes = array(); $directions = array(); $next_id = 2;
+    $deepest_index = function () use (&$rooms, &$leaves) {
+        $depth = max(array_map(function ($id) use (&$rooms) { return $rooms[$id]['depth']; }, $leaves));
+        $indices = array_keys(array_filter($leaves, function ($id) use (&$rooms, $depth) { return $rooms[$id]['depth'] === $depth; }));
+        return $indices[random_int(0, count($indices) - 1)];
+    };
     $add = function ($parent, $direction) use (&$rooms, &$next_id, &$directions) {
         $id = $next_id++;
         $rooms[$id] = array('room_id' => $id, 'parent_id' => $parent, 'direction' => $direction, 'depth' => $rooms[$parent]['depth'] + 1);
@@ -178,25 +198,31 @@ function maze_generate($settings) {
         return $id;
     };
     for ($i = 0; $i < $branches; $i++) {
-        $index = random_int(0, count($leaves) - 1); $parent = $leaves[$index];
+        $index = $deepest_index(); $parent = $leaves[$index];
         array_splice($leaves, $index, 1); $branch_nodes[] = $parent;
         $leaves[] = $add($parent, 'forward'); $leaves[] = $add($parent, random_int(0,1) ? 'left' : 'right');
     }
     while (count($rooms) < $count) {
+        // Reserve a route reaching at least half the generated rooms in depth.
+        // Additional short dead ends must not consume that route's room budget.
+        $deep_index = $deepest_index();
+        $route_deep_enough = $rooms[$leaves[$deep_index]]['depth'] >= (int)ceil(($count - 1) / 2);
         $has_deep_leaf = false;
         foreach ($leaves as $leaf) if ($rooms[$leaf]['depth'] >= 2) $has_deep_leaf = true;
         $candidates = array_values(array_filter($branch_nodes, function ($id) use ($directions) { return count($directions[$id]) === 2; }));
-        if ($candidates && (!$settings['boss'] || $has_deep_leaf) && random_int(1,100) <= $settings['dead_end_percent']) {
+        if ($route_deep_enough && $candidates && (!$settings['boss'] || $has_deep_leaf) && random_int(1,100) <= $settings['dead_end_percent']) {
             $parent = $candidates[random_int(0,count($candidates)-1)];
             $remaining = array_values(array_diff(array('forward','left','right'),$directions[$parent]));
             $leaves[] = $add($parent,$remaining[0]);
         } else {
-            $index = random_int(0,count($leaves)-1); $parent = $leaves[$index];
+            $index = $deep_index; $parent = $leaves[$index];
             $leaves[$index] = $add($parent,'forward');
         }
     }
     $leaves = array(); $parents = array_column($rooms, 'parent_id');
     foreach ($rooms as $id => $room) if (!in_array($id, $parents) && (!$settings['boss'] || $room['depth'] >= 2)) $leaves[] = $id;
+    $deepest = max(array_map(function ($id) use ($rooms) { return $rooms[$id]['depth']; }, $leaves));
+    $leaves = array_values(array_filter($leaves, function ($id) use ($rooms, $deepest) { return $rooms[$id]['depth'] === $deepest; }));
     $exit = $leaves[random_int(0, count($leaves) - 1)];
     $boss = $settings['boss'] ? $rooms[$exit]['parent_id'] : 0;
     $weights = array(); foreach ($settings['weights'] as $kind => $weight) $weights[] = array('kind' => $kind, 'weight' => $weight);
@@ -208,15 +234,23 @@ function maze_generate($settings) {
             'is_exit' => (int)($id === $exit), 'is_boss' => (int)($id === $boss), 'visited' => (int)($id === 1),
             'resolved' => (int)($id === 1), 'encounter_done' => 0, 'result_text' => '');
         $events = array();
-        foreach ($settings['events'] as $event) if (!empty($event['enabled']) && $event['room_kind'] === $room['kind']) $events[] = $event;
+        foreach ($settings['events'] as $event) if (!empty($event['enabled']) && $event['room_kind'] === $room['kind']) {
+            $event=maze_event_for_pool($event,$settings['monsters']);if($event)$events[]=$event;
+        }
         $event = maze_weighted($events);
         $monster = null;
         if ($id === $boss) $monster = maze_weighted($bosses);
         elseif ($id !== 1 && $id !== $exit && random_int(1,100) <= $settings['encounter_percent']) $monster = maze_weighted($monsters);
-        $room['payload'] = array('event' => $event, 'monster' => $monster ? $monster['data'] : null);
+        $count = $monster ? maze_monster_count_range($monster) : array(1,1);
+        $room['payload'] = array('event' => $event, 'monster' => $monster ? $monster['data'] : null, 'monster_count' => $monster ? random_int($count[0],$count[1]) : 0);
     }
     unset($room);
     return array_values($rooms);
+}
+/** Read-only encounter lookup shared by gameplay and the isolated state endpoint. */
+function maze_battle_group($session,$leader) {
+    if(!array_key_exists('encounter_id',$leader))return array((int)$leader['battle_id']=>$leader);
+    return array_column(inventory_boundary_rows('SELECT * FROM `'.maze_table('battle').'` WHERE ds_id='.(int)$session['ds_id'].' AND (battle_id='.(int)$leader['battle_id'].' OR encounter_id='.(int)$leader['battle_id'].') ORDER BY battle_id'),null,'battle_id');
 }
 function maze_party($ds_id, $active_only = true) {
     return inventory_boundary_rows('SELECT * FROM `'.maze_table('member').'` WHERE ds_id='.(int)$ds_id.($active_only ? " AND state='ACTIVE'" : '').' ORDER BY dm_id');

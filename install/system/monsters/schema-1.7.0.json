@@ -1,0 +1,119 @@
+{
+  "monster_master": {
+    "columns": {
+      "monster_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "name": "varchar(255) NOT NULL DEFAULT ''",
+      "image": "text NULL",
+      "description": "text NULL",
+      "enabled": "tinyint(1) NOT NULL DEFAULT '1'",
+      "raid_id": "int(11) NULL",
+      "profile": "longtext NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "monster_id"
+        ],
+        "unique": true
+      },
+      "raid_id": {
+        "columns": [
+          "raid_id"
+        ],
+        "unique": true
+      }
+    },
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true,
+    "source": "lib/monster.lib.php"
+  },
+  "dungeon_monster_pool": {
+    "columns": {
+      "dg_id": "int(11) NOT NULL DEFAULT '0'",
+      "monster_id": "int(11) NOT NULL DEFAULT '0'",
+      "weight": "int(11) NOT NULL DEFAULT '1'",
+      "enabled": "tinyint(1) NOT NULL DEFAULT '1'",
+      "is_boss": "int(11) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "dg_id",
+          "monster_id"
+        ],
+        "unique": true
+      }
+    },
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true,
+    "source": "lib/monster.lib.php"
+  },
+  "dungeon_combat_event": {
+    "columns": {
+      "event_id": "bigint(20) NOT NULL AUTO_INCREMENT",
+      "source": "varchar(12) NOT NULL DEFAULT 'dungeon'",
+      "ds_id": "int(11) NOT NULL DEFAULT '0'",
+      "turn_no": "int(11) NOT NULL DEFAULT '0'",
+      "actor": "varchar(255) NOT NULL DEFAULT ''",
+      "target": "varchar(255) NOT NULL DEFAULT ''",
+      "action": "varchar(255) NOT NULL DEFAULT ''",
+      "amount": "int(11) NOT NULL DEFAULT '0'",
+      "result": "varchar(32) NOT NULL DEFAULT ''",
+      "created_at": "datetime NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "event_id"
+        ],
+        "unique": true
+      },
+      "session_event": {
+        "columns": [
+          "source",
+          "ds_id",
+          "event_id"
+        ],
+        "unique": false
+      }
+    },
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true,
+    "source": "lib/monster.lib.php"
+  },
+  "monster_runtime": {
+    "columns": {
+      "battle_key": "varchar(191) NOT NULL DEFAULT ''",
+      "unit_key": "varchar(191) NOT NULL DEFAULT ''",
+      "state": "longtext NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "battle_key",
+          "unit_key"
+        ],
+        "unique": true
+      }
+    },
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true,
+    "source": "lib/monster_shared.lib.php"
+  },
+  "skill": {
+    "columns": {
+      "sk_dungeon_target_mode": "varchar(12) NOT NULL DEFAULT 'SINGLE'"
+    },
+    "indexes": {},
+    "create": false,
+    "source": "extend/skill.lib.php"
+  }
+}

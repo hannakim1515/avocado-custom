@@ -49,14 +49,14 @@ function maze_move($session, $input) {
     $session['room_id'] = $next['room_id']; $session['version']++;
     $payload = maze_data($next['payload']);
     maze_log($session['ds_id'], 0, 'MOVE', '방 '.$next['room_id'].' 이동');
-    if (!$next['encounter_done'] && !empty($payload['monster'])) maze_battle_begin($session, $next, $payload['monster']);
+    if (!$next['encounter_done'] && !empty($payload['monster'])) maze_battle_begin($session, $next, $payload['monster'], (int)($payload['monster_count']??1));
     elseif ($next['is_exit']) maze_finish($session, true);
 }
 function maze_event($session, $actor, $input) {
     $room = maze_room($session);
     if ($room['resolved']) throw new RuntimeException('이미 처리한 방입니다.');
-    $payload = maze_data($room['payload']); $event = $payload['event'];
     $settings = maze_data($session['snapshot']);
+    $payload = maze_data($room['payload']); $event = maze_event_for_pool($payload['event']??null,$settings['monsters']??array());
     if (!$event) $event = array('type' => $room['kind'] === 'TRAP' ? 'TRAP' : 'NONE', 'text' => '', 'target' => 'ACTOR');
     if (!empty($event['choices'])) {
         $choice = isset($input['choice']) ? (int)$input['choice'] : -1;
@@ -83,7 +83,10 @@ function maze_event($session, $actor, $input) {
         }
     } elseif ($type === 'MONSTER') {
         if (empty($event['monster'])) throw new RuntimeException('이벤트 몬스터 설정이 없습니다.');
-        maze_battle_begin($session, $room, $event['monster']);
+        $entry=maze_pool_monster(maze_event_monster_id($event),$settings['monsters']??array());
+        if(!$entry)throw new RuntimeException('출현 목록에 없는 이벤트 몬스터입니다.');
+        $range=maze_monster_count_range($entry);
+        maze_battle_begin($session, $room, $event['monster'],random_int($range[0],$range[1]));
     } elseif (!in_array($type, array('NONE','TEXT'), true)) throw new RuntimeException('이벤트 결과 설정이 잘못되었습니다.');
     $text = isset($event['text']) ? $event['text'] : '';
     maze_update('room', array('resolved' => 1, 'result_text' => $text), 'ds_id='.(int)$session['ds_id'].' AND room_id='.(int)$room['room_id']);
@@ -107,14 +110,8 @@ function maze_action($ds_id, $operation, $input) {
             if ($operation !== 'escape_final' || $actor['hp'] <= 0) throw new RuntimeException('보스 처치 후에는 탈출만 가능합니다.');
             maze_finish($session, true); return;
         }
-        if ($session['phase'] === 'BATTLE') {
-            $battle = maze_battle_current($session);
-            if ($battle['deadline_at'] && strtotime($battle['deadline_at']) <= time()) {
-                if ($operation === 'submit') maze_check_escape_vote($session, $input);
-                maze_resolve($session, $battle, false); return;
-            }
-        }
         if ($operation === 'leave' || $operation === 'vote') {
+            if ($operation==='leave' && $session['phase']==='BATTLE' && maze_room($session)['is_boss']) throw new RuntimeException('보스 전투에서는 퇴장할 수 없습니다.');
             maze_version($session, $input);
             // Lock the whole small party in deterministic order before a cascading kick.
             inventory_boundary_lock_owners(array_column(maze_party($session['ds_id']), 'ch_id'));

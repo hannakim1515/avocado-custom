@@ -1,9 +1,5 @@
 <?php
-if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가 
-
-$mon_hp = $dg['ds_hp'];
-$mon_hp_now = ($dg['ds_hp'] - $dg['ds_hurt']) <= 0 ? 0 : $dg['ds_hp'] - $dg['ds_hurt'];
-$mon_hp_per = $mon_hp_now == 0 ? 0 : ($mon_hp_now/$mon_hp) * 100;
+if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 $close_date = date('m/d H:i', strtotime($config['cf_dungeon_reset']." +{$config['cf_dungeon_time']} Hour"));
 
@@ -47,13 +43,7 @@ $ds_mem = get_dungeon_member($dg['ds_id'], "");
 			</div>
 		</div>
 		<div class="info-dungeon">
-			<div class="bar">
-				<span style="width:<?=$mon_hp_per?>%;"></span>
-				<div class="txt">
-					<strong><?=$mon_hp_now?></strong>
-					<span><?=$mon_hp?></span>
-				</div>
-			</div>
+			<p>방 탐험 · 몬스터 전투 · 클리어</p>
 		</div>
 
 		<? if($dg['dg_status']) {

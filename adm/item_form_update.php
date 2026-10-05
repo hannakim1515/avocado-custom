@@ -5,6 +5,23 @@ include_once('./_common.php');
 if ($w == 'u') check_demo();
 auth_check($auth[$sub_menu], 'w');
 check_token();
+require_once dirname(__DIR__).'/lib/item_effect.lib.php';
+$existing_item = $w === 'u' ? sql_fetch("SELECT * FROM {$g5['item_table']} WHERE it_id=".(int)$it_id) : array();
+if ($w === 'u' && !$existing_item) alert('아이템 정보가 존재하지 않습니다.');
+// Auxiliary equipment settings must survive edits in the ordinary item form.
+foreach (array('it_2','it_3','it_4','it_5') as $extra) {
+    $$extra = isset($_POST[$extra]) ? $_POST[$extra] : sql_escape_string($existing_item[$extra] ?? '');
+}
+if ($it_type === '부활') {
+    $rate = filter_var($_POST['it_value'] ?? '', FILTER_VALIDATE_INT);
+    if ($rate === false || $rate < 1 || $rate > 100) alert('부활 HP 회복률은 1~100%로 입력해 주세요.');
+    $it_value = (string)$rate;
+} elseif ($it_type === '상태이상치료') {
+    $status_id = filter_var($_POST['recovery_status_id'] ?? '', FILTER_VALIDATE_INT);
+    $statuses = item_recovery_statuses();
+    if ($status_id === false || $status_id < 1 || !isset($statuses[$status_id])) alert('치료할 상태이상을 선택해 주세요.');
+    $it_value = (string)$status_id;
+}
 
 $item_data_path = G5_DATA_PATH."/item";
 $item_data_url = G5_DATA_URL."/item";

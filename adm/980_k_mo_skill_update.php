@@ -3,6 +3,12 @@ $sub_menu = '981410';
 include_once('./_common.php');
 
 check_token();
+require_once G5_PATH.'/lib/monster_shared.lib.php';
+if (monster_shared_ready()) {
+    $legacy_id=(int)($_REQUEST['mo_id']??0);
+    $linked=$legacy_id?sql_fetch('SELECT monster_id FROM `'.monster_table('monster_master').'` WHERE raid_id='.$legacy_id):null;
+    alert('몬스터 스킬과 행동은 공용 몬스터 관리 화면에서 설정해 주세요.', './'.($linked?'monster_form.php?monster_id='.(int)$linked['monster_id']:'monster.php'));
+}
 
 // 입력 파라미터
 $type       = ses($_REQUEST, 'type', '', 'raw');

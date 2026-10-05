@@ -1,0 +1,33 @@
+{
+  "room": {
+    "columns": {
+      "ro_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "pair_id": "varchar(255) NOT NULL default ''",
+      "ro_img": "varchar(255) NOT NULL default ''",
+      "ro_top": "int(11) NOT NULL default '0'",
+      "ro_left": "int(11) NOT NULL default '0'",
+      "ro_order": "int(11) NOT NULL default '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ro_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/room.config.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "character": {
+    "columns": {
+      "ch_room_bak": "varchar(255) NOT NULL DEFAULT ''"
+    },
+    "indexes": {},
+    "source": "extend/room.config.php",
+    "create": false
+  }
+}

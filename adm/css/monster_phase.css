@@ -1,0 +1,61 @@
+.monster-phase-card {margin:16px 0 22px;padding:14px;border:1px solid #d7dcdf;background:#fff}
+.monster-phase-card .h2_frm {margin:0 0 12px}
+.monster-phase-threshold {display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.monster-phase-threshold input {width:7em;margin-left:8px}
+.monster-phase-table select {min-width:18em;max-width:100%}
+.monster-phase-table td:last-child {white-space:nowrap}
+.monster-phase-table button {min-height:40px;margin-right:4px}
+.monster-phase-card > button {min-height:44px}
+.monster-phase-error {padding:12px;margin:12px 0;color:#9e2525;background:#fff1f1;border:1px solid #d7a0a0}
+.monster-form-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 10px;border-bottom:1px solid #d6dde4;padding-bottom:8px}
+.monster-form-tabs button{min-height:40px;padding:8px 16px;border:1px solid #c5cdd5;border-radius:4px;background:#fff;color:#34404c;cursor:pointer;font:inherit}
+.monster-form-tabs button[aria-selected="true"]{background:#315d72;border-color:#315d72;color:#fff;font-weight:700}
+.monster-form-tabs button:focus-visible{outline:3px solid #e69840;outline-offset:2px}
+#fmonsterform [hidden]{display:none!important}
+#fmonsterform .frm_info{color:#4f5d68}
+#fmonsterform .btn_02{color:#205867;border-color:#6aaeb8}
+@media(max-width:700px) {.monster-phase-card {padding:10px}.monster-phase-table td:last-child {white-space:normal}.monster-phase-table button {margin:2px}}
+
+#fmonsterform{padding-bottom:100px;color:#26313b;font-size:13px}
+#fmonsterform .frm_info{font-size:12px;line-height:1.8;margin-top:8px;overflow-wrap:anywhere}
+#fmonsterform .monster-hp-range{max-width:22ch;white-space:normal}
+#fmonsterform td{color:#26313b}
+#fmonsterform input:not([type=checkbox]),#fmonsterform select{min-height:36px}
+#fmonsterform textarea{height:96px;min-height:78px;line-height:1.8;background-image:none;padding:8px 10px}
+#fmonsterform .editor-fields>table{min-width:0}
+#fmonsterform .editor-fields th{vertical-align:top;padding-top:16px;font-weight:500}
+#fmonsterform .editor-fields td{padding:12px 10px}
+#fmonsterform .editor-fields td>label{display:inline-flex;gap:8px;align-items:center;min-height:36px;line-height:1.6;cursor:pointer}
+#fmonsterform a:not(.btn):not(.btn_confirm a){text-decoration:underline;text-underline-offset:3px}
+#fmonsterform :is(input,textarea,select,button,a):focus-visible{outline:3px solid #c37c25;outline-offset:2px}
+#fmonsterform input,#fmonsterform textarea{caret-color:#315d72}
+#fmonsterform ::selection{background:#d7e8ec;color:#24324a}
+#fmonsterform .btn_confirm{position:fixed;bottom:0;left:var(--menu-width,230px);right:0;z-index:5;margin:0;display:flex;justify-content:flex-end;gap:8px;padding:14px 40px 14px 10px;background:#fff;border-top:1px solid #d6dde4}
+#fmonsterform .btn_confirm button,#fmonsterform .btn_confirm a{height:44px;box-sizing:border-box;min-height:44px;line-height:40px}
+#fmonsterform .btn_confirm .btn_submit{background:#315d72!important}
+#fmonsterform .btn_confirm .btn_submit:hover{background:#244859!important}
+#fmonsterform .btn_confirm a{color:#34404c;border:1px solid #c5cdd5;line-height:42px}
+
+@media(max-width:700px){
+ #fmonsterform{font-size:14px;padding-bottom:120px}
+ #fmonsterform .monster-form-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ #fmonsterform .monster-form-tabs button{min-height:44px;padding:8px;font-size:13px}
+ #fmonsterform :is(input:not([type=checkbox]),select,textarea){font-size:16px;min-height:44px}
+ #fmonsterform .editor-fields>table,#fmonsterform .editor-fields>table>tbody,#fmonsterform .editor-fields>table>tbody>tr{display:block;width:100%;min-width:0}
+ #fmonsterform .editor-fields>table>colgroup{display:none}
+ #fmonsterform .editor-fields>table>tbody>tr{padding:14px 0;border-bottom:1px solid #e4e9ed}
+ #fmonsterform .editor-fields>table>tbody>tr>th,#fmonsterform .editor-fields>table>tbody>tr>td{display:block;width:100%;padding:0;border:0;height:auto;text-align:left}
+ #fmonsterform .editor-fields>table>tbody>tr>th{margin-bottom:8px;font-weight:600}
+ #fmonsterform .editor-fields td>label{min-height:44px}
+ #fmonsterform .editor-fields input[type=text],#fmonsterform .editor-fields input[type=file]{width:100%}
+ #fmonsterform .monster-phase-table>table,#fmonsterform .monster-phase-table tbody,#fmonsterform .maze-editor-list>table,#fmonsterform .maze-editor-list tbody{display:block;min-width:0;width:100%}
+ #fmonsterform .monster-phase-table thead,#fmonsterform .maze-editor-list thead,#fmonsterform .maze-editor-list colgroup{display:none}
+ #fmonsterform .monster-phase-table tbody>tr,#fmonsterform .maze-editor-list tbody>tr{display:grid;grid-template-columns:1fr;gap:10px;padding:14px 0;border-bottom:1px solid #d6dde4}
+ #fmonsterform .monster-phase-table tbody>tr>td,#fmonsterform .maze-editor-list tbody>tr>td{display:block;border:0;padding:0;height:auto;text-align:left;min-width:0}
+ #fmonsterform td[data-label]:before{content:attr(data-label);display:block;font-size:12px;font-weight:600;color:#4f5d68;margin-bottom:5px}
+ #fmonsterform .monster-phase-table select{min-width:0;width:100%}
+ #fmonsterform .monster-phase-threshold label{display:block;line-height:1.8}
+ #fmonsterform .monster-phase-threshold input{width:6em;margin-left:0}
+ #fmonsterform .monster-phase-card>button,#fmonsterform .monster-phase-table button,#fmonsterform .maze-editor-list button{min-height:44px}
+ #fmonsterform .btn_confirm{left:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
+}

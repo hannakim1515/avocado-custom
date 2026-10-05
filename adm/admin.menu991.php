@@ -7,6 +7,5 @@ $menu['menu991'] = array(
     array('710300', '캐릭터 위치 관리', G5_ADMIN_URL.'/map_member_list.php', ''),
     array('710400', 'MAP 행동/아르바이트', G5_ADMIN_URL.'/map_action_list.php', ''),
     array('710500', 'MAP 작업 현황', G5_ADMIN_URL.'/map_work_list.php', ''),
-    array('710600', '지역 이벤트·NPC 시나리오', G5_ADMIN_URL.'/map_list.php', '')
 );
 ?>

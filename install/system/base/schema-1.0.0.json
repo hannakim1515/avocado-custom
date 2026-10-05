@@ -1,0 +1,582 @@
+{
+  "exp": {
+    "columns": {
+      "ex_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ch_id": "varchar(20) NOT NULL DEFAULT ''",
+      "ch_name": "varchar(255) NOT NULL DEFAULT ''",
+      "ex_datetime": "datetime NOT NULL DEFAULT '0000-00-00 00:00:00'",
+      "ex_content": "varchar(255) NOT NULL DEFAULT ''",
+      "ex_point": "int(11) NOT NULL DEFAULT '0'",
+      "ex_ch_exp": "int(11) NOT NULL DEFAULT '0'",
+      "ex_rel_action": "varchar(255) NOT NULL DEFAULT ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ex_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "install/gnuboard5.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "character": {
+    "columns": {
+      "ch_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ch_name": "varchar(255) NOT NULL DEFAULT ''",
+      "ch_thumb": "varchar(255) NOT NULL DEFAULT ''",
+      "ch_head": "varchar(255) NOT NULL DEFAULT ''",
+      "ch_body": "varchar(255) NOT NULL DEFAULT ''",
+      "ch_title": "varchar(255) NOT NULL DEFAULT ''",
+      "mb_id": "varchar(255) NOT NULL DEFAULT ''",
+      "ch_side": "varchar(255) NOT NULL DEFAULT '0'",
+      "ch_class": "varchar(255) NOT NULL DEFAULT '0'",
+      "ch_rank": "char(4) NOT NULL DEFAULT ''",
+      "ch_exp": "int(11) NOT NULL DEFAULT '0'",
+      "ch_point": "int(11) NOT NULL DEFAULT '0'",
+      "ch_type": "varchar(255) NOT NULL DEFAULT ''",
+      "ch_search_date": "varchar(255) NOT NULL DEFAULT ''",
+      "ch_search": "int(11) NOT NULL DEFAULT '0'",
+      "ch_state": "varchar(255) NOT NULL DEFAULT ''",
+      "ma_id": "int(11) NOT NULL DEFAULT '0'",
+      "ch_order": "int(11) NOT NULL DEFAULT '0'",
+      "ch_skill_slot": "int(11) NOT NULL default '0'",
+      "ch_is_hide": "int(11) NOT NULL default '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ch_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "install/gnuboard5.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "character_class": {
+    "columns": {
+      "cl_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "cl_name": "varchar(255) NOT NULL DEFAULT ''",
+      "cl_img": "varchar(255) NOT NULL DEFAULT ''",
+      "cl_auth": "int(11) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "cl_id"
+        ],
+        "unique": true
+      },
+      "cl_id": {
+        "columns": [
+          "cl_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/gnuboard5.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "character_side": {
+    "columns": {
+      "si_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "si_name": "varchar(255) NOT NULL DEFAULT ''",
+      "si_img": "varchar(255) NOT NULL DEFAULT ''",
+      "si_auth": "int(11) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "si_id"
+        ],
+        "unique": true
+      },
+      "si_id": {
+        "columns": [
+          "si_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/gnuboard5.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "inventory": {
+    "columns": {
+      "in_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "it_id": "varchar(255) NOT NULL DEFAULT ''",
+      "it_name": "varchar(255) NOT NULL DEFAULT ''",
+      "it_rel": "varchar(255) NOT NULL DEFAULT ''",
+      "ch_id": "varchar(255) NOT NULL DEFAULT ''",
+      "ch_name": "varchar(255) NOT NULL DEFAULT ''",
+      "se_ch_id": "varchar(255) NOT NULL DEFAULT ''",
+      "se_ch_name": "varchar(255) NOT NULL DEFAULT ''",
+      "re_ch_id": "varchar(255) NOT NULL DEFAULT ''",
+      "re_ch_name": "varchar(255) NOT NULL DEFAULT ''",
+      "in_sdatetime": "datetime NOT NULL DEFAULT '0000-00-00'",
+      "in_edatetime": "datetime NOT NULL DEFAULT '0000-00-00'",
+      "in_memo": "varchar(255) NOT NULL DEFAULT ''",
+      "in_use": "varchar(255) NOT NULL DEFAULT ''",
+      "in_1": "varchar(255) NOT NULL DEFAULT ''",
+      "in_2": "varchar(255) NOT NULL DEFAULT ''",
+      "in_3": "varchar(255) NOT NULL DEFAULT ''",
+      "in_4": "varchar(255) NOT NULL DEFAULT ''",
+      "in_5": "varchar(255) NOT NULL DEFAULT ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "in_id"
+        ],
+        "unique": true
+      },
+      "in_id": {
+        "columns": [
+          "in_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/gnuboard5.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "item": {
+    "columns": {
+      "it_id": "int(11) NOT NULL DEFAULT '0'",
+      "it_name": "varchar(255) NOT NULL DEFAULT ''",
+      "it_category": "varchar(255) NOT NULL DEFAULT ''",
+      "it_content": "varchar(255) NOT NULL DEFAULT ''",
+      "it_content2": "text NOT NULL",
+      "it_use_class": "varchar(255) NOT NULL DEFAULT ''",
+      "it_use_side": "varchar(255) NOT NULL DEFAULT ''",
+      "it_use_able": "varchar(255) NOT NULL DEFAULT ''",
+      "it_use_mmb_able": "int(4) NOT NULL DEFAULT '0'",
+      "it_img": "varchar(255) NOT NULL DEFAULT ''",
+      "it_has": "int(11) NOT NULL DEFAULT '0'",
+      "it_sell": "int(11) NOT NULL DEFAULT '0'",
+      "it_use_sell": "int(11) NOT NULL DEFAULT '0'",
+      "it_use_ever": "int(11) NOT NULL DEFAULT '0'",
+      "it_use": "char(4) NOT NULL DEFAULT ''",
+      "it_type": "varchar(255) NOT NULL DEFAULT ''",
+      "it_value": "varchar(255) NOT NULL DEFAULT ''",
+      "it_use_recepi": "int(11) NOT NULL DEFAULT '0'",
+      "it_seeker": "int(4) NOT NULL DEFAULT '0'",
+      "it_seeker_per_s": "int(11) NOT NULL DEFAULT '0'",
+      "it_seeker_per_e": "int(11) NOT NULL DEFAULT '0'",
+      "st_id": "int(11) NOT NULL DEFAULT '0'",
+      "it_1": "varchar(255) NOT NULL DEFAULT ''",
+      "it_2": "varchar(255) NOT NULL DEFAULT ''",
+      "it_3": "varchar(255) NOT NULL DEFAULT ''",
+      "it_4": "varchar(255) NOT NULL DEFAULT ''",
+      "it_5": "varchar(255) NOT NULL DEFAULT ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "it_id"
+        ],
+        "unique": true
+      },
+      "it_id": {
+        "columns": [
+          "it_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/gnuboard5.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "character_title": {
+    "columns": {
+      "ti_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ti_title": "varchar(255) NOT NULL DEFAULT ''",
+      "ti_img": "varchar(255) NOT NULL DEFAULT ''",
+      "ti_use": "char(4) NOT NULL DEFAULT ''",
+      "ti_value": "int(11) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ti_id"
+        ],
+        "unique": true
+      },
+      "ti_id": {
+        "columns": [
+          "ti_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/gnuboard5.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "has_title": {
+    "columns": {
+      "hi_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ti_id": "int(11) NOT NULL DEFAULT '0'",
+      "ch_id": "int(11) NOT NULL DEFAULT '0'",
+      "ch_name": "varchar(255) NOT NULL DEFAULT ''",
+      "hi_use": "int(11) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "hi_id"
+        ],
+        "unique": true
+      },
+      "hi_id": {
+        "columns": [
+          "hi_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/gnuboard5.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "level_setting": {
+    "columns": {
+      "lv_id": "INT(11) NOT NULL AUTO_INCREMENT",
+      "lv_name": "VARCHAR(255) NOT NULL DEFAULT ''",
+      "lv_exp": "INT(11) NOT NULL DEFAULT '0'",
+      "lv_add_state": "INT(11) NOT NULL DEFAULT '0'",
+      "lv_1": "VARCHAR(255) NOT NULL DEFAULT ''",
+      "lv_2": "VARCHAR(255) NOT NULL DEFAULT ''",
+      "lv_3": "VARCHAR(255) NOT NULL DEFAULT ''",
+      "lv_4": "VARCHAR(255) NOT NULL DEFAULT ''",
+      "lv_5": "VARCHAR(255) NOT NULL DEFAULT ''",
+      "lv_skill_limit": "text NOT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "lv_id"
+        ],
+        "unique": true
+      },
+      "lv_id": {
+        "columns": [
+          "lv_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/gnuboard5.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false,
+    "safe_empty_add": [
+      "lv_skill_limit"
+    ]
+  },
+  "status": {
+    "columns": {
+      "st_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "st_name": "varchar(255) NOT NULL DEFAULT ''",
+      "st_max": "int(11) NOT NULL DEFAULT '0'",
+      "st_min": "int(11) NOT NULL DEFAULT '0'",
+      "st_use_max": "int(11) NOT NULL DEFAULT '0'",
+      "st_order": "int(11) NOT NULL DEFAULT '0'",
+      "st_help": "varchar(255) NOT NULL DEFAULT ''",
+      "st_use_hp": "int(4) NOT NULL DEFAULT '0'",
+      "st_type10": "int(4) NOT NULL DEFAULT '0'",
+      "st_type9": "int(4) NOT NULL DEFAULT '0'",
+      "st_type8": "int(4) NOT NULL DEFAULT '0'",
+      "st_type7": "int(4) NOT NULL DEFAULT '0'",
+      "st_type6": "int(4) NOT NULL DEFAULT '0'",
+      "st_type5": "int(4) NOT NULL DEFAULT '0'",
+      "st_type4": "int(4) NOT NULL DEFAULT '0'",
+      "st_type3": "int(4) NOT NULL DEFAULT '0'",
+      "st_type2": "int(4) NOT NULL DEFAULT '0'",
+      "st_type1": "int(4) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "st_id"
+        ],
+        "unique": true
+      },
+      "lv_id": {
+        "columns": [
+          "st_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/gnuboard5.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "status_character": {
+    "columns": {
+      "sc_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "st_id": "int(11) NOT NULL DEFAULT '0'",
+      "ch_id": "int(11) NOT NULL DEFAULT '0'",
+      "sc_max": "int(11) NOT NULL DEFAULT '0'",
+      "sc_value": "int(11) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "sc_id"
+        ],
+        "unique": true
+      },
+      "sc_id": {
+        "columns": [
+          "sc_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/gnuboard5.sql",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "status_extra": {
+    "columns": {
+      "ex_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ex_name": "varchar(255) NOT NULL default ''",
+      "ex_main_min": "int(11) NOT NULL default '0'",
+      "ex_main_max": "int(11) NOT NULL default '0'",
+      "ex_is_main_status": "int(11) NOT NULL default '0'",
+      "ex_main_status_type": "varchar(255) NOT NULL default ''",
+      "ex_main_status_per": "varchar(255) NOT NULL default ''",
+      "ex_cri": "int(11) NOT NULL default '0'",
+      "ex_is_cri_status": "int(11) NOT NULL default '0'",
+      "ex_cri_status_type": "varchar(255) NOT NULL default ''",
+      "ex_cri_status_per": "varchar(255) NOT NULL default ''",
+      "ex_cri_add_per": "varchar(255) NOT NULL default ''",
+      "ex_is_cri_add_status": "int(11) NOT NULL default '0'",
+      "ex_cri_add_status_type": "varchar(255) NOT NULL default ''",
+      "ex_cri_add_status_per": "varchar(255) NOT NULL default ''",
+      "ex_all_per": "varchar(255) NOT NULL default ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ex_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/status_extra.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "config": {
+    "columns": {
+      "cf_status_select_type": "text NOT NULL",
+      "cf_use_status_battle": "int(11) NOT NULL default '0'",
+      "cf_skill_count": "int(11) NOT NULL default '0'",
+      "cf_skill_count_max": "int(11) NOT NULL default '0'"
+    },
+    "indexes": {},
+    "source": "extend/status_extra.lib.php",
+    "create": false,
+    "safe_empty_add": [
+      "cf_status_select_type"
+    ]
+  },
+  "battle_config": {
+    "columns": {
+      "bc_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "bc_proc": "varchar(255) NOT NULL default ''",
+      "bc_before": "varchar(255) NOT NULL default ''",
+      "bc_after": "varchar(255) NOT NULL default ''",
+      "bc_damage_proc": "varchar(255) NOT NULL default ''",
+      "bc_damage_type": "varchar(255) NOT NULL default ''",
+      "bc_damage_min_point": "int(11) NOT NULL default '0'",
+      "bc_damage_max_point": "int(11) NOT NULL default '0'",
+      "bc_damage_before": "varchar(255) NOT NULL default ''",
+      "bc_damage_after": "varchar(255) NOT NULL default ''",
+      "bc_reward_proc": "varchar(255) NOT NULL default ''",
+      "bc_reward_win_point": "int(11) NOT NULL default '0'",
+      "bc_reward_win_exp": "int(11) NOT NULL default '0'",
+      "bc_reward_win_item": "int(11) NOT NULL default '0'",
+      "bc_reward_lose_point": "int(11) NOT NULL default '0'",
+      "bc_reward_lose_exp": "int(11) NOT NULL default '0'",
+      "bc_reward_lose_item": "int(11) NOT NULL default '0'",
+      "bc_reward_both_point": "int(11) NOT NULL default '0'",
+      "bc_reward_both_exp": "int(11) NOT NULL default '0'",
+      "bc_reward_both_item": "int(11) NOT NULL default '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "bc_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/status_battle.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "battle_log": {
+    "columns": {
+      "bl_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "ch_id": "int(11) NOT NULL default '0'",
+      "ch_name": "varchar(255) NOT NULL default ''",
+      "re_ch_id": "int(11) NOT NULL default '0'",
+      "re_ch_name": "varchar(255) NOT NULL default ''",
+      "ch_point": "int(11) NOT NULL default '0'",
+      "re_ch_point": "int(11) NOT NULL default '0'",
+      "ch_damage": "int(11) NOT NULL default '0'",
+      "re_ch_damage": "int(11) NOT NULL default '0'",
+      "bl_win": "int(11) NOT NULL default '0'",
+      "bl_lose": "int(11) NOT NULL default '0'",
+      "bl_both": "int(11) NOT NULL default '0'",
+      "bl_log": "text NOT NULL",
+      "bl_datetime": "varchar(255) NOT NULL default ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "bl_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/status_battle.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "skill": {
+    "columns": {
+      "sk_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "sk_type": "varchar(255) NOT NULL default ''",
+      "sk_cate": "varchar(255) NOT NULL default ''",
+      "sk_name": "varchar(255) NOT NULL default ''",
+      "sk_img": "varchar(255) NOT NULL default ''",
+      "sk_status_code": "varchar(255) NOT NULL default ''",
+      "sk_limit": "int(11) NOT NULL default '0'",
+      "sk_keep_limit": "int(11) NOT NULL default '0'",
+      "sk_function": "varchar(255) NOT NULL default ''",
+      "sk_value_type": "varchar(255) NOT NULL default ''",
+      "sk_target": "varchar(255) NOT NULL default ''",
+      "sk_descript": "text NOT NULL",
+      "sk_mod_st_id": "varchar(255) NOT NULL default ''",
+      "sk_mod_code": "varchar(255) NOT NULL default ''",
+      "sk_mod_enermy": "varchar(255) NOT NULL default ''",
+      "sk_mod_type": "varchar(255) NOT NULL default ''",
+      "sk_effect_type": "varchar(12) NOT NULL default 'flat'",
+      "sk_def_type": "varchar(255) NOT NULL default ''",
+      "sk_def_code": "varchar(255) NOT NULL default ''",
+      "sk_def_enermy": "varchar(255) NOT NULL default ''",
+      "sk_use_single": "int(11) NOT NULL default '0'",
+      "sk_use_st_id": "int(11) NOT NULL default '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "sk_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/skill.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "skill_has": {
+    "columns": {
+      "sh_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "sk_id": "int(11) NOT NULL default '0'",
+      "ch_id": "int(11) NOT NULL default '0'",
+      "sh_level": "int(11) NOT NULL default '0'",
+      "sh_limit": "int(11) NOT NULL default '0'",
+      "sh_name": "varchar(255) NOT NULL default ''",
+      "sh_descript": "text NOT NULL",
+      "sh_use": "int(11) NOT NULL default '0'",
+      "sh_datetime": "varchar(255) NOT NULL default ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "sh_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/skill.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "skill_level": {
+    "columns": {
+      "sl_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "sk_id": "int(11) NOT NULL default '0'",
+      "sl_level": "int(11) NOT NULL default '0'",
+      "sl_name": "varchar(255) NOT NULL default ''",
+      "sl_set_value": "varchar(255) NOT NULL default ''",
+      "sl_use_value": "varchar(255) NOT NULL default ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "sl_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "extend/skill.lib.php",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false
+  },
+  "member": {
+    "columns": {
+      "ch_id": "int(11) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {},
+    "source": "install/gnuboard5.sql",
+    "create": false
+  }
+}

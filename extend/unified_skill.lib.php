@@ -97,6 +97,7 @@ function unified_skill_raid_target($skill)
     if ($target === '자신') return array('self', 'single');
     if ($target === '아군전체' || $target === '타인전체') return array('ally', 'all');
     if ($target === '아군' || $target === '타인') return array('ally', 'single');
+    if (strtoupper($skill['sk_dungeon_target_mode'] ?? 'SINGLE') === 'ALL') return array('enemy', 'all');
     return array('enemy', 'single');
 }
 

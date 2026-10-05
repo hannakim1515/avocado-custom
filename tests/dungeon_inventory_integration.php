@@ -2,9 +2,9 @@
 /** CLI only. Requires a disposable server whose datadir contains codex-dungeon-. */
 if (PHP_SAPI !== 'cli') exit(1);
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-$db = new mysqli('127.0.0.1', 'root', '', '', 33379);
+$db = new mysqli('127.0.0.1', 'root', '', '', (int)(getenv('CODEX_DUNGEON_TEST_PORT')?:33379));
 $data_dir = $db->query('SELECT @@datadir AS d')->fetch_assoc()['d'];
-if (strpos($data_dir, 'codex-dungeon-') === false) throw new RuntimeException('Refusing a non-disposable database server.');
+if (strpos($data_dir, 'codex-dungeon-') === false && strpos($data_dir,'codex-system-installer-')===false) throw new RuntimeException('Refusing a non-disposable database server.');
 $worker = isset($argv[1]) && in_array($argv[1],array('worker','readiness'),true);
 $database = $worker ? $argv[2] : 'codex_maze_test_'.bin2hex(random_bytes(5));
 if (!preg_match('/^codex_maze_test_[a-f0-9]+$/D', $database)) throw new RuntimeException('Invalid test database');
@@ -12,6 +12,7 @@ if (!$worker) $db->query('CREATE DATABASE `'.$database.'` CHARACTER SET utf8mb4'
 $db->select_db($database);
 $db->set_charset('utf8mb4');
 define('_GNUBOARD_', true);
+define('G5_PATH',dirname(__DIR__));
 define('G5_TABLE_PREFIX', 'avo_');
 $g5 = array('inventory_table' => 'avo_inventory', 'item_table' => 'avo_item', 'k_ch_equip_table' => 'avo_equip');
 $member = array('mb_id' => 'tester');
@@ -24,13 +25,18 @@ function sql_insert_id() { global $db; return $db->insert_id; }
 function get_character($id) { return array('ch_id' => $id, 'mb_id' => $id === 1 ? 'tester' : 'other', 'ch_name' => 'Test', 'ch_state' => '승인'); }
 function get_item($id) { return sql_fetch('SELECT * FROM avo_item WHERE it_id='.(int)$id); }
 require dirname(__DIR__).'/extend/inventory_boundary.lib.php';
+require dirname(__DIR__).'/lib/monster.lib.php';
 require dirname(__DIR__).'/extend/dungeon_maze.lib.php';
 require dirname(__DIR__).'/extend/dungeon_maze_inventory.lib.php';
 require dirname(__DIR__).'/extend/dungeon_maze_session.lib.php';
 require dirname(__DIR__).'/extend/dungeon_maze_combat.lib.php';
 require dirname(__DIR__).'/extend/dungeon_maze_actions.lib.php';
 require dirname(__DIR__).'/extend/dungeon_formula.lib.php';
-function get_dungeon_state($id) { global $test_dungeon; return array_merge($test_dungeon,array('ds_id'=>$id)); }
+function get_dungeon_state($id) {
+    global $test_dungeon;
+    if(!sql_fetch('SELECT ds_id FROM avo_dungeon_state WHERE ds_id='.(int)$id))sql_query('INSERT INTO avo_dungeon_state (ds_id,dg_id,created_at) VALUES ('.(int)$id.','.(int)$test_dungeon['dg_id'].',NOW())');
+    return array_merge($test_dungeon,array('ds_id'=>$id));
+}
 function is_has_dungeon($ch_id,$except=0) { return false; }
 function unified_stat_value($ch_id,$st_id) { return 100; }
 function get_skill_set_list($ch_id) { return array(); }
@@ -83,10 +89,18 @@ function act_as($id) {global $character,$member;$character=get_character($id);$m
 
 try {
     sql_query("CREATE TABLE avo_inventory (in_id INT AUTO_INCREMENT PRIMARY KEY,it_id INT NOT NULL,ch_id VARCHAR(20) NOT NULL,it_name VARCHAR(255) NOT NULL,ch_name VARCHAR(255) NOT NULL,in_use VARCHAR(20) NOT NULL DEFAULT '',in_memo TEXT,custom_state VARBINARY(30),KEY owner_rows(ch_id,in_id)) ENGINE=InnoDB");
-    sql_query("CREATE TABLE avo_item (it_id INT PRIMARY KEY,it_name VARCHAR(100),it_type VARCHAR(30),it_use_battle_able INT,it_use_ever INT) ENGINE=MyISAM");
+    sql_query("CREATE TABLE avo_item (it_id INT PRIMARY KEY,it_name VARCHAR(100),it_type VARCHAR(30),it_value VARCHAR(100) NOT NULL DEFAULT '',it_use_battle_able INT,it_use_ever INT) ENGINE=MyISAM");
     sql_query("CREATE TABLE avo_equip (in_id INT PRIMARY KEY,eq_use VARCHAR(20)) ENGINE=MyISAM");
-    sql_query("INSERT INTO avo_item VALUES (1,'Potion','스탯회복',1,0),(2,'Material','material',0,0),(3,'Gear','gear',1,0)");
-    migration('002_inventory_boundary.manual.sql'); migration('003_labyrinth.manual.sql');
+    sql_query("INSERT INTO avo_item (it_id,it_name,it_type,it_use_battle_able,it_use_ever) VALUES (1,'Potion','스탯회복',1,0),(2,'Material','material',0,0),(3,'Gear','gear',1,0)");
+    migration('002_inventory_boundary.manual.sql');
+    $g5['connect_db']=$db;
+    require G5_PATH.'/lib/system_installer.lib.php';
+    $contract=system_install_contract();
+    foreach($contract['labyrinth'] as $suffix=>$spec)if(!empty($spec['create']))sql_query(system_install_create($suffix,$spec));
+    sql_query("INSERT INTO avo_dungeon_maze_meta (singleton,schema_version) VALUES (1,1)");
+    foreach(array('dungeon_state','dungeon_item') as $suffix)sql_query(system_install_create($suffix,$contract['dungeon'][$suffix]));
+    foreach(array('monster_master','dungeon_monster_pool','monster_runtime','dungeon_combat_event') as $suffix)sql_query(system_install_create($suffix,$contract['monsters'][$suffix]));
+    $g5['dungeon_state_table']='avo_dungeon_state';$g5['dungeon_item_table']='avo_dungeon_item';
     check(maze_readiness()['ready'], 'complete migration is ready');
     add_inventory(10); add_inventory(11, 2); add_inventory(12, 3); add_inventory(13, 1, 2);
     sql_query("INSERT INTO avo_equip VALUES (12,'weapon')");
@@ -127,21 +141,20 @@ try {
     $child = child_claim(array(20));
     sql_query('DELETE FROM avo_inventory WHERE in_id=20'); sql_query('COMMIT');
     check(child_result($child) === 'REJECTED', 'same item concurrent consumer loses after row lock');
-    $g5['status_config_table']='avo_status_config'; $g5['status_extra_table']='avo_status_extra'; $g5['dungeon_member_table']='avo_dungeon_member';
+    $g5['status_config_table']='avo_status_config'; $g5['status_extra_table']='avo_status_extra';
     sql_query('CREATE TABLE avo_status_config (st_id INT PRIMARY KEY,st_use_hp INT,st_type1 INT) ENGINE=MyISAM');
     sql_query('INSERT INTO avo_status_config VALUES (1,1,1)');
-    sql_query("CREATE TABLE avo_dungeon_member (dm_id INT PRIMARY KEY,ch_id INT,dm_result TEXT,dm_datetime VARCHAR(30)) ENGINE=MyISAM");
     $formula_fields=array('ex_main_min','ex_main_max','ex_is_main_status','ex_main_status_type','ex_main_status_per','ex_cri','ex_is_cri_status','ex_cri_status_type','ex_cri_status_per','ex_cri_add_per','ex_is_cri_add_status','ex_cri_add_status_type','ex_cri_add_status_per','ex_all_per');
     sql_query('CREATE TABLE avo_status_extra (ex_name VARCHAR(100) PRIMARY KEY,'.implode(',',array_map(function($field){return $field.' INT DEFAULT 0';},$formula_fields)).') ENGINE=MyISAM');
     foreach(array('atk'=>5,'heal'=>3,'guard'=>20,'방어력'=>1) as $code=>$value) sql_query('INSERT INTO avo_status_extra (ex_name,ex_main_min,ex_main_max) VALUES ('.inventory_boundary_quote($code).','.$value.','.$value.')');
-    $test_dungeon=array('dg_id'=>2,'ds_state'=>'S','ds_ma_id'=>0,'dg_use'=>1,'dg_count'=>1,'dg_point'=>0,'dg_status'=>0,'dg_mon_name'=>'Fixture monster','dg_mon_hp'=>10,'dg_defence'=>0);
+    $test_dungeon=array('dg_id'=>2,'dg_title'=>'탐험 검증','ds_state'=>'S','ds_ma_id'=>0,'dg_use'=>1,'dg_count'=>1,'dg_point'=>0,'dg_status'=>0,'dg_mon_name'=>'Fixture monster','dg_mon_hp'=>10,'dg_defence'=>0);
     foreach(array('d','w','s1','s2') as $pattern) foreach(array('turn','count','min','max','st_id','st_value') as $suffix) $test_dungeon['dg_'.$pattern.'_attack_'.$suffix]=0;
     $config=array('cf_dungeon_open'=>1,'cf_dungeon_map'=>0,'cf_dungeon_reset'=>date('Y-m-d H:i:s'),'cf_dungeon_time'=>24,'cf_dungeon_enter'=>100);
     $settings=maze_defaults($test_dungeon);
     $settings['rooms_min']=3;$settings['rooms_max']=3;$settings['branches_min']=0;$settings['branches_max']=0;$settings['encounter_percent']=0;
     $settings['weights']=array('EMPTY'=>0,'SEARCH'=>1,'TREASURE'=>0,'TRAP'=>0);
     $settings['events']=array(array('enabled'=>true,'room_kind'=>'SEARCH','weight'=>1,'type'=>'ITEM','it_id'=>1,'count'=>1,'text'=>'Found potion'));
-    maze_insert('config',array('dg_id'=>2,'settings'=>maze_json($settings)));
+    $test_dungeon['dg_settings']=maze_json($settings);
     maze_join(2); $waiting=maze_session(2);
     check($waiting['phase']==='WAITING','join creates WAITING without maze');
     check(!(int)sql_fetch('SELECT COUNT(*) AS n FROM avo_dungeon_maze_room WHERE ds_id=2')['n'],'WAITING has no generated rooms');
@@ -160,6 +173,7 @@ try {
     for($turn=1;$turn<=2;$turn++) {
         $battle_session=maze_session(2);$battle=maze_battle_current($battle_session);
         maze_action(2,'submit',array('battle_id'=>$battle['battle_id'],'turn_no'=>$battle['turn_no'],'action'=>'ATTACK','escape_vote'=>0));
+        maze_action(2,'resolve',array('battle_id'=>$battle['battle_id'],'turn_no'=>$battle['turn_no']));
     }
     $won=maze_session(2);check($won['phase']==='EXPLORE','two synchronized turns defeat monster and return to exploration');
     maze_update('meta',array('action_timeout'=>30),'singleton=1');
@@ -190,11 +204,13 @@ try {
     maze_transaction(2,function($session) use($test_dungeon){maze_battle_begin($session,maze_room($session),$test_dungeon);});
     $battle=maze_battle_current(maze_session(2));
     maze_action(2,'submit',array('battle_id'=>$battle['battle_id'],'turn_no'=>1,'action'=>'ATTACK','escape_vote'=>1));
+    maze_action(2,'resolve',array('battle_id'=>$battle['battle_id'],'turn_no'=>1));
     $failed_escape=maze_battle_current(maze_session(2));
     check((int)$failed_escape['turn_no']===2 && (int)$failed_escape['hp']===10 && $failed_escape['state']==='ACTIVE','ordinary failed escape keeps battle active and skips submitted attack');
     $escape_settings['escape_percent']=100;
     maze_update('session',array('snapshot'=>maze_json($escape_settings)),'ds_id=2');
     maze_action(2,'submit',array('battle_id'=>$battle['battle_id'],'turn_no'=>2,'action'=>'SKIP','escape_vote'=>1));
+    maze_action(2,'resolve',array('battle_id'=>$battle['battle_id'],'turn_no'=>2));
     $boss=$test_dungeon;$boss['dg_mon_hp']=5;
     maze_update('room',array('is_boss'=>1),'ds_id=2 AND room_id=2');
     sql_query('CREATE TABLE avo_test_point (id INT AUTO_INCREMENT PRIMARY KEY,relation_key VARCHAR(255),amount INT) ENGINE=MyISAM');
@@ -223,6 +239,7 @@ try {
     check($boss_active['state']==='ACTIVE' && (int)$boss_active['hp']===5 && (int)$boss_active['turn_no']===2,'boss resolve ignores stored escape vote even at 100 percent');
     maze_update('member',array('hp'=>1,'effects'=>maze_json(array('poison'=>array('remaining'=>3,'components'=>array(array('type'=>'DOT_HP','value'=>10)))))),'dm_id='.(int)$person['dm_id']);
     maze_action(2,'submit',array('battle_id'=>$battle['battle_id'],'turn_no'=>2,'action'=>'ATTACK','escape_vote'=>0));
+    maze_action(2,'resolve',array('battle_id'=>$battle['battle_id'],'turn_no'=>2));
     check(maze_session(2)['phase']==='BOSS_RESULT' && (int)maze_party(2)[0]['hp']===1,'boss death freezes HP before end-of-turn DOT');
     $defeated=maze_one('SELECT state,hp FROM avo_dungeon_maze_battle WHERE battle_id='.(int)$battle['battle_id']);
     check($defeated['state']==='WON' && (int)$defeated['hp']===0,'boss result requires a defeated boss battle');
@@ -251,7 +268,7 @@ try {
     maze_action(3,'move',array('version'=>$won['version'],'room_id'=>2,'direction'=>'forward'));
     check(maze_session(3)['phase']==='CLEAR','exit transition settles participant');
     check((int)sql_fetch('SELECT settled FROM avo_dungeon_maze_member WHERE ds_id=3')['settled']===1,'clear settlement recorded once');
-    $settings['points']=10;maze_update('config',array('settings'=>maze_json($settings)),'dg_id=2');
+    $test_dungeon['dg_point']=10;
     add_inventory(1000);maze_join(4);maze_action(4,'ready',array('ready'=>1));maze_action(4,'start',array());
     add_inventory(1000);sql_query("UPDATE avo_inventory SET in_memo='conflicting new row' WHERE in_id=1000");
     try{maze_action(4,'leave',array('version'=>maze_session(4)['version']));check(false,'conflicting restoration must fail');}catch(InventoryStorageException $expected){}
@@ -270,8 +287,7 @@ try {
     maze_action(5,'vote',array('version'=>0,'target_id'=>$party[1]['dm_id']));
     check(count(maze_party(5))===1,'two-person party needs one vote to kick the other member');
     act_as(1);maze_join(5);check(count(maze_party(5))===2,'WAITING kick permits re-entry');
-    sql_query("INSERT INTO avo_item VALUES (4,'Revive','revive',1,0)");
-    maze_insert('item_effect',array('it_id'=>4,'kind'=>'REVIVE','value'=>25));add_inventory(2000,4);
+    sql_query("INSERT INTO avo_item (it_id,it_name,it_type,it_value,it_use_battle_able,it_use_ever) VALUES (4,'Revive','부활','25',1,0)");add_inventory(2000,4);
     maze_action(5,'ready',array('ready'=>1));act_as(2);maze_action(5,'ready',array('ready'=>1));act_as(1);maze_action(5,'start',array());
     $party=array_column(maze_party(5),null,'ch_id');
     maze_update('member',array('hp'=>0),'dm_id='.(int)$party[2]['dm_id']);
@@ -347,9 +363,80 @@ try {
     try{maze_action(7,'start',array());check(false,'injected start failure must rollback');}catch(RuntimeException $expected){}
     sql_query('DROP TRIGGER fail_room');
     check(maze_session(7)['phase']==='WAITING' && $before_rows===inventory_boundary_rows('SELECT * FROM avo_inventory WHERE ch_id=1 ORDER BY in_id') && !(int)sql_fetch('SELECT COUNT(*) AS n FROM avo_dungeon_maze_inventory WHERE ds_id=7')['n'],'failed room creation rolls back inventory escrow and entire departure');
-    $g5['dungeon_state_table']='avo_test_state';sql_query('CREATE TABLE avo_test_state (ds_id INT PRIMARY KEY,ds_state VARCHAR(2)) ENGINE=MyISAM');sql_query("INSERT INTO avo_test_state VALUES (7,'S')");
     maze_action(7,'start',array());$is_admin=true;maze_admin_end(7,'fail');maze_admin_end(7,'fail');$is_admin=false;
-    check(maze_session(7)['phase']==='FAILED' && (int)sql_fetch('SELECT settled FROM avo_dungeon_maze_member WHERE ds_id=7')['settled']===1 && sql_fetch('SELECT ds_state FROM avo_test_state WHERE ds_id=7')['ds_state']==='E','repeated administrator termination uses common settlement and legacy projection');
+    check(maze_session(7)['phase']==='FAILED' && (int)sql_fetch('SELECT settled FROM avo_dungeon_maze_member WHERE ds_id=7')['settled']===1 && sql_fetch('SELECT ds_state FROM avo_dungeon_state WHERE ds_id=7')['ds_state']==='E','repeated administrator termination settles once and closes the common state row');
+    // Several units share one encounter and one set of player submissions.
+    maze_update('meta',array('action_timeout'=>null),'singleton=1');
+    maze_join(8);maze_action(8,'ready',array('ready'=>1));maze_action(8,'start',array());
+    $pack=$test_dungeon;$pack['dg_mon_hp']=20;
+    $pack['shared']=array('name'=>'Pack','max_hp'=>20,'stats'=>array(),'attack_min'=>3,'attack_max'=>3,'default_attack'=>true,'enmity_enabled'=>true,'skills'=>array(),'phases'=>array(array('below'=>100,'actions'=>array(0)),array('below'=>50,'actions'=>array(0))));
+    maze_transaction(8,function($session)use($pack){maze_battle_begin($session,maze_room($session),$pack,3);});
+    $group=maze_battle_group(maze_session(8),maze_battle_current(maze_session(8)));$unit_ids=array_keys($group);
+    check(count($group)===3 && count(array_unique(array_map(function($u){return maze_data($u['monster'])['dg_mon_name'];},$group)))===3,'three independently named units share one encounter');
+    function pack_round($action,$monster=0,$reference=0) {
+        $s=maze_session(8);$b=maze_battle_current($s);
+        maze_action(8,'submit',array('battle_id'=>$b['battle_id'],'turn_no'=>$b['turn_no'],'action'=>$action,'monster_id'=>$monster,'reference_id'=>$reference,'target_id'=>maze_party(8)[0]['dm_id']));
+        maze_action(8,'resolve',array('battle_id'=>$b['battle_id'],'turn_no'=>$b['turn_no']));
+    }
+    pack_round('ATTACK',$unit_ids[1]);
+    $group=maze_battle_group(maze_session(8),maze_battle_current(maze_session(8)));
+    check(array_column(array_values($group),'hp')===array('20','15','20') && (int)maze_party(8)[0]['hp']===94,'selected second unit alone takes damage and all three living units act');
+    $skill=array('sh_id'=>501,'sk_name'=>'Healing with cost','sh_name'=>'','sk_type'=>'액티브','sh_limit'=>0,'sk_use_st_id'=>2,'sl_use_value'=>4,'sk_status_code'=>'heal','sl_set_value'=>20,'sk_value_type'=>'+','sk_function'=>'스탯회복','sk_target'=>'자신','sk_def_code'=>'','sk_def_type'=>'','sk_mod_type'=>'+','sk_mod_st_id'=>1,'sk_keep_limit'=>0,'sk_limit'=>0,'sk_def_enermy'=>'','sk_dungeon_target_mode'=>'SINGLE');
+    $buff=array_replace($skill,array('sh_id'=>502,'sk_name'=>'Real guard','sk_function'=>'방어','sk_status_code'=>'guard','sl_set_value'=>0));
+    $all=array_replace($skill,array('sh_id'=>503,'sk_name'=>'All enemies','sk_function'=>'공격','sk_target'=>'적','sk_status_code'=>'atk','sl_set_value'=>0,'sk_dungeon_target_mode'=>'ALL'));
+    $random=array_replace($all,array('sh_id'=>504,'sk_name'=>'Random enemy','sk_dungeon_target_mode'=>'RANDOM'));
+    $actor=maze_party(8)[0];$stats=maze_data($actor['stats']);$stats[2]=50;
+    maze_update('member',array('hp'=>50,'stats'=>maze_json($stats),'skills'=>maze_json(array($skill,$buff,$all,$random))),'dm_id='.(int)$actor['dm_id']);
+    pack_round('SKILL',0,501);
+    check((int)maze_party(8)[0]['hp']===67 && (int)maze_data(maze_party(8)[0]['stats'])[2]===46,'healing pays cost once and restores HP before each unit acts');
+    $heal_logs=maze_one("SELECT COUNT(*) n FROM avo_dungeon_maze_log WHERE ds_id=8 AND kind='COMBAT' AND message LIKE '%Healing with cost%'");
+    check((int)$heal_logs['n']===1 && (int)maze_one("SELECT amount FROM avo_dungeon_combat_event WHERE ds_id=8 AND action='Healing with cost' AND result='HEAL'")['amount']===23,'healing produces one actual heal event without a cost-only STATUS duplicate');
+    pack_round('SKILL',0,502);
+    check((int)maze_one("SELECT COUNT(*) n FROM avo_dungeon_combat_event WHERE ds_id=8 AND action='Real guard' AND result='STATUS'")['n']===1,'real status application still produces its own event');
+    pack_round('SKILL',$unit_ids[0],503);
+    $group=maze_battle_group(maze_session(8),maze_battle_current(maze_session(8)));
+    check(array_column(array_values($group),'hp')===array('15','10','15') && (int)maze_data(maze_party(8)[0]['stats'])[2]===38,'ALL skill hits every living unit while paying one cost');
+    pack_round('SKILL',$unit_ids[0],504);
+    $next=maze_battle_group(maze_session(8),maze_battle_current(maze_session(8)));$changed=0;$delta=0;
+    foreach($next as $uid=>$unit){$changed+=(int)$unit['hp']!==(int)$group[$uid]['hp'];$delta+=(int)$group[$uid]['hp']-(int)$unit['hp'];}
+    check($changed===1 && $delta===5,'RANDOM skill affects one living unit');
+    maze_update('battle',array('hp'=>1),'battle_id='.(int)$unit_ids[0]);pack_round('ATTACK',$unit_ids[0]);
+    check(maze_session(8)['phase']==='BATTLE' && (int)maze_battle_current(maze_session(8))['hp']===0,'dead first unit does not end the encounter or stop other units');
+    $s=maze_session(8);$b=maze_battle_current($s);
+    try{maze_action(8,'submit',array('battle_id'=>$b['battle_id'],'turn_no'=>$b['turn_no'],'action'=>'ATTACK','monster_id'=>$unit_ids[0]));check(false,'dead target must reject');}catch(RuntimeException $expected){}
+    try{maze_action(8,'submit',array('battle_id'=>$b['battle_id'],'turn_no'=>$b['turn_no'],'action'=>'ATTACK','monster_id'=>999999));check(false,'foreign target must reject');}catch(RuntimeException $expected){}
+    check(!maze_actions($b),'dead or foreign monster target rejected before action storage');
+    foreach(array_slice($unit_ids,1) as $uid)maze_update('battle',array('hp'=>1),'battle_id='.(int)$uid);
+    pack_round('SKILL',$unit_ids[1],503);
+    check(maze_session(8)['phase']==='EXPLORE' && (int)maze_one("SELECT COUNT(*) n FROM avo_dungeon_maze_battle WHERE ds_id=8 AND state='WON'")['n']===3,'encounter ends only when every unit is defeated');
+    $s=maze_session(8);maze_transaction(8,function($session)use($pack){maze_battle_begin($session,maze_room($session),$pack,2);});
+    $b=maze_battle_current(maze_session(8));$snapshot=maze_data(maze_session(8)['snapshot']);$snapshot['escape_percent']=100;maze_update('session',array('snapshot'=>maze_json($snapshot)),'ds_id=8');
+    maze_action(8,'submit',array('battle_id'=>$b['battle_id'],'turn_no'=>1,'action'=>'SKIP','escape_vote'=>1));maze_action(8,'resolve',array('battle_id'=>$b['battle_id'],'turn_no'=>1));
+    check((int)maze_one("SELECT COUNT(*) n FROM avo_dungeon_maze_battle WHERE ds_id=8 AND state='ESCAPED'")['n']===2,'escaping closes every unit in the encounter');
+    $s=maze_session(8);$snapshot=maze_data($s['snapshot']);$snapshot['monsters']=array(array('monster_id'=>17,'enabled'=>true,'min_count'=>2,'max_count'=>2));
+    maze_update('session',array('snapshot'=>maze_json($snapshot)),'ds_id=8');
+    $before_units=(int)maze_one('SELECT COUNT(*) n FROM avo_dungeon_maze_battle WHERE ds_id=8')['n'];
+    maze_update('room',array('resolved'=>0,'payload'=>maze_json(array('event'=>array('type'=>'MONSTER','monster_id'=>19,'monster'=>$pack)))),'ds_id=8 AND room_id='.(int)$s['room_id']);
+    maze_action(8,'event',array('room_id'=>$s['room_id'],'version'=>$s['version']));
+    check(maze_session(8)['phase']==='EXPLORE' && (int)maze_one('SELECT COUNT(*) n FROM avo_dungeon_maze_battle WHERE ds_id=8')['n']===$before_units,'legacy room event outside the departure pool cannot spawn a monster');
+    $choices=array('enabled'=>true,'choices'=>array(array('label'=>'Excluded','type'=>'MONSTER','monster_id'=>19),array('label'=>'Text','type'=>'TEXT','text'=>'Safe'),array('label'=>'Allowed','type'=>'MONSTER','monster_id'=>17)));
+    check(array_keys(maze_event_for_pool($choices,$snapshot['monsters'])['choices'])===array(1,2),'removed event choice keeps original indexes for visible allowed choices');
+    check(!maze_event_for_pool(array('enabled'=>false,'type'=>'MONSTER','monster_id'=>17),$snapshot['monsters']),'disabled monster event cannot execute');
+    $s=maze_session(8);
+    maze_update('room',array('resolved'=>0,'payload'=>maze_json(array('event'=>array('type'=>'MONSTER','monster_id'=>17,'monster'=>$pack)))),'ds_id=8 AND room_id='.(int)$s['room_id']);
+    maze_action(8,'event',array('room_id'=>$s['room_id'],'version'=>$s['version']));
+    check(count(maze_battle_group(maze_session(8),maze_battle_current(maze_session(8))))===2,'event encounter uses the same configured species count');
+    $b=maze_battle_current(maze_session(8));maze_action(8,'submit',array('battle_id'=>$b['battle_id'],'turn_no'=>1,'action'=>'SKIP','escape_vote'=>1));maze_action(8,'resolve',array('battle_id'=>$b['battle_id'],'turn_no'=>1));
+    $before=maze_session(8);$before_count=(int)maze_one('SELECT COUNT(*) n FROM avo_dungeon_maze_battle WHERE ds_id=8')['n'];
+    sql_query("CREATE TRIGGER fail_pack BEFORE INSERT ON avo_dungeon_maze_battle FOR EACH ROW BEGIN IF NEW.encounter_id>0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='pack fixture failure'; END IF; END");
+    try{maze_transaction(8,function($session)use($pack){maze_battle_begin($session,maze_room($session),$pack,3);});check(false,'partial group insert must fail');}catch(InventoryStorageException $expected){}
+    sql_query('DROP TRIGGER fail_pack');
+    check(maze_session(8)===$before && (int)maze_one('SELECT COUNT(*) n FROM avo_dungeon_maze_battle WHERE ds_id=8')['n']===$before_count,'failure creating second unit rolls back the whole encounter');
+    maze_update('room',array('is_boss'=>1),'ds_id=8 AND room_id='.(int)$before['room_id']);$pack['dg_mon_hp']=1;
+    maze_transaction(8,function($session)use($pack){maze_battle_begin($session,maze_room($session),$pack,2);});$units=array_keys(maze_battle_group(maze_session(8),maze_battle_current(maze_session(8))));
+    pack_round('ATTACK',$units[0]);check(maze_session(8)['phase']==='BATTLE','one defeated boss leaves the other boss active');
+    pack_round('ATTACK',$units[1]);check(maze_session(8)['phase']==='BOSS_RESULT','all bosses must be defeated before the final exit');
+    maze_action(8,'escape_final',array());
     function readiness_probe() {
         global $database;
         $pipes=array();$process=proc_open(array(PHP_BINARY,__FILE__,'readiness',$database),array(0=>array('pipe','r'),1=>array('pipe','w'),2=>array('pipe','w')),$pipes);

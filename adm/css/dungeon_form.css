@@ -1,0 +1,124 @@
+.dungeon-form-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 10px;border-bottom:1px solid #d6dde4;padding-bottom:8px}
+.dungeon-form-tabs button{min-height:40px;padding:8px 16px;border:1px solid #c5cdd5;border-radius:4px;background:#fff;color:#34404c;cursor:pointer;font:inherit}
+.dungeon-form-tabs button[aria-selected="true"]{background:#315d72;border-color:#315d72;color:#fff;font-weight:700}
+.dungeon-form-tabs button:disabled{opacity:.5;cursor:not-allowed}
+.dungeon-form-tabs button:focus-visible,.maze-advanced summary:focus-visible{outline:3px solid #e69840;outline-offset:2px}
+#fdungeonform [hidden]{display:none!important}
+#fdungeonform #maze-settings{min-width:0;border:0;padding:0;margin:0}
+#fdungeonform #maze-settings:disabled{opacity:1}
+#fdungeonform .frm_info{color:#4f5d68}
+#fdungeonform .btn_02{color:#205867;border-color:#6aaeb8}
+.maze-advanced{margin:22px 0;padding:12px 16px;border:1px solid #d6dde4;border-radius:4px;background:#f8fafb}
+.maze-advanced summary{cursor:pointer;font-weight:700;min-height:28px}
+.maze-advanced[open] .tbl_wrap{margin-top:12px}
+@media(max-width:700px){.dungeon-form-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.dungeon-form-tabs button{padding:8px}.tbl_wrap{overflow-x:auto}}
+
+#fdungeonform{padding-bottom:100px;color:#26313b;font-size:13px}
+#fdungeonform .editor-intro{max-width:74ch;line-height:1.8;margin-bottom:18px}
+#fdungeonform .editor-section-help{line-height:1.8;max-width:74ch;margin:0 0 16px;color:#4f5d68}
+#fdungeonform .h2_frm{margin-bottom:8px}
+#fdungeonform h3{border:0;padding:0;color:#26313b;margin:0;font-size:15px}
+#fdungeonform .frm_info{line-height:1.7;margin-top:7px;font-size:12px;word-break:keep-all;overflow-wrap:anywhere}
+#fdungeonform a:not(.btn):not(.editor-save-bar a){text-decoration:underline;text-underline-offset:3px}
+#fdungeonform .required-label{font-size:11px;font-weight:400;color:#953f2b;margin-left:5px}
+#fdungeonform .editor-fields>table{min-width:0}
+#fdungeonform .editor-fields>table>tbody>tr>th{font-weight:500;vertical-align:top;padding-top:16px}
+#fdungeonform .editor-fields>table>tbody>tr>td{padding:12px 10px}
+#fdungeonform .editor-fields input[type=number],#fdungeonform .editor-rewards input[type=number]{width:7em}
+#fdungeonform .editor-fields input[type=url]{width:100%}
+#fdungeonform .editor-fields .editor-name{width:42em}
+#fdungeonform input:not([type=checkbox]),#fdungeonform select{min-height:36px}
+#fdungeonform textarea{height:96px;min-height:78px;line-height:1.8;background-image:none;padding:8px 10px}
+#fdungeonform input::placeholder{color:#626c76;opacity:1}
+#fdungeonform input,#fdungeonform textarea{caret-color:#315d72}
+#fdungeonform ::selection{background:#d7e8ec;color:#24324a}
+#fdungeonform :is(input,textarea,select,button,a,summary):focus-visible{outline:3px solid #c37c25;outline-offset:2px}
+#fdungeonform .editor-check{display:inline-flex;align-items:center;gap:8px;min-height:36px;cursor:pointer;line-height:1.5}
+#fdungeonform .editor-region-list{display:flex;flex-wrap:wrap;gap:4px 20px}
+#fdungeonform .editor-field-pair{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px}
+#fdungeonform .editor-field-pair label{display:inline-flex;align-items:center;gap:6px}
+#fdungeonform .editor-field-pair .sound_only{position:absolute!important;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+#fdungeonform .editor-advanced{border:1px solid #d6dde4;border-radius:4px;padding:0;margin:20px 0;background:#fff}
+#fdungeonform .editor-advanced>summary{min-height:46px;padding:12px 14px;background:#f5f7f9;cursor:pointer;font-weight:600;line-height:1.6}
+#fdungeonform .editor-advanced>.frm_info,#fdungeonform .editor-advanced>.editor-inline-note{margin:12px 14px}
+#fdungeonform .editor-advanced>.tbl_wrap{margin:12px 14px}
+#fdungeonform .editor-advanced>.editor-subheading{margin:24px 14px 0}
+#fdungeonform .editor-pool-picker{padding:14px;margin:12px 0 20px;border:1px solid #d6dde4;background:#f5f7f9}
+#fdungeonform .editor-pool-picker>label{display:block;margin:12px 0;font-weight:600}
+#fdungeonform .editor-pool-picker input,#fdungeonform .editor-pool-picker select{display:block;margin-top:7px;width:100%;max-width:38em;background:#fff;font-weight:400}
+#fdungeonform #pool-add-search{border:1px solid #c5cdd5;border-radius:4px;padding:6px 9px;font:inherit}
+#fdungeonform #pool-add-choice{height:170px;padding:5px}
+#fdungeonform #pool-add-choice option{padding:6px 8px}
+#fdungeonform .pool-picker-actions{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+#fdungeonform .pool-picker-actions button{height:auto;min-height:36px;padding:7px 14px}
+#fdungeonform .pool-picker-actions button:disabled{opacity:.55;cursor:not-allowed}
+#fdungeonform .pool-control{white-space:nowrap}
+#fdungeonform .editor-pool{margin-top:16px}
+#fdungeonform .editor-pool td{text-align:left;color:#26313b}
+#fdungeonform .editor-pool .btn_03{color:#205867;border-color:#6aaeb8}
+#fdungeonform #pool-empty td{color:#4f5d68!important;background:#f5f7f9;padding:18px 12px!important}
+#fdungeonform .editor-pool input[type=number]{width:6em}
+#fdungeonform .editor-pool input:disabled{background:#f4f6f8;color:#69747e;cursor:not-allowed}
+#fdungeonform .pool-ratio{display:block;white-space:normal}
+#fdungeonform .editor-inline-note{padding:12px 0;color:#4f5d68;line-height:1.8}
+#fdungeonform .editor-section-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:24px 0 8px}
+#fdungeonform .editor-section-toolbar h3{margin:0}
+#fdungeonform .editor-rewards{margin-top:14px}
+#fdungeonform .editor-rewards input[type=text]{width:100%}
+#fdungeonform #itemAddTable thead th{height:42px;background:#f0f3f5;color:#26313b;text-align:left;padding:8px}
+#fdungeonform #itemAddTable tbody tr>td{padding:10px 8px;text-align:left;vertical-align:middle}
+#fdungeonform .reward-example{line-height:1.7;color:#4f5d68;overflow-wrap:anywhere}
+#fdungeonform .btn-item-dell{height:auto;min-height:36px;width:auto;padding:6px 10px!important;background:#fff!important;color:#953f2b!important;border:1px solid #d7b6ae}
+#fdungeonform .editor-empty{padding:18px 12px;line-height:1.8;color:#4f5d68;background:#f5f7f9}
+#fdungeonform .editor-save-bar{position:fixed;bottom:0;left:var(--menu-width,230px);right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 40px 14px 10px;border-top:1px solid #d6dde4;background:#fff;text-align:left}
+#fdungeonform .editor-save-bar>span{color:#4f5d68;line-height:1.6}
+#fdungeonform .editor-save-bar>div{display:flex;align-items:center;gap:8px;flex-shrink:0}
+#fdungeonform .editor-save-bar input[type=submit]{min-height:44px;padding:8px 24px;background:#315d72!important;color:#fff;font-size:13px;border:0}
+#fdungeonform .editor-save-bar input[type=submit]:hover{background:#244859!important}
+#fdungeonform .editor-save-bar input[type=submit]:disabled{opacity:.65;cursor:wait}
+#fdungeonform .editor-save-bar a{min-height:44px;padding:8px 18px;border:1px solid #c5cdd5;background:#fff;color:#34404c}
+#fdungeonform.editor-is-dirty .editor-save-bar>span{color:#315d72;font-weight:600}
+#fdungeonform .editor-error{color:#953f2b;background:#fff3ee;border:1px solid #d7b6ae}
+#fdungeonform #maze-events{margin-top:28px}
+
+@media(max-width:700px){
+ #fdungeonform{font-size:14px;padding-bottom:120px}
+ #fdungeonform .editor-intro{font-size:13px}
+ #fdungeonform .dungeon-form-tabs button{min-height:44px;font-size:13px}
+ #fdungeonform :is(input[type=text],input[type=number],input[type=url],input[type=search],select,textarea){font-size:16px;min-height:44px}
+ #fdungeonform .editor-check{min-height:44px}
+ #fdungeonform .editor-fields>table,#fdungeonform .editor-fields>table>tbody,#fdungeonform .editor-fields>table>tbody>tr{display:block;width:100%;min-width:0}
+ #fdungeonform .editor-fields>table>colgroup{display:none}
+ #fdungeonform .editor-fields>table>tbody>tr{padding:14px 0;border-bottom:1px solid #e4e9ed}
+ #fdungeonform .editor-fields>table>tbody>tr>th,#fdungeonform .editor-fields>table>tbody>tr>td{display:block;width:100%;padding:0;border:0;height:auto;text-align:left}
+ #fdungeonform .editor-fields>table>tbody>tr>th{margin-bottom:8px;font-weight:600}
+ #fdungeonform .editor-fields .editor-name,#fdungeonform .editor-fields textarea{width:100%}
+ #fdungeonform .editor-advanced>.tbl_wrap{margin:0 14px 12px}
+ #fdungeonform .editor-pool-picker{padding:12px}
+ #fdungeonform .pool-picker-actions button{min-height:44px}
+ #fdungeonform .editor-pool>table,#fdungeonform .editor-rewards>table,#fdungeonform .maze-editor-list>table{display:block;min-width:0;width:100%}
+ #fdungeonform .editor-pool thead,#fdungeonform .editor-pool colgroup,#fdungeonform .editor-rewards thead,#fdungeonform .editor-rewards colgroup,#fdungeonform .maze-editor-list thead{display:none}
+ #fdungeonform .editor-pool tbody,#fdungeonform .editor-rewards tbody,#fdungeonform .maze-editor-list tbody{display:block;width:100%}
+ #fdungeonform .editor-pool tr[data-monster-row],#fdungeonform #itemAddTable tbody tr:not(.original),#fdungeonform .maze-editor-list tr:not(.maze-detail-row){display:grid;grid-template-columns:1fr;gap:10px;padding:16px 0;border-bottom:1px solid #d6dde4}
+ #fdungeonform .editor-pool tr>td,#fdungeonform #itemAddTable tbody tr>td,#fdungeonform .maze-editor-list tr>td{display:block;padding:0;border:0;text-align:left;height:auto;min-width:0}
+ #fdungeonform td[data-label]:before{content:attr(data-label);display:block;font-size:12px;font-weight:600;color:#4f5d68;margin-bottom:5px}
+ #fdungeonform .editor-pool tr>td:first-child{font-size:15px}
+ #fdungeonform .editor-pool tr>td:first-child:before{display:none}
+ #fdungeonform .editor-pool .btn,#fdungeonform .editor-rewards .btn,#fdungeonform .maze-editor-list .btn{min-height:44px}
+ #fdungeonform .editor-pool .pool-control{text-align:right}
+ #fdungeonform .editor-rewards .reward-control{text-align:right}
+ #fdungeonform .reward-example:empty{display:none}
+ #fdungeonform .maze-editor-list .maze-detail-row{display:block;margin:12px 0}
+ #fdungeonform .maze-editor-list .maze-detail-row[hidden]{display:none}
+ #fdungeonform .maze-editor-list .maze-detail-row>td{width:100%;box-sizing:border-box;padding:12px}
+ #fdungeonform .maze-editor-list input:not([type=checkbox]),#fdungeonform .maze-editor-list select{width:100%;max-width:100%}
+ #fdungeonform .maze-detail-fields{display:block}
+ #fdungeonform .maze-detail-fields label{display:block;margin-bottom:12px;min-width:0}
+ #fdungeonform .editor-save-bar{left:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));gap:8px}
+ #fdungeonform .editor-save-bar>span{font-size:12px;max-width:48%}
+ #fdungeonform .editor-save-bar a{padding:8px 12px}
+ #fdungeonform .editor-save-bar input[type=submit]{padding:8px 20px;font-size:14px}
+}
+.pool-count-fields {display:flex;flex-wrap:wrap;gap:8px}
+.pool-count-fields label {display:flex;align-items:center;gap:4px}
+#fdungeonform .pool-count-fields input {width:70px}

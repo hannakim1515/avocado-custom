@@ -42,7 +42,7 @@ $pg_anchor = '<ul class="anchor">
 	<?php echo $pg_anchor ?>
 	<div class="local_desc01 local_desc">
 		체력(HP) 원본과 레이드 MP 원본은 <a href="./990_unified_skill_map.php">통합 전투 설정</a>에서만 변경합니다.
-		이 페이지에서는 전투 연동 코드의 수식만 관리합니다.
+		이 페이지에서는 공격·방어·치유 등 행동에 연결할 값을 캐릭터의 스탯으로 계산합니다. 기본 행동에 사용할 코드는 통합 전투 설정에서 선택합니다.
 	</div>
 </section>
 

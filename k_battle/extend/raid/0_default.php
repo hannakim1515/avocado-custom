@@ -861,6 +861,7 @@ function get_k_monster_list($select = '*', $raid_type = '')
         $sql_where = " WHERE raid_type LIKE '%{$raid_type}%' ";
     }
     
+    if(function_exists('monster_ready') && monster_ready()) $sql_where.=($sql_where?' AND ':' WHERE ').' mo_id NOT IN (SELECT raid_id FROM `'.monster_table('monster_master').'` WHERE enabled=0 AND raid_id IS NOT NULL)';
     $sql = "SELECT {$select} FROM {$g5['k_monster_table']} {$sql_where}";
     $mo = sql_query($sql);
 
@@ -1203,6 +1204,9 @@ function insert_k_battle_unit($unit_id, $unit_type, $raid_type, $ra_id = 0) //�
         $unit = get_character($unit_id);
         $origin_id = 'ch_id';
     } elseif ($unit_type === 'mo') {
+        if (function_exists('monster_ready') && monster_ready() && sql_fetch('SELECT monster_id FROM `'.monster_table('monster_master').'` WHERE raid_id='.$unit_id.' AND enabled=0')) {
+            return false;
+        }
         $unit = get_k_monster($unit_id);
         $origin_id = 'mo_id';
     } else {
@@ -1224,10 +1228,7 @@ function insert_k_battle_unit($unit_id, $unit_type, $raid_type, $ra_id = 0) //�
         $hp_max = function_exists('unified_monster_hp_value')
             ? unified_monster_hp_value($unit)
             : ses($unit, 'mo_hp', 0, 'int');
-        $mp_from_stat = (!empty($kb_cf['mp']) && function_exists('unified_monster_stat_value'))
-            ? unified_monster_stat_value((int)$unit[$origin_id], (int)$kb_cf['mp'])
-            : 0;
-        $mp_max = $mp_from_stat > 0 ? $mp_from_stat : ses($unit, 'mo_mp', 0, 'int');
+        $mp_max = 0;
     } else {
         // HP는 A의 st_use_hp 단일 원본, MP는 통합 설정에서 지정한 A 스탯을 사용한다.
         if (function_exists('unified_stat_value')) {
@@ -1285,6 +1286,18 @@ function insert_k_battle_unit($unit_id, $unit_type, $raid_type, $ra_id = 0) //�
     sql_query($sql);
 
     // 스킬 세팅 (캐릭터만)
+    if($unit_type==='mo') {
+        $shared_rm_id=(int)sql_insert_id();
+        require_once G5_PATH.'/lib/monster_shared.lib.php';
+        $shared_definition=monster_shared_from_raid($unit_id);
+        if($shared_definition) {
+            sql_query('UPDATE `'.$battle_table.'_unit` SET hp_max='.(int)$shared_definition['max_hp'].',hp_now='.(int)$shared_definition['max_hp'].',mp_max=0,mp_now=0 WHERE rm_id='.$shared_rm_id);
+            $shared_key='raid:'.$battle_table.':'.$ra_id;
+            $shared_runtime=monster_shared_runtime($shared_key,$shared_rm_id,$shared_definition);
+            monster_shared_save($shared_key,$shared_rm_id,$shared_runtime);
+            monster_shared_raid_announce($shared_runtime,1,(int)$shared_definition['max_hp'],$ra_id);
+        }
+    }
     if ($unit_type !== 'mo') {
         if (function_exists('unified_skill_prepare_battle_snapshot')) {
             unified_skill_prepare_battle_snapshot($battle_table);

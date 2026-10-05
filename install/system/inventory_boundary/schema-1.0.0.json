@@ -1,0 +1,93 @@
+{
+  "inventory_guard": {
+    "columns": {
+      "ch_id": "int NOT NULL",
+      "active_journal": "bigint unsigned DEFAULT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ch_id"
+        ],
+        "unique": true
+      },
+      "active_journal": {
+        "columns": [
+          "active_journal"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/dungeon/002_inventory_boundary.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "inventory_journal": {
+    "columns": {
+      "journal_id": "bigint unsigned NOT NULL AUTO_INCREMENT",
+      "ch_id": "int NOT NULL",
+      "mb_id": "varchar(255) NOT NULL",
+      "operation": "varchar(100) NOT NULL",
+      "state": "varchar(16) NOT NULL",
+      "request_key": "varchar(64) NOT NULL",
+      "originals": "longtext NOT NULL",
+      "intent": "longtext NOT NULL",
+      "result_note": "text NOT NULL",
+      "created_at": "datetime NOT NULL",
+      "finished_at": "datetime DEFAULT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "journal_id"
+        ],
+        "unique": true
+      },
+      "request_key": {
+        "columns": [
+          "request_key"
+        ],
+        "unique": true
+      },
+      "owner_state": {
+        "columns": [
+          "ch_id",
+          "state"
+        ],
+        "unique": false
+      },
+      "review_queue": {
+        "columns": [
+          "state",
+          "created_at"
+        ],
+        "unique": false
+      }
+    },
+    "source": "install/dungeon/002_inventory_boundary.manual.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "inventory": {
+    "columns": {},
+    "indexes": {
+      "maze_owner_rows": {
+        "columns": [
+          "ch_id"
+        ],
+        "unique": false,
+        "prefix_ok": true,
+        "add_columns": [
+          "ch_id",
+          "in_id"
+        ]
+      }
+    },
+    "source": "install/dungeon/004_inventory_index.manual.sql",
+    "create": false
+  }
+}

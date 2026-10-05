@@ -1,0 +1,7 @@
+/artifacts/
+/data/dbconfig.php
+/data/session/
+/data/cache/
+/dev/**/__pycache__/
+/.agents/skills/**/__pycache__/
+/.impeccable/config.local.json

@@ -1,0 +1,20 @@
+const {chromium}=require('../../artifacts/system-browser/node_modules/playwright');
+const {execFileSync}=require('child_process');
+const definition=()=>JSON.parse(execFileSync('C:/xampp/php/php.exe',['dev/tests/admin_catalog_fixture.php','maze_definition','1'],{encoding:'utf8'})).definition;
+const check=(ok,label)=>{if(!ok)throw Error(label);console.log('PASS '+label);};
+(async()=>{const b=await chromium.launch({channel:'chrome',headless:true});try{
+ execFileSync('C:/xampp/php/php.exe',['dev/tests/admin_catalog_fixture.php','region_prepare']);
+ const p=await b.newPage(),base='http://127.0.0.1:38082',before=definition().ma_ids;
+ await p.goto(base+'/_fixture_login.php');await p.goto(base+'/adm/dungeon_list.php');
+ const row=p.locator('#fsidelist tbody tr').filter({has:p.locator('input[name^="dg_id["][value="1"]')});
+ check(await row.count()===1&&await row.locator('input[name^="ma_ids["]').count()>0,'appearance regions visible in Dungeon list');
+ for(const id of before.split('||').filter(Boolean))check(await row.locator('input[name^="ma_ids["][value="'+id+'"]').isChecked(),'saved region remains selected');
+ await row.locator('[name="chk[]"]').check();
+ await Promise.all([p.waitForNavigation(),p.getByRole('button',{name:'선택수정',exact:true}).click()]);
+ check(definition().ma_ids===before,'list POST preserves saved regions');
+ await p.goto(base+'/adm/dungeon_form.php?w=u&dg_id=1');
+ check(await p.locator('[name="ma_ids[]"]').count()>0,'regions visible in common writing form');
+ for(const id of before.split('||').filter(Boolean))check(await p.locator('[name="ma_ids[]"][value="'+id+'"]').isChecked(),'writing form loads saved region');
+ await Promise.all([p.waitForNavigation(),p.locator('#fdungeonform input[type=submit]').first().click()]);
+ check(definition().ma_ids===before,'writing form POST preserves saved regions');
+}finally{await b.close();}})().catch(e=>{console.error(e);process.exit(1);});

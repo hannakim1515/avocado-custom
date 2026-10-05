@@ -1,0 +1,48 @@
+const {chromium}=require('../../artifacts/system-browser/node_modules/playwright');
+const {execFileSync}=require('child_process');
+const base='http://127.0.0.1:38082';
+const fixture=(op)=>JSON.parse(execFileSync('C:/xampp/php/php.exe',['-d','short_open_tag=1','dev/tests/map_dungeon_fixture.php',op],{encoding:'utf8'}));
+const repair=(apply=false)=>JSON.parse(execFileSync('C:/xampp/php/php.exe',['-d','short_open_tag=1','dev/tools/repair_unlisted_dungeon_events.php','--fixture',...(apply?['--apply']:[])],{encoding:'utf8'}));
+const check=(ok,label)=>{if(!ok)throw Error(label);console.log('PASS '+label);};
+(async()=>{
+ const data=fixture('prepare');let browser;
+ try {
+  fixture('legacy_event');browser=await chromium.launch({channel:'chrome',headless:true});
+  const p=await browser.newPage({viewport:{width:1366,height:900}}),errors=[];p.on('pageerror',e=>errors.push(e.message));
+  await p.goto(base+'/_fixture_login.php');await p.goto(base+'/adm/dungeon_form.php?w=u&dg_id='+data.dungeons.enabled);
+  check(await p.locator('[data-dungeon-tab=anc_001]').getAttribute('aria-selected')==='true','legacy event warning does not force a tab change');
+  await p.getByRole('tab',{name:'탐험 설정',exact:true}).click();
+  check(await p.locator('#maze-event-monster-warning').isVisible(),'unlisted legacy event has a visible explanation');
+  const event=p.locator('.maze-editor-events > table > tbody > tr').first();await event.getByRole('button',{name:/상세 \/ 선택지/}).click();
+  const picker=p.locator('[data-event-monster]').first();
+  check((await picker.locator('option:enabled').evaluateAll(opts=>opts.filter(o=>o.value).map(o=>Number(o.value)))).join(',')===String(data.monster),'event picker permits only the assigned monster');
+  const rejected=await p.locator('#fdungeonform').evaluate(async f=>(await fetch(f.action,{method:'POST',body:new FormData(f)})).text());
+  check(rejected.includes('몬스터 출현 목록'),'server rejects a direct save that references an unlisted monster');
+  await p.reload();await p.getByRole('tab',{name:'탐험 설정',exact:true}).click();
+  await p.locator('.maze-editor-events > table > tbody > tr').first().getByRole('button',{name:/상세 \/ 선택지/}).click();
+  await p.screenshot({path:'artifacts/dungeon-event-pool-desktop.png',fullPage:true});await p.setViewportSize({width:390,height:844});
+  check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'event restriction and warning fit mobile');await p.screenshot({path:'artifacts/dungeon-event-pool-mobile.png',fullPage:true});await p.setViewportSize({width:1366,height:900});
+  await p.locator('.maze-editor-events > table > tbody > tr').first().getByLabel('사용',{exact:true}).uncheck();
+  check(await picker.isDisabled()&&await p.locator('#maze-event-monster-warning').isHidden(),'disabling a legacy event releases its invalid selection');
+  await Promise.all([p.waitForNavigation(),p.locator('#fdungeonform input[type=submit]').click()]);
+  fixture('legacy_event');await p.goto(base+'/_fixture_login.php?member=1');await p.goto(base+'/map/?now_idx='+data.maps.root_zero);
+  const enter=p.locator(`[data-dungeon-id="${data.instances.waiting}"] .dungeon-enter`);p.once('dialog',d=>d.accept());await enter.click();await p.waitForSelector('#maze-boot',{state:'attached'});
+  await p.getByRole('button',{name:'READY',exact:true}).click();await p.getByRole('button',{name:'출발 →',exact:true}).click();
+  await p.waitForFunction(()=>document.querySelector('#maze-phase').textContent.includes('탐색'));
+  check(JSON.parse(fixture('inspect').session.snapshot).events.length===0,'departure excludes legacy events outside the canonical pool');
+  await p.getByRole('button',{name:'앞으로 간다',exact:true}).click();
+  fixture('legacy_room');await p.reload();
+  const state=await p.request.get(base+'/dungeon/maze_state.php?ds_id='+data.instances.waiting);
+  check(state.ok()&&!(await state.json()).error,'read-only polling works without combat bootstrap');
+  await p.getByRole('button',{name:'조사한다',exact:true}).click();
+  await p.waitForFunction(()=>document.querySelector('#maze-phase').textContent.includes('탐색'));
+  check(fixture('inspect').battles.length===0,'old generated event cannot bypass the assigned pool');
+  fixture('rogue_battle');const before=fixture('inspect').party;
+  check(repair().cancel_untouched_battles.some(x=>x.ds_id===data.instances.waiting),'repair locates only the untouched unlisted event fight');
+  const applied=repair(true);check(applied.applied.battles.includes(data.instances.waiting),'repair cancels the wrong encounter');
+  check(JSON.stringify(fixture('inspect').party)===JSON.stringify(before),'repair keeps participant HP, resources and preparation state');
+  await p.reload();check(await p.locator('#maze-error').isHidden()&&(await p.locator('#maze-phase').innerText()).includes('탐색')&&await p.locator('#maze-enemies .maze-token').count()===0,'repaired session resumes exploration without stale enemies or polling errors');
+  const repeated=repair(true);check(!repeated.disable_events.length&&!repeated.cancel_untouched_battles.length,'repeat repair has no further changes');
+  check(!errors.length,'event editor and exploration have no JavaScript errors');
+ } finally {if(browser)await browser.close();fixture('cleanup');}
+})().catch(e=>{console.error(e);process.exit(1);});

@@ -144,7 +144,9 @@ if ($data['warning'] === '') {
         global $kb_cf;
         $kb_mp_name = ses($kb_cf, 'mp_name', 'MP');
 
-        if (!empty($sk['sk_cool_now'])) {
+        if ($rm['unit_type']==='mo') {
+            $act_warning = "몬스터는 MP·재사용 대기 제한 없이 실행합니다. {$sk['sk_turn']}턴 지속";
+        } elseif (!empty($sk['sk_cool_now'])) {
             $data['disable'] = 'disable';
             $act_warning     = "스킬 쿨타임 중입니다. ({$sk['sk_cool_now']}턴 후 가능)";
         } elseif ((int)$sk['sk_mp'] > (int)$rm['mp_now']) {

@@ -279,9 +279,10 @@ html.single #wrap:before {display:none !important;}
 .map-open-dungeon-list {display:block; margin-top:16px; padding:12px; background:rgba(140,0,37,.22); border:1px solid rgba(249,0,66,.5);}
 .map-open-dungeon-list > strong {display:block; margin-bottom:8px; color:#f90042; font-size:14px;}
 .map-open-dungeon-list ul {display:block; margin:0; padding:0; list-style:none;}
-.map-open-dungeon-list li {display:flex; justify-content:space-between; gap:12px; padding:5px 0; color:#fff; font-size:12px;}
+.map-open-dungeon-list li {display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; padding:5px 0; color:#fff; font-size:12px;}
 .map-open-dungeon-list li + li {border-top:1px solid rgba(255,255,255,.12);}
 .map-open-dungeon-list li em {color:rgba(255,255,255,.76); font-style:normal; text-align:right;}
+.map-unrestricted-dungeons {position:fixed;left:16px;bottom:16px;z-index:30;max-width:calc(100% - 32px);box-sizing:border-box;}
 
 
 /********************************************************************

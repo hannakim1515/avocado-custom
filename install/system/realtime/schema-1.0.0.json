@@ -1,0 +1,225 @@
+{
+  "k_battle_realtime": {
+    "columns": {
+      "ra_id": "varchar(255) NOT NULL",
+      "ra_title": "text NOT NULL",
+      "ra_content": "text NOT NULL",
+      "ra_list_img": "text NOT NULL",
+      "ra_bg_img": "text NOT NULL",
+      "ra_state": "int NOT NULL",
+      "ra_limit": "int NOT NULL",
+      "ra_limit_now": "int NOT NULL",
+      "ra_reload": "varchar(255) NOT NULL",
+      "ra_reload_time": "int NOT NULL",
+      "ra_turn_type": "varchar(255) NOT NULL",
+      "ra_mo_auto": "varchar(50) NOT NULL DEFAULT ''",
+      "ra_type": "varchar(255) NOT NULL",
+      "ra_turn": "int NOT NULL",
+      "ra_count": "int NOT NULL",
+      "now_turn": "int NOT NULL",
+      "ra_system": "text NOT NULL",
+      "ra_time_limit": "int NOT NULL DEFAULT '0'",
+      "ra_time_start": "int NOT NULL DEFAULT '0'",
+      "ra_reward_money": "int DEFAULT NULL",
+      "ra_reward_exp": "int DEFAULT NULL",
+      "ra_reward_title": "int DEFAULT NULL",
+      "ra_reward_item": "varchar(50) DEFAULT NULL",
+      "ra_bgm": "varchar(225) DEFAULT NULL",
+      "ra_bgm_volume": "int DEFAULT '30'",
+      "ra_bgm_type": "varchar(50) DEFAULT 'single'",
+      "ra_system_msg": "varchar(255) DEFAULT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "ra_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "k_battle/extend/install/database_realtime.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8",
+    "require_engine": true
+  },
+  "k_battle_realtime_buff": {
+    "columns": {
+      "bf_id": "int NOT NULL AUTO_INCREMENT",
+      "rm_id": "int NOT NULL DEFAULT '0'",
+      "si_code": "varchar(50) NOT NULL DEFAULT '0'",
+      "bf_value": "int NOT NULL DEFAULT '0'",
+      "sc_id": "varchar(50) NOT NULL DEFAULT '0'",
+      "cs_id": "int NOT NULL DEFAULT '0'",
+      "turn_left": "int NOT NULL DEFAULT '0'",
+      "ra_id": "varchar(55) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "bf_id"
+        ],
+        "unique": true
+      },
+      "ra_id": {
+        "columns": [
+          "ra_id"
+        ],
+        "unique": false
+      },
+      "rm_id": {
+        "columns": [
+          "rm_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "k_battle/extend/install/database_realtime.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8",
+    "require_engine": true
+  },
+  "k_battle_realtime_log": {
+    "columns": {
+      "lo_id": "int NOT NULL AUTO_INCREMENT",
+      "ra_id": "varchar(55) NOT NULL DEFAULT '0'",
+      "lo_content": "text NOT NULL",
+      "lo_1": "varchar(255) NOT NULL DEFAULT ''",
+      "lo_2": "varchar(255) NOT NULL DEFAULT ''",
+      "lo_3": "varchar(255) NOT NULL DEFAULT ''",
+      "lo_4": "varchar(255) NOT NULL DEFAULT ''",
+      "lo_5": "varchar(255) NOT NULL DEFAULT ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "lo_id"
+        ],
+        "unique": true
+      },
+      "ra_id": {
+        "columns": [
+          "ra_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "k_battle/extend/install/database_realtime.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8",
+    "require_engine": true
+  },
+  "k_battle_realtime_skill": {
+    "columns": {
+      "bs_id": "int NOT NULL AUTO_INCREMENT",
+      "rm_id": "int NOT NULL DEFAULT '0'",
+      "unit_id": "int NOT NULL DEFAULT '0'",
+      "unit_type": "varchar(10) NOT NULL DEFAULT ''",
+      "cs_id": "int NOT NULL DEFAULT '0'",
+      "sk_cool_now": "int NOT NULL DEFAULT '0'",
+      "ra_id": "varchar(55) NOT NULL DEFAULT '0'",
+      "unified_a_sk_id": "int(11) NOT NULL DEFAULT '0'",
+      "unified_value": "float NOT NULL DEFAULT '0'",
+      "unified_mp": "int(11) NOT NULL DEFAULT '0'",
+      "unified_turn": "int(11) NOT NULL DEFAULT '0'",
+      "unified_cool": "int(11) NOT NULL DEFAULT '0'",
+      "unified_def_code": "varchar(255) NOT NULL DEFAULT ''",
+      "unified_def_type": "char(1) NOT NULL DEFAULT '+'",
+      "unified_def_enermy": "varchar(20) NOT NULL DEFAULT ''",
+      "unified_mod_type": "char(1) NOT NULL DEFAULT ''",
+      "unified_effect_type": "varchar(12) NOT NULL DEFAULT 'flat'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "bs_id"
+        ],
+        "unique": true
+      },
+      "ra_id": {
+        "columns": [
+          "ra_id"
+        ],
+        "unique": false
+      },
+      "rm_id": {
+        "columns": [
+          "rm_id"
+        ],
+        "unique": false
+      },
+      "cs_id": {
+        "columns": [
+          "cs_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "k_battle/extend/install/database_realtime.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8",
+    "require_engine": true
+  },
+  "k_battle_realtime_unit": {
+    "columns": {
+      "rm_id": "int NOT NULL AUTO_INCREMENT",
+      "unit_type": "varchar(255) NOT NULL",
+      "unit_id": "int NOT NULL",
+      "hp_now": "int NOT NULL DEFAULT '0'",
+      "hp_max": "int NOT NULL DEFAULT '0'",
+      "mp_now": "int NOT NULL DEFAULT '0'",
+      "mp_max": "int NOT NULL DEFAULT '0'",
+      "st_1": "int NOT NULL DEFAULT '0'",
+      "st_2": "int NOT NULL DEFAULT '0'",
+      "st_3": "int NOT NULL DEFAULT '0'",
+      "st_4": "int NOT NULL DEFAULT '0'",
+      "st_5": "int NOT NULL DEFAULT '0'",
+      "st_6": "int NOT NULL DEFAULT '0'",
+      "st_7": "int NOT NULL DEFAULT '0'",
+      "st_8": "int NOT NULL DEFAULT '0'",
+      "st_9": "int NOT NULL DEFAULT '0'",
+      "st_10": "int NOT NULL DEFAULT '0'",
+      "is_stun": "int NOT NULL DEFAULT '0'",
+      "is_aggr": "int NOT NULL DEFAULT '0'",
+      "tt_done": "int NOT NULL DEFAULT '0'",
+      "ra_id": "varchar(55) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "rm_id"
+        ],
+        "unique": true
+      },
+      "ra_id": {
+        "columns": [
+          "ra_id"
+        ],
+        "unique": false
+      },
+      "unit_id": {
+        "columns": [
+          "unit_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "k_battle/extend/install/database_realtime.sql",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8",
+    "require_engine": true
+  },
+  "k_battle_plugin_config": {
+    "columns": {
+      "ver_realtime": "varchar(20) NOT NULL DEFAULT '1.0.0'",
+      "realtime": "int(11) NOT NULL DEFAULT '1'"
+    },
+    "indexes": {},
+    "source": "adm/980_k_data_install.php; adm/982_k_realtime_config.php",
+    "create": false
+  }
+}

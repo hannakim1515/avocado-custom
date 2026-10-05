@@ -1,0 +1,26 @@
+.combat-menu-toggle{display:none!important}
+html.combat-editor-page,body.combat-editor-page{min-width:0}
+body.combat-editor-page .adminBody{min-width:0}
+body.combat-editor-page input,body.combat-editor-page select{max-width:100%;box-sizing:border-box}
+body.combat-editor-page form input[type=checkbox]:not(.hidden){position:static;z-index:auto;opacity:1;appearance:auto;accent-color:#315d72;background-image:none;width:20px;height:20px;min-height:20px;flex-shrink:0;margin:0;vertical-align:middle}
+body.combat-editor-page form label{color:#26313b}
+body.combat-editor-page .tbl_wrap{overflow-x:auto}
+body.combat-editor-page #fdungeonform section[id^="anc_"]{padding-top:0}
+@media(max-width:700px){
+ body.combat-editor-page .adminWrap{padding:80px 0 0}
+ body.combat-editor-page .adminBody,body.combat-editor-page .adminBody.has-amchor{margin:0;padding:20px 14px 60px}
+ body.combat-editor-page .adminHeader h1{min-width:0;margin:0;padding:0 8px}
+ body.combat-editor-page .adminHeader h1:before,body.combat-editor-page .adminHeader h1 i{display:none}
+ body.combat-editor-page .adminHeader h1 a{display:block;margin:0;font-size:14px;max-width:180px;max-height:60px;overflow:hidden}
+ body.combat-editor-page .adminHeader aside>*{width:44px;font-size:18px}
+ body.combat-editor-page .adminHeader .combat-menu-toggle{display:block!important;width:70px;border:0;color:#fff;font:inherit;cursor:pointer}
+ body.combat-editor-page .adminGnbArea{display:none;position:fixed;top:80px;width:min(280px,90vw);padding:0;background:#24324a;overflow:auto}
+ body.combat-editor-page.combat-menu-open .adminGnbArea{display:block}
+ body.combat-editor-page .adminGnbArea:before,body.combat-editor-page .adminGnbArea:after{display:none}
+ body.combat-editor-page .adminGnbArea>.inner{position:static;padding:12px 0;background:none}
+ body.combat-editor-page .adminGnbArea>.inner>ul{height:auto}
+ body.combat-editor-page .tbl_wrap>table{min-width:600px}
+ body.combat-editor-page input,body.combat-editor-page select{min-height:36px}
+ body.combat-editor-page .btn_confirm{position:static}
+ body.combat-editor-page .container .anchor{display:none}
+}

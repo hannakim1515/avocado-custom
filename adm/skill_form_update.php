@@ -4,6 +4,12 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu], 'w');
 check_token();
+$dungeon_target_mode=null;
+if(monster_ready() && isset($_POST['dungeon_target_mode'])) {
+    $dungeon_target_mode=$_POST['dungeon_target_mode'];
+    if(!in_array($dungeon_target_mode,array('SINGLE','ALL','RANDOM'),true))alert('던전 공격 범위가 올바르지 않습니다.');
+    if(!sql_fetch('SHOW COLUMNS FROM `'.$g5['skill_table']."` LIKE 'sk_dungeon_target_mode'",false))alert('시스템 설치 / 업데이트에서 몬스터 관리 1.4.0을 적용하세요.');
+}
 
 $skill_data_path = G5_DATA_PATH."/skill";
 $skill_data_url = G5_DATA_URL."/skill";
@@ -58,6 +64,7 @@ $sql_common = " sk_cate			= '{$sk_cate}',
 				sk_def_enermy	= '{$sk_def_enermy}',
 				sk_use_single	= '{$sk_use_single}',
 				sk_use_st_id	= '{$sk_use_st_id}'";
+if($dungeon_target_mode!==null)$sql_common.=', sk_dungeon_target_mode = \''.sql_escape_string($dungeon_target_mode).'\'';
 
 if($w == '') {
 	$sql = " insert into {$g5['skill_table']} set {$sql_common}";

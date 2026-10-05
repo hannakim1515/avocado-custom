@@ -2,15 +2,26 @@
 if (!defined('_GNUBOARD_')) exit;
 
 function maze_config($dg) {
-    $row = maze_one('SELECT settings FROM `'.maze_table('config').'` WHERE dg_id='.(int)$dg['dg_id']);
-    $settings = array_replace(maze_defaults($dg), $row ? maze_data($row['settings']) : array());
+    $settings = array_replace(maze_defaults($dg), !empty($dg['dg_settings']) ? maze_data($dg['dg_settings']) : array());
+    $settings['rewards']=dungeon_rewards($dg['dg_id']);
+    $settings['monsters']=array();
+    foreach(monster_rows('SELECT p.* FROM `'.monster_table('dungeon_monster_pool').'` p JOIN `'.monster_table('monster_master').'` m ON m.monster_id=p.monster_id WHERE p.dg_id='.(int)$dg['dg_id'].' AND p.enabled=1 AND m.enabled=1 ORDER BY p.monster_id') as $entry)
+        $settings['monsters'][]=array('monster_id'=>(int)$entry['monster_id'],'enabled'=>true,'weight'=>(int)$entry['weight'],'boss'=>(bool)$entry['is_boss'],'min_count'=>(int)($entry['min_count']??1),'max_count'=>(int)($entry['max_count']??1));
     // dg_count remains the single source of maximum party size.
+    $settings['title']=$dg['dg_title'];
+    $settings['description']=$dg['dg_description']??'';
     $settings['max_players'] = (int)$dg['dg_count'];
-    foreach ($settings['monsters'] as &$monster) $monster['data'] = maze_monster_definition($monster['data'], $dg);
+    $settings['points'] = (int)$dg['dg_point'];
+    global $g5,$kb_cf;
+    $settings['stat_definitions']=inventory_boundary_rows('SELECT * FROM `'.$g5['status_config_table'].'` ORDER BY st_id');
+    $settings['hp_id']=0;$settings['mp_id']=(int)($kb_cf['mp']??0);
+    foreach($settings['stat_definitions'] as $definition)if($definition['st_use_hp']){$settings['hp_id']=(int)$definition['st_id'];break;}
+    foreach ($settings['monsters'] as &$monster) $monster['data'] = maze_monster_definition(!empty($monster['monster_id'])?monster_profile($monster['monster_id']):$monster['data'], $dg);
     unset($monster);
+    $settings['events']=array_values(array_filter(array_map(function($event)use($settings){return maze_event_for_pool($event,$settings['monsters']);},$settings['events'])));
     foreach ($settings['events'] as &$event) {
-        if (isset($event['monster'])) $event['monster'] = maze_monster_definition($event['monster'], $dg);
-        if (!empty($event['choices'])) foreach ($event['choices'] as &$choice) if (isset($choice['monster'])) $choice['monster'] = maze_monster_definition($choice['monster'], $dg);
+        if (($event['type']??'')==='MONSTER' && empty($event['choices'])) $event['monster'] = maze_monster_definition(!empty($event['monster_id'])?monster_profile($event['monster_id']):$event['monster'], $dg);
+        if (!empty($event['choices'])) foreach ($event['choices'] as &$choice) if (($choice['type']??'')==='MONSTER') $choice['monster'] = maze_monster_definition(!empty($choice['monster_id'])?monster_profile($choice['monster_id']):$choice['monster'], $dg);
         unset($choice);
     }
     unset($event);
@@ -29,27 +40,31 @@ function maze_validate_config($settings) {
     if ($settings['boss'] && $settings['rooms_min'] < 2 * $settings['branches_max'] + 2) throw new RuntimeException('Boss room needs additional depth.');
     $bosses = 0;
     foreach ($settings['monsters'] as $monster) {
+        maze_monster_count_range($monster);
         if (empty($monster['data']['dg_mon_hp']) || $monster['data']['dg_mon_hp'] < 1 || $monster['weight'] < 0) throw new RuntimeException('몬스터 HP/가중치를 확인해 주세요.');
         if (!empty($monster['enabled']) && !empty($monster['boss']) && $monster['weight'] > 0) $bosses++;
     }
+    if ($settings['encounter_percent'] > 0 && !array_filter($settings['monsters'],function($m){return !empty($m['enabled']) && empty($m['boss']) && $m['weight']>0;})) throw new RuntimeException('몬스터 출현 확률을 사용하려면 일반 몬스터를 선택하세요.');
     if ($settings['boss'] && !$bosses) throw new RuntimeException('사용 가능한 보스 몬스터가 필요합니다.');
     if ($settings['points'] < 0 || $settings['trap_damage'] < 0) throw new RuntimeException('보상/피해는 음수가 될 수 없습니다.');
     foreach ($settings['rewards'] as $reward) if (empty($reward['it_id']) || $reward['count'] < 1 || $reward['count'] > 100 || $reward['percent'] < 0 || $reward['percent'] > 100) throw new RuntimeException('보상 설정이 잘못되었습니다.');
     foreach ($settings['events'] as $event) {
+        if(empty($event['enabled']))continue;
         if (!isset($settings['weights'][$event['room_kind']]) || $event['weight'] < 0) throw new RuntimeException('이벤트 방 종류/가중치를 확인해 주세요.');
         if (!empty($event['choices'])) {
             foreach ($event['choices'] as $choice) {
                 if (!isset($choice['label']) || trim($choice['label']) === '' || !empty($choice['choices'])) throw new RuntimeException('선택지는 이름과 한 단계 결과가 필요합니다.');
-                maze_validate_event_result($choice);
+                maze_validate_event_result($choice,$settings['monsters']);
             }
-        } else maze_validate_event_result($event);
+        } else maze_validate_event_result($event,$settings['monsters']);
     }
 }
-function maze_validate_event_result($event) {
+function maze_validate_event_result($event,$monsters=null) {
     if (!isset($event['type']) || !in_array($event['type'], array('NONE','TEXT','ITEM','TRAP','MONSTER','HEAL'), true)) throw new RuntimeException('이벤트 결과 종류가 올바르지 않습니다.');
     if (isset($event['target']) && !in_array($event['target'], array('ACTOR','ALL','RANDOM'), true)) throw new RuntimeException('이벤트 대상이 올바르지 않습니다.');
     if ($event['type'] === 'ITEM' && (empty($event['it_id']) || empty($event['count']) || $event['count'] > 100)) throw new RuntimeException('이벤트 아이템/개수를 확인해 주세요.');
     if ($event['type'] === 'MONSTER' && empty($event['monster']['dg_mon_hp'])) throw new RuntimeException('이벤트 몬스터 HP가 필요합니다.');
+    if ($event['type'] === 'MONSTER' && $monsters!==null && !maze_event_result_allowed($event,$monsters)) throw new RuntimeException('방 이벤트의 전투 몬스터는 이 던전의 몬스터 출현 목록에 등록해야 합니다. 탐험 설정에서 몬스터를 바꾸거나 이벤트 사용을 끄세요.');
     if (isset($event['value']) && (!is_numeric($event['value']) || $event['value'] < 0)) throw new RuntimeException('이벤트 수치는 0 이상이어야 합니다.');
 }
 
@@ -69,7 +84,6 @@ function maze_admin_end($ds_id, $operation, $target_id = 0) {
         } else throw new RuntimeException('관리자 작업이 올바르지 않습니다.');
         maze_log($session['ds_id'], 0, 'ADMIN', $operation.': '.(int)$target_id);
     });
-    maze_sync_legacy_state((int)$ds_id);
     maze_pay_rewards((int)$ds_id);
 }
 
@@ -87,7 +101,7 @@ function maze_join($ds_id) {
     $expires = date('Y-m-d H:i:s', strtotime($config['cf_dungeon_reset'].' +'.max(1, (int)$config['cf_dungeon_time']).' hours'));
     inventory_boundary_query('START TRANSACTION');
     try {
-        inventory_boundary_query('INSERT INTO `'.maze_table('session').'` (ds_id,dg_id,snapshot,expires_at,created_at) VALUES ('.$ds_id.','.(int)$ds['dg_id'].','.inventory_boundary_quote(maze_json($settings)).','.inventory_boundary_quote($expires).',NOW()) ON DUPLICATE KEY UPDATE ds_id=VALUES(ds_id)');
+        inventory_boundary_query('UPDATE `'.maze_table('session').'` SET snapshot='.inventory_boundary_quote(maze_json($settings)).',expires_at='.inventory_boundary_quote($expires).',created_at=COALESCE(created_at,NOW()) WHERE ds_id='.$ds_id.' AND snapshot IS NULL');
         $session = maze_session($ds_id, true);
         $existing = maze_one('SELECT * FROM `'.maze_table('member').'` WHERE ds_id='.$ds_id.' AND ch_id='.$ch_id);
         if ($existing && $existing['state'] === 'ACTIVE') { inventory_boundary_query('COMMIT'); return; }
@@ -99,9 +113,10 @@ function maze_join($ds_id) {
         if (count($party) >= $settings['max_players']) throw new RuntimeException('최대 참가 인원에 도달했습니다.');
         $today = inventory_boundary_quote(date('Y-m-d').' 00:00:00');
         $count = maze_one('SELECT COUNT(*) AS cnt FROM `'.maze_table('member')."` WHERE ch_id={$ch_id} AND settled=1 AND exited_at>={$today}");
-        $old = sql_fetch("SELECT COUNT(*) AS cnt FROM {$g5['dungeon_member_table']} WHERE ch_id={$ch_id} AND dm_result<>'' AND dm_datetime='".date('Y-m-d')."'");
-        if ((int)$count['cnt'] + (int)$old['cnt'] >= (int)$config['cf_dungeon_enter']) throw new RuntimeException('하루 입장 횟수를 초과했습니다.');
+        if ((int)$count['cnt'] >= (int)$config['cf_dungeon_enter']) throw new RuntimeException('하루 입장 횟수를 초과했습니다.');
         $data = array('ds_id' => $ds_id, 'ch_id' => $ch_id, 'mb_id' => $member['mb_id'], 'name' => $owner['ch_name'], 'state' => 'ACTIVE', 'ready' => 0, 'settled' => 0, 'stats' => '{}', 'skills' => '{}', 'effects' => '{}', 'joined_at' => date('Y-m-d H:i:s'), 'exited_at' => null);
+        $preview=array();foreach($settings['stat_definitions'] as $definition){$id=(int)$definition['st_id'];$preview[$id]=function_exists('unified_stat_value')?(int)unified_stat_value($ch_id,$id):(int)get_status($ch_id,$id)['now'];}
+        $data['hp']=$data['max_hp']=(int)($preview[$settings['hp_id']]??0);$preview['_maximum']=$preview;$data['stats']=maze_json($preview);
         if ($existing) maze_update('member', $data, 'dm_id='.(int)$existing['dm_id']); else maze_insert('member', $data);
         maze_log($ds_id, 0, 'PARTY', $owner['ch_name'].' 입장');
         inventory_boundary_query('COMMIT');
@@ -170,6 +185,7 @@ function maze_start($session, $actor) {
     if ($reward_ids) foreach (inventory_boundary_rows('SELECT * FROM `'.$g5['item_table'].'` WHERE it_id IN ('.implode(',',$reward_ids).')') as $reward_item) $settings['reward_items'][(int)$reward_item['it_id']] = $reward_item;
     if (count($settings['reward_items']) !== count($reward_ids)) throw new RuntimeException('클리어 보상 아이템 정의가 없습니다.');
     $settings['hp_id'] = $hp_id;
+    $settings['mp_id'] = (int)($GLOBALS['kb_cf']['mp']??0);
     $settings['attack_code'] = unified_combat_action_code('atk');
     $settings['defense_code'] = '방어력';
     $settings['guard_code'] = unified_combat_action_code('guard');
@@ -219,7 +235,7 @@ function maze_finish($session, $clear) {
     $party = maze_party($session['ds_id']);
     inventory_boundary_lock_owners(array_column($party, 'ch_id'));
     foreach ($party as $person) maze_settle_member($session, $person, $clear ? 'CLEAR' : 'FAILED', $clear);
-    if ($session['battle_id']) inventory_boundary_query('UPDATE `'.maze_table('battle').'` SET state="CLOSED" WHERE battle_id='.(int)$session['battle_id'].' AND state="ACTIVE"');
+    if ($session['battle_id']) inventory_boundary_query('UPDATE `'.maze_table('battle').'` SET state="CLOSED" WHERE ds_id='.(int)$session['ds_id'].' AND (battle_id='.(int)$session['battle_id'].' OR encounter_id='.(int)$session['battle_id'].') AND state="ACTIVE"');
     maze_update('session', array('phase' => $clear ? 'CLEAR' : 'FAILED', 'finished_at' => date('Y-m-d H:i:s'), 'version' => (int)$session['version'] + 1), 'ds_id='.(int)$session['ds_id']);
     inventory_boundary_query('DELETE FROM `'.maze_table('vote').'` WHERE ds_id='.(int)$session['ds_id']);
 }

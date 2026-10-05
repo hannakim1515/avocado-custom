@@ -37,7 +37,7 @@ function get_k_battle_skill($id, $select='*', $info=false){//전투용 스킬 �
 /*전투 액션*/
 function use_k_action($action_type, $unit, $target_id, $target_type, $ra_id='0', $msg='', $option='', $system='')//일반공격
 {
-    global $kb_cf;
+    global $kb_cf, $battle_table;
 
     $rm_id = ses($unit, 'rm_id', 0, 'int');
     if ($rm_id <= 0) return '참가자 정보를 찾을 수 없습니다.';
@@ -81,7 +81,7 @@ function use_k_action($action_type, $unit, $target_id, $target_type, $ra_id='0',
         $dmg_val *= $multi;
         if ($action_type === 'atk') $dmg_val = k_guard_damage_value($target, $dmg_val);
         $dmg['value'] = $dmg_val;
-        $dead_msg = set_k_dmg($target, 'hp', $dmg_val, false, $action_type === 'atk');
+        $dead_msg = set_k_dmg($target, 'hp', $dmg_val, false, $action_type === 'atk', $unit);
     }
     if (!empty($dmg['cri'])) $cri = '<span class="cri">크리티컬!</span>';
 
@@ -141,8 +141,15 @@ function use_k_skill($sk, $unit, $target_id, $target_type, $ra_id=0, $msg='', $o
 
     if (empty($unit['rm_id']) || empty($sk['sk_id'])) return '스킬 정보를 찾을 수 없습니다.';
     $unit['mp_now'] = (int)$unit['mp_now'];
-    $need_mp        = ses($sk, 'sk_mp', 0, 'int');
-    if ($unit['mp_now'] < $need_mp) return 'mp가 부족합니다.';
+    $need_mp        = ($unit['unit_type']??'')==='mo' ? 0 : ses($sk, 'sk_mp', 0, 'int');
+    if (($unit['unit_type']??'')!=='mo' && $unit['mp_now'] < $need_mp) return 'mp가 부족합니다.';
+
+    // A의 광역 스킬은 제출한 단일 대상과 무관하게 현재 전투의 전체 대상을 읽는다.
+    if (!empty($sk['unified_a_sk_id']) && ($sk['sk_target_cnt'] ?? '') === 'all') {
+        $friendly_type = ($unit['unit_type'] ?? '') === 'mo' ? 'mo' : 'ch';
+        $target_type = ($sk['sk_target'] ?? '') === 'ally' ? $friendly_type : ($friendly_type === 'ch' ? 'mo' : 'ch');
+        $target_id = 'all';
+    }
 
     $sk_effect = '';
     $bonus = 0;
@@ -245,7 +252,7 @@ function use_k_skill($sk, $unit, $target_id, $target_type, $ra_id=0, $msg='', $o
     }
 
     // 쿨다운 설정 (캐릭터 스킬만 해당)
-    if (!empty($sk['sk_cool']) && !empty($sk['bs_id'])) {
+    if (($unit['unit_type']??'')!=='mo' && !empty($sk['sk_cool']) && !empty($sk['bs_id'])) {
         sql_query("
             UPDATE {$battle_table}_skill
             SET sk_cool_now = " . (int)$sk['sk_cool'] . "
@@ -573,6 +580,9 @@ function exec_k_mo_act($rm_id, $ra_id, $option = '', $system='') //몬스터 행
     $ra_info = sql_fetch("SELECT ra_turn, ra_count FROM {$battle_table} WHERE {$ar_title} = '" . sql_escape_string($ra_id) . "'");
     $current_turn = ses($ra_info, 'ra_turn', 1, 'int');
 
+    require_once G5_PATH.'/lib/monster_adapters.lib.php';
+    if(monster_shared_ready() && monster_shared_raid($mo_unit,$ra_id,max(1,(int)$current_turn),$option,$system))return false;
+
     // 패턴 기반 행동 결정
     $mo_act = get_k_mo_act($rm_id, $ra_id, $current_turn);
 
@@ -644,18 +654,22 @@ function k_guard_damage_value($unit, $value)
     $rm_id = ses($unit, 'rm_id', 0, 'int');
     if ($rm_id <= 0) return $value;
 
-    static $rates = array();
-    $key = (string)$battle_table.'|'.$rm_id;
-    if (!isset($rates[$key])) {
-        $guard = sql_fetch("SELECT SUM(bf_value) AS rate FROM {$battle_table}_buff
+    // Read current buffs: a monster may grant guard earlier in this same turn.
+    $guard = sql_fetch("SELECT SUM(bf_value) AS rate FROM {$battle_table}_buff
             WHERE rm_id = '{$rm_id}' AND si_code = 'unified_guard' AND turn_left > 0", false);
-        $rates[$key] = min(90, max(0, (int)ses($guard, 'rate', 0, 'int')));
+    $rate=min(90,max(0,(int)ses($guard,'rate',0,'int')));
+    if(($unit['unit_type']??'')==='mo') {
+        require_once G5_PATH.'/lib/monster_shared.lib.php';
+        if(monster_shared_ready()) {
+            $snapshot=sql_fetch('SELECT state FROM `'.monster_table('monster_runtime').'` WHERE battle_key='.monster_quote('raid:'.$battle_table.':'.$unit['ra_id']).' AND unit_key='.monster_quote($rm_id));
+            if($snapshot){$shared=json_decode($snapshot['state'],true);$value=-max(0,abs($value)-(int)$shared['definition']['defense']);}
+        }
     }
-    return $rates[$key] > 0 ? -(int)round(abs($value) * (100 - $rates[$key]) / 100) : $value;
+    return -(int)round(abs($value)*(100-$rate)/100);
 }
 
 /*대미지 셋*/
-function set_k_dmg($unit, $type, $value, $rev=false, $guard_applied=false)//대미지처리
+function set_k_dmg($unit, $type, $value, $rev=false, $guard_applied=false,$actor=null)//대미지처리
 {
     global $battle_table;
 
@@ -676,6 +690,11 @@ function set_k_dmg($unit, $type, $value, $rev=false, $guard_applied=false)//대�
     // 이미 행동불능이면 HP 감소 스킵
     if ($now <= 0 && ($value <= 0 || ($rev !== 'rev' && $type === 'hp'))) return false;
 
+    if($type==='hp' && $actor && ($actor['unit_type']??'')==='ch' && (string)($actor['ra_id']??'')===(string)($unit['ra_id']??'')) {
+        require_once G5_PATH.'/lib/monster_shared.lib.php';
+        if(($unit['unit_type']??'')==='mo' && $value<0)monster_shared_raid_credit($unit['ra_id'],$actor['rm_id'],min($now,abs($value)),$rm_id);
+        elseif(($unit['unit_type']??'')==='ch' && $value>0 && $now>0)monster_shared_raid_credit($unit['ra_id'],$actor['rm_id'],max(0,min($max-$now,$value))*.5);
+    }
     $now += $value;
 
     if ($type === 'hp' && $now <= 0) {
@@ -746,6 +765,9 @@ function k_unit_dead($rm_id)//사망시 처리
     global $battle_table;
     $rm_id = (int)$rm_id;
 
+    require_once G5_PATH.'/lib/monster_shared.lib.php';
+    $dead=sql_fetch('SELECT ra_id FROM `'.$battle_table.'_unit` WHERE rm_id='.(int)$rm_id);
+    if($dead)monster_shared_forget('raid:'.$battle_table.':'.$dead['ra_id'],$rm_id);
     sql_query("UPDATE {$battle_table}_unit SET is_stun=0, is_aggr=0, hp_now=0 WHERE rm_id='{$rm_id}'");
     sql_query("DELETE FROM {$battle_table}_buff  WHERE rm_id='{$rm_id}'");
     sql_query("UPDATE {$battle_table}_skill SET sk_cool_now=0 WHERE rm_id='{$rm_id}'");

@@ -3,6 +3,27 @@ $sub_menu = "730200";
 include_once('./_common.php');
 
 auth_check($auth[$sub_menu], 'r');
+require_once __DIR__.'/dungeon_maze.admin.lib.php';
+$maze_ready=maze_readiness()['ready'];
+$ds_id=(int)($_REQUEST['ds_id']??0);
+if($_SERVER['REQUEST_METHOD']==='GET' && $ds_id) goto_url('./dungeon_log.php?ds_id='.$ds_id);
+$dg_id=0;
+$message='';
+if ($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['operation'])) {
+    auth_check($auth[$sub_menu], 'w');
+    inventory_boundary_check_token();
+    try {
+        maze_require_ready();
+        $operation=$_POST['operation'];
+        if (in_array($operation,array('clear','fail','kick'),true)) {
+            maze_admin_end($ds_id,$operation,(int)($_POST['target_id']??0));
+        } elseif ($operation==='reward_retry') {
+            if (!maze_session($ds_id)) throw new RuntimeException('세션을 찾을 수 없습니다.');
+            maze_pay_rewards($ds_id);
+        } else throw new RuntimeException('지원하지 않는 요청입니다.');
+        goto_url('./dungeon_log.php?ds_id='.$ds_id.'&saved=1');
+    } catch (Throwable $error) { $message=$error->getMessage(); }
+}
 
 $token = get_token();
 
@@ -23,7 +44,7 @@ $sql = " select count(*) as cnt
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
-$rows = $config['cf_page_rows'];
+$rows = max(1,(int)($config['cf_page_rows']??0) ?: 20);
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -40,6 +61,8 @@ $listall = '<a href="'.$_SERVER['PHP_SELF'].'" class="ov_listall">전체목록</
 $g5['title'] = '던전 발생 현황 관리';
 include_once ('./admin.head.php');
 include_once('./990_unified_menu_bootstrap.php');
+if ($message) echo '<div class="local_desc01 local_desc" role="status">'.maze_admin_h($message).'</div>';
+if (!empty($_GET['saved'])) echo '<div class="local_desc01 local_desc" role="status">처리했습니다.</div>';
 
 $colspan =9;
 
@@ -89,7 +112,7 @@ if($config['cf_dungeon_open']) {
 				<th scope="col">던전명</th>
 				<th scope="col">등장지역</th>
 				<th scope="col" colspan="2">입장현황</th>
-				<th scope="col">몹 HP 현황</th>
+				<th scope="col">탐험 진행</th>
 				<th scope="col">열린시각</th>
 				<th scope="col">관리</th>
 			</tr>
@@ -108,12 +131,18 @@ if($config['cf_dungeon_open']) {
 					case "E" : $color = "#999"; $state_txt = "닫힘"; break;
 				}
 
-				$dg_mem_list = get_dungeon_member($row['ds_id'], "");
+				$maze_session=$maze_ready?maze_session((int)$row['ds_id']):null;
+				$maze_people=$maze_session?maze_party((int)$row['ds_id'],false):array();
+				if($maze_session) {
+					$state_txt=array('WAITING'=>'대기실','EXPLORE'=>'탐색 / 조사','BATTLE'=>'전투','BOSS_RESULT'=>'보스 처치','CLEAR'=>'클리어','FAILED'=>'실패','CLOSED'=>'종료')[$maze_session['phase']]??$maze_session['phase'];
+					$color='';
+				}
+				$dg_mem_list = $maze_session?array():get_dungeon_member($row['ds_id'], "");
 			?>
 
 			<tr class="<?php echo $bg; ?>">
 				<td style="text-align: center">
-					<input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
+					<input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>" <?=$maze_session?'disabled':''?>>
 					<input type="hidden" name="ds_id[<?php echo $i ?>]" value="<?php echo $row['ds_id'] ?>" />
 				</td>
 				<td style="background:<?=$color?>"><?=$state_txt?></td>
@@ -123,27 +152,24 @@ if($config['cf_dungeon_open']) {
 				<td><?=get_map_name(($row['ds_ma_id'] ? $row['ds_ma_id'] : $row['ma_id']))?></td>
 
 				<td>
-					<?=get_dungeon_member_count($row['ds_id'])?> / <?=$row['dg_count']?>
+					<?=$maze_session?count(array_filter($maze_people,function($p){return $p['state']==='ACTIVE';})):get_dungeon_member_count($row['ds_id'])?> / <?=$row['dg_count']?>
 				</td>
 				<td style="text-align:left;">
-					<? for($k=0; $k < count($dg_mem_list); $k++) { ?>
-						<p style="display:inline-block; vertical-align:middle; margin-right:10px;">
-							<em style="background:no-repeat 50% 50% url(<?=$dg_mem_list[$k]['ch_thumb']?>) rgba(0,0,0,.6); background-size:cover; border:1px solid #000; display:inline-block; vertical-align:middle; width:20px; height:20px;"></em>
-							<span><?=$dg_mem_list[$k]['dm_state']=='E' ? "[퇴장]" : ""?><a href="./character_form.php?w=u&amp;ch_id=<?=$dg_mem_list[$k]['ch_id']?>"><?=$dg_mem_list[$k]['ch_name']?></a></span>
-							<a href="./dungeon_state_member_delete.php?dm_id=<?=$dg_mem_list[$k]['dm_id']?>" onclick="return confirm('해당 멤버의 입장 내역을 삭제하시겠습니까?');">[X]</a>
-						</p>
-					<? } ?>
+					<?php foreach($maze_people as $person): ?><p><?=maze_admin_h($person['name'])?> · HP <?=(int)$person['hp']?> · <?=maze_admin_h($person['state'])?></p><?php endforeach; ?>
+
 				</td>
 				<td>
-					<input type="text" name="ds_hurt[<?php echo $i ?>]" value="<?php echo $row['ds_hurt'] ?>" style="width:100px; text-align:center;">
-					/
-					<input type="text" name="ds_hp[<?php echo $i ?>]" value="<?php echo $row['ds_hp'] ?>" style="width:100px; text-align:center;">
+					<?php if($maze_session): ?>
+					방 <?=(int)$maze_session['room_id']?>
+					<?php if($battle=maze_admin_battle($maze_session)): ?> · 턴 <?=(int)$battle['turn_no']?><?php endif; ?>
+                    <?php else: ?>대기실 입장 전
+                    <?php endif; ?>
 				</td>
 				<td>
 					<? if($row['ds_datetime']) { echo $row['ds_datetime']; } ?>
 				</td>
 				<td>
-					<a href="./dungeon_log.php?ds_id=<?=$row['ds_id']?>">로그확인</a>
+					<a class="btn btn_03" href="./dungeon_log.php?ds_id=<?=(int)$row['ds_id']?>">로그확인</a>
 				</td>
 			</tr>
 

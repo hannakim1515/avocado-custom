@@ -1,0 +1,213 @@
+{
+  "k_quest": {
+    "columns": {
+      "qu_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "qu_type": "enum('main','sub','member') NOT NULL DEFAULT 'sub'",
+      "qu_complete_type": "enum('log','item') NOT NULL DEFAULT 'log'",
+      "qu_submit_type": "enum('mmb','direct','admin') NOT NULL DEFAULT 'mmb'",
+      "qu_title": "varchar(255) NOT NULL DEFAULT ''",
+      "qu_content": "text",
+      "qu_content2": "text",
+      "qu_end_msg": "varchar(255) NOT NULL DEFAULT ''",
+      "qu_request_item": "int(11) NOT NULL DEFAULT 0",
+      "qu_request_item_count": "int(11) NOT NULL DEFAULT 1",
+      "qu_take_max": "int(11) NOT NULL DEFAULT 0",
+      "qu_take_now": "int(11) NOT NULL DEFAULT 0",
+      "qu_ch_id": "int(11) NOT NULL DEFAULT 0",
+      "qu_blind": "tinyint(1) NOT NULL DEFAULT 0",
+      "qu_money": "int(11) NOT NULL DEFAULT 0",
+      "qu_exp": "int(11) NOT NULL DEFAULT 0",
+      "it_id": "int(11) NOT NULL DEFAULT 0",
+      "ti_id": "int(11) NOT NULL DEFAULT 0",
+      "event_id": "varchar(100) NOT NULL DEFAULT ''",
+      "event_week": "varchar(100) NOT NULL DEFAULT ''",
+      "qu_state": "enum('hidden','active','done') NOT NULL DEFAULT 'active'",
+      "qu_view": "tinyint(1) NOT NULL DEFAULT 0",
+      "qu_datetime": "datetime DEFAULT NULL"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "qu_id"
+        ],
+        "unique": true
+      },
+      "idx_qu_type": {
+        "columns": [
+          "qu_type"
+        ],
+        "unique": false
+      },
+      "idx_qu_state": {
+        "columns": [
+          "qu_state"
+        ],
+        "unique": false
+      },
+      "idx_event_id": {
+        "columns": [
+          "event_id"
+        ],
+        "unique": false
+      },
+      "idx_qu_ch_id": {
+        "columns": [
+          "qu_ch_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "adm/993_quest_config.php",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "k_quest_has": {
+    "columns": {
+      "qh_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "qu_id": "int(11) NOT NULL DEFAULT 0",
+      "ch_id": "int(11) NOT NULL DEFAULT 0",
+      "qh_state": "enum('수행중','완료','실패') NOT NULL DEFAULT '수행중'",
+      "qh_starttime": "datetime DEFAULT NULL",
+      "qh_endtime": "datetime DEFAULT NULL",
+      "qh_log": "varchar(255) NOT NULL DEFAULT ''"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "qh_id"
+        ],
+        "unique": true
+      },
+      "uk_qu_ch": {
+        "columns": [
+          "qu_id",
+          "ch_id"
+        ],
+        "unique": true
+      },
+      "idx_ch_id": {
+        "columns": [
+          "ch_id"
+        ],
+        "unique": false
+      },
+      "idx_qh_state": {
+        "columns": [
+          "qh_state"
+        ],
+        "unique": false
+      },
+      "idx_qh_starttime": {
+        "columns": [
+          "qh_starttime"
+        ],
+        "unique": false
+      }
+    },
+    "source": "adm/993_quest_config.php",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "k_quest_config": {
+    "columns": {
+      "qc_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "qc_title": "varchar(50) NOT NULL DEFAULT '퀘스트'",
+      "qc_register_reward_type": "enum('exp','money','item') NOT NULL DEFAULT 'money'",
+      "qc_register_reward_value": "int(11) NOT NULL DEFAULT 30",
+      "qc_complete_reward_type": "enum('exp','money','item') NOT NULL DEFAULT 'money'",
+      "qc_complete_reward_value": "int(11) NOT NULL DEFAULT 5",
+      "qc_quarter_receive_max": "int(11) NOT NULL DEFAULT 3",
+      "qc_quarter_give_max": "int(11) NOT NULL DEFAULT 2",
+      "qc_member_take_max": "int(11) NOT NULL DEFAULT 3",
+      "qc_last_reset_date": "date DEFAULT NULL",
+      "qc_reset_days": "int(11) NOT NULL DEFAULT 7",
+      "qc_main_display_count": "int(11) NOT NULL DEFAULT 3",
+      "qc_member_quest_enabled": "tinyint(1) NOT NULL DEFAULT 1",
+      "qc_member_quest_type": "varchar(50) NOT NULL DEFAULT 'mmb,direct'",
+      "qc_main_color": "varchar(20) NOT NULL DEFAULT '#d4a373'",
+      "qc_sub_color": "varchar(20) NOT NULL DEFAULT '#8EACBB'",
+      "qc_member_color": "varchar(20) NOT NULL DEFAULT '#509164'",
+      "qc_main_text_color": "varchar(20) NOT NULL DEFAULT 'white'",
+      "qc_sub_text_color": "varchar(20) NOT NULL DEFAULT 'white'",
+      "qc_member_text_color": "varchar(20) NOT NULL DEFAULT 'white'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "qc_id"
+        ],
+        "unique": true
+      }
+    },
+    "source": "adm/993_quest_config.php",
+    "create": true,
+    "engine": "InnoDB",
+    "charset": "utf8mb4",
+    "require_engine": true
+  },
+  "character": {
+    "columns": {
+      "ch_give_quest": "VARCHAR(100) NOT NULL DEFAULT '0'",
+      "ch_receive_quest": "VARCHAR(100) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {},
+    "source": "adm/993_quest_config.php",
+    "create": false
+  },
+  "inventory": {
+    "columns": {
+      "qu_id": "INT(11) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {},
+    "source": "adm/993_quest_config.php",
+    "create": false
+  },
+  "k_quest_inven": {
+    "columns": {
+      "in_id": "int(11) NOT NULL AUTO_INCREMENT",
+      "it_id": "varchar(255) NOT NULL DEFAULT ''",
+      "it_name": "varchar(255) NOT NULL DEFAULT ''",
+      "it_rel": "varchar(255) NOT NULL DEFAULT ''",
+      "ch_id": "varchar(255) NOT NULL DEFAULT ''",
+      "ch_name": "varchar(255) NOT NULL DEFAULT ''",
+      "se_ch_id": "varchar(255) NOT NULL DEFAULT ''",
+      "se_ch_name": "varchar(255) NOT NULL DEFAULT ''",
+      "re_ch_id": "varchar(255) NOT NULL DEFAULT ''",
+      "re_ch_name": "varchar(255) NOT NULL DEFAULT ''",
+      "in_sdatetime": "datetime NOT NULL DEFAULT '0000-00-00'",
+      "in_edatetime": "datetime NOT NULL DEFAULT '0000-00-00'",
+      "in_memo": "varchar(255) NOT NULL DEFAULT ''",
+      "in_use": "varchar(255) NOT NULL DEFAULT ''",
+      "in_1": "varchar(255) NOT NULL DEFAULT ''",
+      "in_2": "varchar(255) NOT NULL DEFAULT ''",
+      "in_3": "varchar(255) NOT NULL DEFAULT ''",
+      "in_4": "varchar(255) NOT NULL DEFAULT ''",
+      "in_5": "varchar(255) NOT NULL DEFAULT ''",
+      "qu_id": "int(11) NOT NULL DEFAULT '0'"
+    },
+    "indexes": {
+      "PRIMARY": {
+        "columns": [
+          "in_id"
+        ],
+        "unique": true
+      },
+      "in_id": {
+        "columns": [
+          "in_id"
+        ],
+        "unique": false
+      }
+    },
+    "source": "adm/993_quest_config.php (CREATE LIKE inventory; current custom columns checked at runtime)",
+    "create": true,
+    "engine": "MyISAM",
+    "charset": "utf8",
+    "require_engine": false,
+    "create_like": "inventory"
+  }
+}

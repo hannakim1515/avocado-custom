@@ -2,6 +2,7 @@
 $sub_menu = "500200";
 include_once('./_common.php');
 include_once(G5_EDITOR_LIB);
+require_once dirname(__DIR__).'/lib/item_effect.lib.php';
 
 auth_check($auth[$sub_menu], 'w');
 
@@ -28,6 +29,8 @@ if ($w == '') {
 	$readonly = 'readonly';
 }
 
+$recovery_statuses = item_recovery_statuses();
+$category = array_values(array_diff($category, array('부활','상태이상치료')));
 $g5['title'] = $html_title;
 include_once ('./admin.head.php');
 include_once('./990_unified_menu_bootstrap.php');
@@ -99,6 +102,9 @@ $frm_submit .= '</div>';
 							<option value="<?=$category[$k]?>" <?=$item['it_type'] == $category[$k] ? "selected" : ""?>><?=$category[$k]?></option>
 						<? } ?>
 							<option value="뽑기" <?=$item['it_type'] == "뽑기" ? "selected" : ""?>>뽑기 아이템</option>
+
+                            <option value="부활" <?=($item['it_type'] ?? '') === '부활' ? 'selected' : ''?>>부활</option>
+                            <option value="상태이상치료" <?=($item['it_type'] ?? '') === '상태이상치료' ? 'selected' : ''?>>상태이상 치료</option>
 						</select>
 						<? if($w == 'u' && $item['it_type'] == '뽑기') { ?>
 						&nbsp;&nbsp;
@@ -128,7 +134,13 @@ $frm_submit .= '</div>';
 
 
 
-						<input type="text" name="it_value" value="<?php echo $item['it_value']; ?>" id="it_value" size="15">
+						<input type="text" name="it_value" value="<?php echo get_text($item['it_value'] ?? ''); ?>" id="it_value" size="15">
+                        <span id="item-recovery-status" hidden><label for="recovery_status_id">치료할 상태이상</label>
+                        <select name="recovery_status_id" id="recovery_status_id"><option value="">상태이상 선택</option>
+                        <?php foreach ($recovery_statuses as $status): ?>
+                        <option value="<?=(int)$status['status_id']?>" <?=($item['it_type'] ?? '') === '상태이상치료' && (int)($item['it_value'] ?? 0) === (int)$status['status_id'] ? 'selected' : ''?>><?=get_text($status['name'])?><?=$status['enabled'] ? '' : ' (사용 중지)'?></option>
+                        <?php endforeach; ?></select></span>
+                        <p id="item-recovery-help" class="frm_info" hidden></p>
 					</td>
 				</tr>
 				<tr>
@@ -293,10 +305,10 @@ function fitemform_submit(f)
 }
 
 function fn_type_chage(obj) {
+    item_recovery_change(obj.value);
 	var target = obj.value;
 	$('.switch-obj').hide();
-	$('.switch-obj').find('select').val('');
-	$('.switch-obj').find('input').val('');
+
 
 	$('.switch-obj').each(function() {
 		var check = $(this).attr('data-type');
@@ -311,6 +323,23 @@ function fn_type_chage(obj) {
 	$('.switch-obj[data-type*="'+target+'"]').show();
 }
 
+function item_recovery_change(type) {
+    var revive = type === '부활', cleanse = type === '상태이상치료';
+    var value = document.getElementById('it_value');
+    value.hidden = cleanse;
+    value.disabled = cleanse;
+    value.type = revive ? 'number' : 'text';
+    value.required = revive;
+    if (revive) { value.min = '1'; value.max = '100'; }
+    else { value.removeAttribute('min'); value.removeAttribute('max'); }
+    document.getElementById('item-recovery-status').hidden = !cleanse;
+    var status = document.getElementById('recovery_status_id');
+    status.disabled = !cleanse; status.required = cleanse;
+    var help = document.getElementById('item-recovery-help');
+    help.hidden = !revive && !cleanse;
+    help.textContent = revive ? '최대 HP의 몇 %로 부활할지 입력하세요 (1~100%). 미궁 전투에서 사용하려면 아래 전투 사용 가능을 켜세요.' : '이름으로 치료할 상태이상을 선택하세요. 미궁 전투에서 사용하려면 아래 전투 사용 가능을 켜세요.';
+}
+item_recovery_change(document.querySelector('[name="it_type"]').value);
 </script>
 
 <?php

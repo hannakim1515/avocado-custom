@@ -37,6 +37,7 @@ $g5['title'] = $title.' 설정';
 include_once('./admin.head.php');
 include_once('./990_unified_menu_bootstrap.php');
 include_once('./admin.stat.php'); 
+if ($category === 'battle') echo '<div class="local_desc01 local_desc">기존 K 전투에서 공격자와 대상의 스탯을 사용하는 계산 수식입니다. 통합 전투의 공격·방어·치유 행동값은 <a href="status_extra_list.php">전투 행동 코드</a>에서 설정하세요.</div>';
 
 // 샘플 유닛/타겟 분해
 $sample_unit_str  = ses($kb_cf, 'sample_unit', '');

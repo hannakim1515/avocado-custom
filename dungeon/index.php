@@ -15,7 +15,7 @@ if($config['cf_dungeon_map']) {
 $config['cf_dungeon_reset'] = set_reset_dungeon();
 
 $dungeon_list = array();
-$dungeon_sql = sql_query("select * from {$g5['dungeon_state_table']} ds, {$g5['dungeon_table']} dg where ds.ds_state = 'S' and ds.dg_id = dg.dg_id");
+$dungeon_sql = sql_query("select * from {$g5['dungeon_state_table']} ds, {$g5['dungeon_read_table']} dg where ds.ds_state = 'S' and ds.dg_id = dg.dg_id");
 while ($row=sql_fetch_array($dungeon_sql)) $dungeon_list[]=$row;
 $maze_index_sessions=array(); $maze_index_parties=array();
 if ($dungeon_list && maze_installed()) {
@@ -28,9 +28,6 @@ if ($dungeon_list && maze_installed()) {
 <div class="dungeonListWrap">
 	<ul>
 		<? foreach($dungeon_list as $dg) {
-			$mon_hp = $dg['ds_hp'];
-			$mon_hp_now = ($dg['ds_hp'] - $dg['ds_hurt']) <= 0 ? 0 : $dg['ds_hp'] - $dg['ds_hurt'];
-			$mon_hp_per = $mon_hp_now == 0 ? 0 : ($mon_hp_now/$mon_hp) * 100;
 
 			$close_date = date('m/d H:i', strtotime($config['cf_dungeon_reset']." +{$config['cf_dungeon_time']} Hour"));
             $indexed_session=$maze_index_sessions[(int)$dg['ds_id']] ?? null;
@@ -63,13 +60,7 @@ if ($dungeon_list && maze_installed()) {
 							<? } ?>
 						</div>
 
-						<div class="bar">
-							<span style="width:<?=$mon_hp_per?>%;"></span>
-							<div class="txt">
-								<strong><?=$mon_hp_now?></strong>
-								<span><?=$mon_hp?></span>
-							</div>
-						</div>
+						<p>방 탐험 · 몬스터 전투 · 클리어</p>
 
 						<? if($dg['dg_status']) {
 							$st_name = sql_fetch("select st_name from {$g5['status_config_table']} where st_id = '{$dg['dg_status']}'"); $st_name = $st_name['st_name'];
@@ -114,7 +105,7 @@ if ($dungeon_list && maze_installed()) {
 				</div>
 
 				<? if($dg_url) { ?>
-				<div class="control"><button type='button' onclick="goto_dungeon_application('<?=$dg_url?>');"><span><?=htmlspecialchars($maze_entry_label, ENT_QUOTES, 'UTF-8')?></span></button></div>
+				<div class="control"><?php if($maze_entry_label==='입장하기') { ?><form method="post" action="<?=G5_URL?>/dungeon/maze.php" onsubmit="return confirm('던전에 입장하시겠습니까?');"><input type="hidden" name="token" value="<?=get_text(inventory_boundary_token())?>"><input type="hidden" name="ds_id" value="<?=(int)$dg['ds_id']?>"><input type="hidden" name="operation" value="join"><button type="submit"><span>입장하기</span></button></form><?php } else { ?><button type='button' onclick="goto_dungeon_application('<?=$dg_url?>');"><span><?=htmlspecialchars($maze_entry_label, ENT_QUOTES, 'UTF-8')?></span></button><?php } ?></div>
 				<? } ?>
 
 			</div>

@@ -1,4 +1,6 @@
--- MANUAL ONLY. Replace avo_ with the actual prefix. No existing core engine changes.
+-- HISTORICAL installer source (labyrinth 1.0.0). Do not apply to a current site.
+-- Current installs and upgrades use adm/system_install.php and install/system contracts.
+-- The latest migration merges config/session into dungeon/dungeon_state and removes their old tables.
 CREATE TABLE IF NOT EXISTS avo_dungeon_maze_meta (
   singleton tinyint NOT NULL PRIMARY KEY,
   schema_version int NOT NULL,
@@ -66,6 +68,7 @@ CREATE TABLE IF NOT EXISTS avo_dungeon_maze_room (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE IF NOT EXISTS avo_dungeon_maze_battle (
   battle_id bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  encounter_id bigint NOT NULL DEFAULT 0,
   ds_id int NOT NULL,
   room_id int NOT NULL,
   state varchar(16) NOT NULL DEFAULT 'ACTIVE',
@@ -75,7 +78,8 @@ CREATE TABLE IF NOT EXISTS avo_dungeon_maze_battle (
   hp int NOT NULL,
   weak_count int NOT NULL DEFAULT 0,
   weak_turn int NOT NULL DEFAULT 0,
-  KEY session (ds_id,battle_id)
+  KEY session (ds_id,battle_id),
+  KEY encounter (ds_id,encounter_id,battle_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE IF NOT EXISTS avo_dungeon_maze_action (
   battle_id bigint NOT NULL,
@@ -83,6 +87,7 @@ CREATE TABLE IF NOT EXISTS avo_dungeon_maze_action (
   dm_id bigint NOT NULL,
   action varchar(16) NOT NULL DEFAULT '',
   target_id bigint NOT NULL DEFAULT 0,
+  monster_id bigint NOT NULL DEFAULT 0,
   reference_id bigint NOT NULL DEFAULT 0,
   escape_vote tinyint NOT NULL DEFAULT 0,
   PRIMARY KEY (battle_id,turn_no,dm_id)
@@ -137,12 +142,6 @@ CREATE TABLE IF NOT EXISTS avo_dungeon_maze_status (
   duration int NOT NULL,
   enabled tinyint NOT NULL DEFAULT 1,
   components longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-CREATE TABLE IF NOT EXISTS avo_dungeon_maze_item_effect (
-  it_id int NOT NULL PRIMARY KEY,
-  kind varchar(16) NOT NULL,
-  status_id int NOT NULL DEFAULT 0,
-  value int NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- The runtime also checks all tables/columns/indexes; this row alone is insufficient.
 INSERT INTO avo_dungeon_maze_meta (singleton,schema_version,action_timeout)

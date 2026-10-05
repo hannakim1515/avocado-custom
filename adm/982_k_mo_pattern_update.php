@@ -3,6 +3,12 @@ $sub_menu = '981420';
 include_once('./_common.php');
 
 check_token();
+require_once G5_PATH.'/lib/monster_shared.lib.php';
+if (monster_shared_ready()) {
+    $legacy_id=(int)($_REQUEST['mo_id']??0);
+    $linked=$legacy_id?sql_fetch('SELECT monster_id FROM `'.monster_table('monster_master').'` WHERE raid_id='.$legacy_id):null;
+    alert('몬스터 행동은 공용 몬스터 관리 화면에서 설정해 주세요.', './'.($linked?'monster_form.php?monster_id='.(int)$linked['monster_id']:'monster.php'));
+}
 
 $mo_id = ses($_REQUEST, 'mo_id', 0, 'int');
 $type = ses($_REQUEST, 'type', '', 'string');
@@ -25,7 +31,15 @@ if ($type === 'set_pattern_type') {
         $mo_default_act = 1;
     }
     
-    sql_query("UPDATE {$g5['k_monster_table']} SET mo_pattern = '{$mo_pattern}', mo_default_act = '{$mo_default_act}' WHERE mo_id = '{$mo_id}'");
+    require_once G5_PATH.'/lib/monster.lib.php';
+    if(!monster_raid_catalog_ready())alert('몬스터 관리 DB를 1.5.0으로 업데이트하세요.');
+    $master=sql_fetch('SELECT monster_id,profile FROM `'.monster_table('monster_master').'` WHERE raid_id='.$mo_id);
+    if(!$master)alert('몬스터를 찾을 수 없습니다.');
+    $profile=json_decode($master['profile']??'{}',true);
+    if(!is_array($profile))alert('몬스터 프로필을 확인하세요.');
+    $profile['k_pattern']=$mo_pattern;$profile['k_default_act']=$mo_default_act;
+    if(isset($profile['shared'])){$profile['shared']['pattern']=$mo_pattern===2?'CYCLE':'INTERVAL';$profile['shared']['default_attack']=$mo_default_act===2;}
+    sql_query('UPDATE `'.monster_table('monster_master').'` SET profile='.monster_quote(json_encode($profile,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)).' WHERE monster_id='.(int)$master['monster_id']);
     
     goto_url($return_url);
 }

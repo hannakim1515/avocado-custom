@@ -396,7 +396,7 @@ if ($_SESSION['ss_mb_id']) { // 로그인중이라면
         $member = array();
     } else {
         // 오늘 처음 로그인 이라면
-        if (substr($member['mb_today_login'], 0, 10) != G5_TIME_YMD) {
+        if (!defined('G5_GAME_STATE_READ_ONLY') && substr($member['mb_today_login'], 0, 10) != G5_TIME_YMD) {
             // 첫 로그인 포인트 지급
             insert_point($member['mb_id'], $config['cf_login_point'], G5_TIME_YMD.' 첫로그인', '@login', $member['mb_id'], G5_TIME_YMD);
 
@@ -533,7 +533,7 @@ if(isset($config['cf_theme']) && trim($config['cf_theme'])) {
 
 
 // 테마 설정 로드
-if(defined('G5_THEME_PATH') && is_file(G5_THEME_PATH.'/theme.config.php'))
+if(!defined('G5_GAME_STATE_READ_ONLY') && !defined('G5_SYSTEM_INSTALLER') && defined('G5_THEME_PATH') && is_file(G5_THEME_PATH.'/theme.config.php'))
     include_once(G5_THEME_PATH.'/theme.config.php');
 
 //=====================================================================================
@@ -653,6 +653,9 @@ $faq_skin_url       = get_skin_url('faq', $config['cf_faq_skin']);
 //==============================================================================
 
 
+// Installer requests authenticate through common.php but never run optional
+// legacy bootstraps, automatic cleanup, or theme extensions before authorization.
+if (!defined('G5_SYSTEM_INSTALLER') && !defined('G5_GAME_STATE_READ_ONLY')) {
 // 방문자수의 접속을 남김
 include_once(G5_BBS_PATH.'/visit_insert.inc.php');
 
@@ -696,6 +699,8 @@ if(defined('G5_THEME_PATH')) {
 	}
 	unset($extend_file);
 }
+
+} // G5_SYSTEM_INSTALLER
 
 ob_start();
 

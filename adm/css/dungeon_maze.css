@@ -1,0 +1,13 @@
+.maze-editor-list {overflow-x:auto}
+.maze-editor-list > table {min-width:760px;table-layout:fixed}
+.maze-editor-events > table {min-width:990px}
+.maze-editor-list th:first-child,.maze-editor-list td:first-child {width:42px}
+.maze-editor-list th:last-child,.maze-editor-list td:last-child {width:72px}
+.maze-editor-list td {white-space:nowrap}
+.maze-editor-list td input:not([type=checkbox]),.maze-editor-list td select {box-sizing:border-box;width:100%;min-width:0;max-width:100%}
+.maze-editor-list .maze-detail-row > td {padding:16px;text-align:left;white-space:normal;background:#fafafa}
+.maze-detail-fields {display:flex;flex-wrap:wrap;gap:12px 18px;margin-bottom:15px}
+.maze-detail-fields label {display:flex;flex-direction:column;gap:5px;min-width:150px}
+.maze-detail-fields label[hidden] {display:none}
+.maze-detail-fields input,.maze-detail-fields select {width:100%}
+.maze-detail-row .maze-editor-list {margin-top:8px}

@@ -1,0 +1,18 @@
+@charset "utf-8";
+.system-install { max-width: 1120px; }
+.system-install p, .system-install li { overflow-wrap: anywhere; }
+.si-modules { border-top: 1px solid #ddd; }
+.si-module { display: grid; grid-template-columns: minmax(200px, 1.3fr) minmax(170px, 1fr) 120px; gap: 8px 24px; padding: 20px 0; border-bottom: 1px solid #ddd; align-items: center; }
+.si-module .h2_frm { margin: 0; }
+.si-state p, .si-note { font-size: 13px; }
+.si-warning, .si-errors { color: #9b321b; }
+.si-action { justify-self: end; }
+.si-button:disabled { opacity: .55; cursor: not-allowed; }
+.si-details { grid-column: 1 / -1; }
+.system-install summary { cursor: pointer; padding: 8px 0; }
+.system-install details[open] > :not(summary) { margin-top: 8px; }
+.system-install li { list-style: disc; margin-left: 22px; }
+.si-result { margin: 20px 0; }
+.si-inventory, .si-qa { margin-top: 30px; }
+.si-inventory label { display: block; margin: 12px 0; }
+.si-note { margin-top: 12px; }

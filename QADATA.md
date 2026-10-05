@@ -2,13 +2,17 @@
 
 ## 0. 이 문서의 용도
 
+**현재 실제 테스트 데이터와 서버 이동 방법은 [서버 QA 안내](docs/qa-server-test.md)를 먼저 확인한다.** 2026-10-05에 기존 관리자 캐릭터 3명을 재사용하고, 던전 8개·공용 몬스터 9종·플레이어 스킬 12종·몬스터 기술 7종·아이템 16종·상태이상 4종·실시간 레이드 3개·MMB/1:1 테스트 게시판을 준비했다. `dev/tools/seed_qa_server.php`는 사용자가 승인한 QA 진행 초기화를 실제 아이템 정산 코드로 처리한다. `artifacts/qa-server-test-20261005.sql`은 재가져오기 검증을 마친 전체 DB 내보내기다.
+
 이 문서를 LLM에게 그대로 제공하고 다음과 같이 요청한다.
 
 > 이 QADATA 지침과 현재 운영 DB의 사전 점검 결과를 기준으로, 한 번에 실행할 수 있는 QA 데이터 seed SQL을 작성해 줘. 실제 테이블 prefix를 적용하고, 모든 참조 ID는 실행 중 조회하거나 캡처하며, 검증 SQL과 안전한 재실행 규칙도 포함해 줘.
 
-대상은 **이 저장소를 새로 설치한 뒤 최고관리자 계정만 존재하는 사이트**다. 생성할 데이터는 캐릭터, 기본 스탯, 전투 연동 코드, 스킬, 아이템과 인벤토리, 장비, 맵과 아르바이트, NPC 비주얼 이벤트와 조건 분기, K 실시간 레이드, 몬스터, 기존 던전 정의, 신규 미궁 설정을 서로 연결한 QA 세트다.
+대상은 **이 저장소를 새로 설치한 뒤 최고관리자 계정만 존재하는 사이트**다. 생성할 데이터는 캐릭터, 기본 스탯, 전투 연동 코드, 스킬, 아이템과 인벤토리, 장비, 맵과 아르바이트, NPC 비주얼 이벤트와 조건 분기, K 실시간 레이드, 공용 몬스터·스킬, 던전 출현 목록, 신규 미궁 설정을 서로 연결한 QA 세트다.
 
-이 문서는 데이터 명세다. 공식 설치 SQL이나 migration을 대체하지 않는다. 특히 미궁의 `inventory` InnoDB 전환과 신규 미궁 테이블 생성은 이 문서에서 자동 실행하지 않는다.
+이 문서는 데이터 명세다. 공식 설치 SQL이나 migration을 대체하지 않는다. 저장소 변경과 `inventory` InnoDB 전환은 관리자 시스템 설치/업데이트에서 처리한다. 이 문서에서 임의로 테이블을 만들지 않는다.
+
+**2026-10-05 `test` DB 상태:** 몬스터 관리 1.8.0, 던전 1.2.0, K 레이드 2.1.0, 던전 탐험 1.7.0을 적용했다. 모든 던전은 방 탐험으로 진행한다. 기본 정보와 탐험 규칙은 `dungeon`/`dg_settings`, 출현 목록은 `dungeon_monster_pool`, 아이템 보상은 `dungeon_item.di_count`/`di_percent`, 진행 세션은 `dungeon_state` 한 곳에 저장한다. 몬스터 프로필은 `monster_master.profile`, 스킬 공격 범위는 `skill.sk_dungeon_target_mode`, 부활·상태 치료는 `item.it_type`/`it_value`를 읽는다. `k_battle_monster`와 `dungeon_monster_read`는 공용 몬스터를 읽는 뷰다. 구형 `dg_mon_*` 능력치와 별도 미궁 설정·세션, 즉시 전투 테이블은 삭제했다. 탐험 JSON에 기본 정보·몬스터·보상을 복제하지 않는다. MMB 레이드와 1:1 배틀 기능은 유지한다. 이 DB는 빈 사이트가 아니므로 QA seed는 표식과 실제 ID를 조회해 재사용한다. 현황은 `php dev/tools/audit_game_storage.php`, 코드 위치는 `docs/dungeon-combat-map.md`에서 확인한다.
 
 ---
 
@@ -88,35 +92,21 @@
 
 ## 2. 실행 전 공식 bootstrap과 migration
 
-### 2.1 기본 확장 schema bootstrap
+### 2.1 현재 시스템 설치
 
-이 프로젝트는 기본 설치 SQL만으로 끝나지 않는다. 여러 PHP extension과 관리자 화면이 최초 로드 때 테이블/컬럼을 만든다. QA SQL 실행 전에 최고관리자로 아래 기능을 한 번씩 열어 schema가 준비되게 한다.
+최고관리자로 `adm/system_install.php`에서 기본·지역·던전·K 전투·통합 전투·몬스터·실시간 레이드·인벤토리 경계·던전 탐험 모듈을 현재 버전으로 설치/업데이트한다. QA 데이터 작성과 스키마 설치는 별개다. 설치 페이지는 구형 몬스터·별도 미궁 설정/세션 테이블을 만들지 않는다.
 
-- 커뮤니티/캐릭터 설정
-- 기본 스탯 및 전투 연동 코드 관리
-- 스킬 관리
-- 맵 관리와 맵 이벤트 관리
-- NPC 관리
-- 던전 관리
-- K 전투 플러그인 설정
-- 통합 전투 설정 `adm/990_unified_skill_map.php`
-- 실시간 레이드 설정
+MMB와 1:1 게시판은 실제 사용할 게시판을 등록할 때 글 테이블과 필요한 실행 테이블을 준비한다. 이것은 몬스터·던전 정의를 복제하는 작업이 아니다. 새 QA 세트는 공식 게시판 글 스키마와 기존 K 실행 스키마를 사용한다.
 
-운영 환경에서는 페이지 로드의 동적 ALTER에 의존하지 말고 현재 DB의 `SHOW CREATE TABLE` 결과와 저장소 코드를 비교해 공식 설치 절차로 준비한다.
+### 2.2 inventory 전환과 던전 탐험 확인
 
-### 2.2 미궁 수동 migration
+1. 전체 DB를 백업하고 복원 방법을 확인한다.
+2. 다른 쓰기 요청을 멈춘다.
+3. `adm/system_install.php`의 inventory InnoDB 전환에서 백업·쓰기 중단을 확인해 전환한다. 이미 InnoDB이면 재전환하지 않는다.
+4. 나머지 인벤토리 경계·던전 탐험 모듈 설치/업데이트를 완료한다.
+5. `adm/dungeon_maze.php`에서 readiness가 통과하는지 확인한다.
 
-아래 순서는 별도 운영 작업이다. QA seed SQL에 합치지 않는다.
-
-1. `php install/dungeon/inventory_preflight.php`
-2. inventory 백업과 복원 시험, 쓰기 중단
-3. `install/dungeon/001_inventory_engine.manual.sql`
-   - 이미 InnoDB이면 ALTER하지 않는다.
-   - MyISAM이면 검토 후 수동 opt-in한다.
-4. `install/dungeon/002_inventory_boundary.manual.sql`
-5. `install/dungeon/003_labyrinth.manual.sql`
-6. `install/dungeon/004_inventory_index.manual.sql`
-7. `adm/dungeon_maze.php`에서 readiness가 통과하는지 확인한다.
+`install/dungeon/003_labyrinth.manual.sql` 등 과거 수동 SQL은 이전 구조를 기록한 파일이다. 현재 QA 준비에 다시 실행하면 폐기한 별도 설정·세션 테이블을 만들 수 있으므로 실행하지 않는다. 현재 서버용 전체 내보내기를 가져온 경우 이미 완료된 스키마와 엔진을 다시 설치할 필요가 없다.
 
 미궁 출발 조건은 다음을 모두 요구한다.
 
@@ -173,9 +163,11 @@ SHOW TABLE STATUS;
 
 **던전/미궁**
 
-- `dungeon`, `dungeon_item`, `dungeon_state`, `dungeon_member`, `dungeon_log`
+- `dungeon` (`dg_settings` 포함), `dungeon_item` (`di_count`, `di_percent`), `dungeon_state` (탐험 세션 포함)
+- `monster_master` (`profile` 컬럼 포함), `monster_runtime`
+- `dungeon_monster_pool`, `dungeon_combat_event` (`sk_dungeon_target_mode`는 `skill` 컬럼)
 - `inventory_guard`, `inventory_journal`
-- `dungeon_maze_meta`, `dungeon_maze_config`, `dungeon_maze_session`, `dungeon_maze_member`, `dungeon_maze_room`, `dungeon_maze_battle`, `dungeon_maze_action`, `dungeon_maze_inventory`, `dungeon_maze_vote`, `dungeon_maze_log`, `dungeon_maze_reward`, `dungeon_maze_status`, `dungeon_maze_item_effect`
+- `dungeon_maze_meta`, `dungeon_maze_member`, `dungeon_maze_room`, `dungeon_maze_battle`, `dungeon_maze_action`, `dungeon_maze_inventory`, `dungeon_maze_vote`, `dungeon_maze_log`, `dungeon_maze_reward`, `dungeon_maze_status` (같은 던전의 참가·지도·전투·정산 기록)
 
 ### 3.2 동적 컬럼
 
@@ -690,34 +682,41 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 
 ## 5.14 실시간 레이드와 몬스터
 
-### K 몬스터 2종
+### 공용 몬스터 3종
 
-`k_battle_monster`의 `st_1..st_10`은 `status`를 `st_order,st_id`로 정렬한 순서에 대응한다.
+몬스터는 `몬스터 관리 → 몬스터 제작`에서 한 번만 만든다. 저장 시 `monster_master.profile`에 전투 정의가 들어가고, 레이드 호환용 `k_battle_monster` 뷰는 `monster_master.raid_id`를 몬스터 ID로 읽는다. 별도의 던전 몬스터 복제본이나 `monster_dungeon_profile` 행은 만들지 않는다. `k_battle_monster.st_1..st_10`은 `status`를 `st_order,st_id`로 정렬한 순서에 대응한다.
 
-| 이름 | HP | MP | 힘 | 방어 | 정신 | 민첩 | 행운 | pattern |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| `[QA] 훈련 슬라임` | 80 | 10 | 10 | 5 | 5 | 7 | 1 | 1 |
-| `[QA] 시계탑 골렘` | 350 | 30 | 22 | 18 | 8 | 6 | 3 | 1 |
+| 이름 | HP | 힘 | 방어 | 정신 | 민첩 | 행운 | QA 사용처 |
+|---|---:|---:|---:|---:|---:|---:|---|
+| `[QA] 훈련 슬라임` | 80 | 10 | 5 | 5 | 7 | 1 | 레이드·던전 |
+| `[QA] 미궁 파수꾼` | 180 | 15 | 8 | 10 | 8 | 2 | 던전·미궁 |
+| `[QA] 시계탑 골렘` | 350 | 22 | 18 | 8 | 6 | 3 | 레이드·미궁 보스 |
 
-- `raid_type='realtime'`
-- `mo_default_act=1` 또는 패턴 fallback이 안전한 현재 코드값
-- `mo_thumb`는 기존 이미지 경로 또는 빈 문자열
+표의 사용처는 QA 시나리오일 뿐 몬스터 종류를 나누는 DB 필드가 아니다. 이미지가 없으면 빈 문자열을 사용한다. 실제 프로필 JSON의 키와 기본값은 `adm/monster_form.php`가 저장하는 형식을 따른다.
 
-### 몬스터 스킬/보유/패턴
+### 공용 스킬과 몬스터별 보유 목록
 
-최소 2개를 만든다.
+발생 현황의 **로그확인**에서 세션 상세·정산 처리를 함께 관리한다. 별도 상세보기 버튼은 두지 않는다. 기록은 **전투기록**과 **진행 / 대화** 탭으로 나누며 탭별 페이지 이동을 지원한다. 플레이 화면 오른쪽 위의 **나가기**는 목록으로 이동하고, **미궁 퇴장**은 기존 퇴장·아이템 정산을 실행한다. 보스 전투·보스 처치 직후의 퇴장 제한은 유지한다.
 
-- `[QA] 몸통박치기`: `si_code='atk'`, 공격 K slot을 `sc_id`로 사용, 적 단일
-- `[QA] 광역 진동`: `si_code='atk'`, 적 전체, 2턴 패턴
+목록은 기존 `adm/dungeon_list.php`의 **던전 관리**로 통합한다. **던전정보 추가**는 `adm/dungeon_form.php`의 공통 multipart 폼을 연다. 모든 던전은 방 탐험으로 진행하며 일반/미궁 모드 선택은 없다. **기본 설정·몬스터 출현·탐험 설정·보상 설정** 네 탭을 한 번에 저장한다. 자주 쓰는 설정을 먼저 보여주고 상세값은 **고급 설정**에서 펼친다. 기본 정보와 탐험 규칙은 `dungeon`, 공용 출현 목록은 `dungeon_monster_pool`, 클리어 보상은 `dungeon_item`에 저장한다. 별도 미궁 보상 목록과 설정 테이블은 없다. 전체 탐험 행동 제한시간은 **탐험 공통 설정**에서 관리한다. 세션 단계·참가자 HP·진행 정보와 종료·퇴장·정산 재시도는 **던전 발생 현황**(`adm/dungeon_state_list.php`)에서 관리한다. 이전 미궁·출현 목록 관리 주소는 통합 목록·작성폼·발생 현황으로 연결된다.
 
-`k_battle_skill_mo`에 각 몬스터와 스킬 관계를 만든다. `k_battle_pattern_mo.pt_skill`은 `skill_mo.cs_id`가 아니라 **K 스킬의 `sk_id` CSV**다.
+`몬스터 관리 → 몬스터 스킬 제작`에서 다음 스킬 정의를 만든다. 정의는 기존 `k_battle_skill`에 저장하며 `unit_type='mo'`, `sk_info`의 `monster_shared` 객체를 현재 관리자 폼이 만드는 형식 그대로 사용한다.
 
-- 슬라임 turn 1: 몸통박치기
-- 골렘 turn 1: 몸통박치기
-- 골렘 turn 2: 광역 진동
-- `pt_skill_cnt=1`
+관리자 메뉴는 `몬스터 스킬 목록`이다. 목록(`adm/monster_skill.php`)의 **스킬 추가**로 작성폼(`adm/monster_skill_form.php`)을 연다. 몬스터 목록의 **관리**로 작성폼에 들어가 보유 스킬을 편집한다. 안내문 아래에는 보유 스킬 이름과 발동 조건을 가로 목록으로 표시한다. 아래 **스킬 추가** 버튼으로 선택 영역을 열고 **추가할 스킬 → 보유 스킬 추가**로 등록한다. 각 행의 **수정 / 삭제**로 변경한 뒤 몬스터를 저장한다. 관리자 화면에 JSON 편집창은 제공하지 않는다.
 
-공격 스킬은 `bonus_calc='p'`, `default_calc=''`, `sc_id=<공격 K slot>`으로 두면 몬스터 공격 slot + `sk_value`가 피해 기초가 된다. 실제 현재 코드의 허용값이 다르면 관리자 form의 저장값을 우선한다.
+- `[QA] 몸통박치기`: HP 피해, 상대 1명, 8~14, 준비 대사 지정
+- `[QA] 광역 진동`: HP 피해, 상대 전체, 5~9
+- `[QA] 재생`: 자신 HP 회복, 12~18
+
+`monster_master.profile.shared.skills`는 각 몬스터의 보유 목록이다. 원소는 `{ "skill_id": <공용 k_battle_skill.sk_id>, "turn": 1, "hp_below": 100, "hp_above": 0 }` 형식으로 저장한다. `hp_below`는 상한(이하), `hp_above`는 하한(초과)다. 상한 100·하한 50은 `50% < HP ≤ 100%`, 상한 50·하한 30은 `30% < HP ≤ 50%`에서 사용한다. 정확히 50%부터 다음 구간이 적용된다. 하한이 없는 기존 정의는 0%로 읽는다. **같은 `skill_id`를 둘 이상의 몬스터가 보유**하도록 한다. 몸통박치기는 슬라임과 파수꾼, 광역 진동은 파수꾼과 골렘에게 준다. 발동 턴·HP 조건은 보유 목록에서 몬스터별로 다르게 설정한다.
+
+새 공용 몬스터에 `k_battle_skill_mo`/`k_battle_pattern_mo`를 따로 입력하지 않는다. 이전 K 레이드 패턴 데이터가 있으면 기존 행과 ID를 보존한다.
+
+몬스터는 MP·재사용 대기 제한 없이 등록한 행동 순서나 턴 조건을 실행한다. 기존 런타임의 자원 값도 제한으로 사용하지 않는다. HP 구간별 순서는 단계마다 한 턴에 한 칸씩 반복하며 회복으로 이전 단계로 돌아가지 않는다. MMB 관리자 행동의 **등록된 몬스터 패턴 실행**은 공용 패턴을 한 턴 진행한다. 참가자 자원·재사용 대기는 기존 규칙을 유지한다.
+
+턴 조건의 기술이 겹치면 몬스터 한 마리당 한 턴에 한 기술만 실행한다. 조건을 만족하는 기술 중 사용 턴 값이 큰 기술이 우선이고 같은 값이면 먼저 등록한 기술이 우선이다. 몸통박치기 1·재생 4이면 4·8·12턴에는 HP 조건을 만족할 때 재생만 실행한다. HP 조건을 만족하지 않으면 몸통박치기를 실행한다. 과거에 저장된 다중 기술 예고도 다시 계산하며, 전투 예고와 실제 실행이 같은 선택 규칙을 사용해야 한다.
+
+던전 편집에는 상단 요약이 없고, 출현 탭에는 해당 던전에 등록한 몬스터만 표시한다. **몬스터 추가**의 공용 목록에서 검색해 넣고 **제외**로 출현 연결만 해제한다.
 
 ### 레이드 정의
 
@@ -749,47 +748,24 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 
 캐릭터 unit은 미리 넣지 않는다. 아린을 현재 캐릭터로 선택한 뒤 레이드 목록의 참가 버튼을 눌러 `insert_k_battle_unit()`과 A→K 스킬 snapshot을 실제로 시험한다. 레이드 시작은 최고관리자 UI에서 실행한다.
 
-## 5.15 기존 던전 정의와 출현 인스턴스
+## 5.15 던전 정의와 몬스터 출현 목록
 
-`dungeon`에 `[QA] 안개 미궁` 1개를 만든다.
+`dungeon`에 `[QA] 안개 미궁` 1개를 만든다. 맵, 참가 인원, 보상 등 던전 공통 값은 기존 `dungeon`/`dungeon_item` 필드를 사용한다. 몬스터 능력치는 `monster_master.profile`에서, 던전별 출현 규칙은 `dungeon_monster_pool`에서 읽는다.
 
-- `dg_count=3`
-- `ma_id=<안개 숲 ID>`
-- `ma_ids='||<안개 숲 ID>||'`
-- 출현 구간 `dg_per_s=0`, `dg_per_e=100`
-- `dg_point=500`
-- 권장 스탯은 힘 또는 체력 ID, 값은 10, 방식은 `+`
-- 몬스터 `[QA] 미궁 파수꾼`, HP 180
-- 방어 5
-- 기본 공격: 매 1턴, 대상 1명, 피해 8~14
-- 광역 공격: 3턴마다 5~9
-- 조건 공격 1: 2턴마다 민첩 10 이상/이하 중 실제 UI 의미에 맞춰 6~10
-- 강점/약점 code는 존재하는 `공격력`/`방어력`을 사용하거나 빈 값
-- `dg_use=1`
+- `dg_count=3`, `ma_id=<안개 숲 ID>`, `ma_ids='||<안개 숲 ID>||'`
+- `dg_per_s=0`, `dg_per_e=100`, `dg_point=500`, `dg_use=1`
+- `dungeon_item`: 미궁 결정 1개(`di_percent=100`), 소형 회복약 2개(`di_percent=30`)
+- `dungeon_monster_pool`: 공용 몬스터 ID와 `enabled`, `weight`, `is_boss`, `min_count`, `max_count`를 저장한다. 파수꾼·슬라임은 일반 출현, 골렘은 보스로 지정한다. 방마다 몬스터 종류를 가중치에 따라 고른 뒤 최소~최대 마릿수를 함께 출현시킨다. 슬라임은 1~3마리, 파수꾼은 2~2마리(항상 2마리), 골렘은 1~1마리로 준비한다. 마릿수는 1~20이며 최대는 최소 이상이어야 한다.
 
-`dungeon_item` 보상:
-
-- 미궁 결정 1개, 0~100
-- 소형 회복약 1개, 0~49
-
-즉시 입장할 수 있도록 `dungeon_state`에 열린 인스턴스 1개를 만든다.
-
-- 같은 QA dungeon의 종료되지 않은 state가 이미 있으면 재사용
-- `ds_ma_id=<안개 숲 ID>`
-- `ds_state='S'`
-- `ds_hp=180`, hurt/weak 값 0
-- `ds_datetime=NOW()`와 프로젝트가 기대하는 문자열 형식
-
-`ds_id`는 기존 map 출현 방식과 미궁 session이 공유하는 식별자다. 별도 QA maze session 행을 미리 넣지 않는다.
+관계 행의 `monster_id`는 `monster_master.monster_id`를 참조한다. QA SQL에서 새 `dungeon_state`를 미리 만들지 않는다. 발생·입장·출발 코드가 세션과 지도를 만들고 공용 정의의 snapshot을 고정하는지 확인한다. 던전은 모두 방 탐험으로 진행한다.
 
 ## 5.16 신규 미궁 설정
 
-`dungeon_maze_config.dg_id=<QA dungeon ID>`에 유효한 JSON을 저장한다. JSON key는 다음을 모두 포함한다.
+QA 던전의 `dungeon.dg_settings`에 유효한 JSON을 저장한다. JSON key는 다음을 모두 포함한다.
 
 ```json
 {
   "min_players": 1,
-  "max_players": 3,
   "rooms_min": 9,
   "rooms_max": 12,
   "branches_min": 1,
@@ -800,10 +776,7 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
   "escape_percent": 60,
   "trap_damage": 8,
   "boss": true,
-  "points": 500,
-  "monsters": [],
-  "events": [],
-  "rewards": []
+  "events": []
 }
 ```
 
@@ -815,55 +788,17 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 
 ### monster pool
 
-최소 3개 object를 넣는다.
+`dungeon_monster_pool`에 공용 몬스터 ID·가중치·보스 여부·동시 출현 수를 저장한다. 탐험 JSON에는 출현 목록을 넣지 않는다. 출발할 때 공용 프로필과 마릿수를 읽어 실행 snapshot을 만든다. 던전 이름·설명·최대 인원·기본 포인트도 `dungeon`에서 읽는다.
 
-1. 일반 `[QA] 미궁 파수꾼`, enabled, boss false, weight 10
-2. 일반 `[QA] 독안개 정령`, enabled, boss false, weight 5, `status_id=<중독 status ID>`
-3. 보스 `[QA] 심층 수호자`, enabled, boss true, weight 1, HP 500
-
-각 object 형태:
+예시 형태(숫자 ID는 앞 단계에서 생성한 실제 값을 사용):
 
 ```json
-{
-  "enabled": true,
-  "weight": 10,
-  "boss": false,
-  "data": {
-    "dg_mon_name": "[QA] 미궁 파수꾼",
-    "dg_mon_img": "",
-    "dg_mon_hp": 180,
-    "dg_mon_descript": "[QADATA] 일반 조우",
-    "dg_defence": 5,
-    "dg_d_attack_turn": 1,
-    "dg_d_attack_count": 1,
-    "dg_d_attack_min": 8,
-    "dg_d_attack_max": 14,
-    "dg_w_attack_turn": 3,
-    "dg_w_attack_min": 5,
-    "dg_w_attack_max": 9,
-    "dg_s1_attack_turn": 0,
-    "dg_s1_attack_st_id": 0,
-    "dg_s1_attack_st_value": 0,
-    "dg_s1_attack_type": "이상",
-    "dg_s1_attack_min": 0,
-    "dg_s1_attack_max": 0,
-    "dg_s2_attack_turn": 0,
-    "dg_s2_attack_st_id": 0,
-    "dg_s2_attack_st_value": 0,
-    "dg_s2_attack_type": "이상",
-    "dg_s2_attack_min": 0,
-    "dg_s2_attack_max": 0,
-    "dg_strong_code": "",
-    "dg_strong_value": 1,
-    "dg_weak_code": "",
-    "dg_weak_value": 1,
-    "dg_weak_effect_count": 0,
-    "dg_weak_effect_turn": 0
-  }
-}
+{"dg_id":1,"enabled":1,"weight":10,"is_boss":0,"monster_id":123,"min_count":1,"max_count":3}
 ```
 
-`maze_monster_definition()`이 검사하는 `d/w/s1/s2`의 turn/count/min/max/st_id/st_value와 type을 빠뜨리지 않는다.
+방 이벤트와 선택지에서 몬스터를 지정할 때도 공용 Monster Master ID만 저장하며, 해당 던전의 사용 중인 `dungeon_monster_pool`에 등록된 몬스터만 허용한다. 이벤트 전용 출현 목록은 없다. 새 세션은 `monster_id`로 공용 프로필과 같은 출현 수를 읽는다. 기존 세션의 snapshot은 전투 재개를 위해 유지하지만, snapshot 출현 목록에 없는 이벤트 몬스터는 실행하지 않는다.
+
+동시 출현은 기존 `dungeon_maze_battle`에 개체별 행을 만들고 첫 행의 ID로 묶는다(`encounter_id`). 선택한 공격 대상은 기존 `dungeon_maze_action.monster_id`에 저장한다. 개체별 HP·행동·턴 진행, 한 마리가 죽어도 전투 유지, 전원 처치 후 승리·보스 결과, 도주 시 전원 종료를 확인한다. 맵의 입장 버튼을 한 번 누르면 POST 참가 후 바로 대기실이 보여야 하며, 반복 입장으로 참가자가 중복 생성되면 안 된다. 치유 스킬은 실제 회복량만 `HEAL`로 남기고 자원 소모 때문에 같은 행동의 `0 STATUS`가 추가되면 안 된다. 실제 상태 강화 로그는 유지한다.
 
 ### room event pool
 
@@ -875,7 +810,7 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 2. TREASURE → ITEM, 미궁 결정 1
 3. TRAP → TRAP, ALL, damage 8, 중독 status
 4. SEARCH → HEAL, ACTOR, 20
-5. EMPTY → MONSTER, 독안개 정령
+5. EMPTY → MONSTER, 출현 목록에도 등록한 공용 미궁 파수꾼 ID (출현 목록에서 제외하면 이벤트 사용도 끈다)
 6. EMPTY → NONE 또는 TEXT
 
 공통 object 예시:
@@ -898,6 +833,7 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 - target은 `ACTOR`, `ALL`, `RANDOM`만 사용한다.
 - 선택지는 한 단계만 허용한다. choice 안에 다시 choices를 넣지 않는다.
 - event `room_kind`는 weights의 key여야 한다.
+- 활성 `MONSTER` 이벤트·선택지의 `monster_id`는 해당 던전의 활성 출현 목록에 있어야 한다. 목록 밖 ID의 저장 거절, 구형 이벤트 차단, 실시간 상태 조회의 정상 응답도 확인한다.
 
 ### clear rewards
 
@@ -906,7 +842,7 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 - 미궁 결정 1개, 100%
 - 소형 회복약 2개, 30%
 
-각 행은 `it_id`, `count` 1~100, `percent` 0~100을 가진다.
+각 `dungeon_item` 행은 `it_id`, `di_count` 1~100, `di_percent` 0~100(소수점 2자리)을 가진다. 탐험 JSON의 `rewards`에는 저장하지 않는다.
 
 ## 5.17 미궁 상태이상과 아이템 효과
 
@@ -927,10 +863,10 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 
 상태 이름, duration, enabled, components가 모두 필요하다. 같은 상태 재적용은 중첩이 아니라 지속시간 갱신이다.
 
-`dungeon_maze_item_effect`:
+아이템 관리 화면의 `it_type` / `it_value`:
 
-- 부활 깃털 → `kind='REVIVE'`, `status_id=0`, `value=30`
-- 해독제 → `kind='CLEANSE'`, `status_id=<중독 ID>`, `value=1`
+- 부활 깃털 → `it_type='부활'`, `it_value='30'` (HP 회복률 30%)
+- 해독제 → `it_type='상태이상치료'`, `it_value='<중독 ID>'`
 
 ---
 
@@ -950,9 +886,9 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 12. upgrade/equipment rows
 13. map action/event
 14. npc_setting/item/place/script/choice
-15. K monster/monster skill/ownership/pattern
+15. 공용 `k_battle_skill` 정의와 `monster_master.profile.shared.skills` 보유 목록, 연결된 `k_battle_monster`
 16. realtime raid/list/monster unit
-17. dungeon/dungeon_item/dungeon_state
+17. dungeon/dungeon_item/monster pool (`dungeon_state`는 실제 입장 시 생성)
 18. maze status/item effect/config/meta timeout
 19. 검증 SELECT
 
@@ -967,8 +903,7 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 - `newmap_work`, map log
 - `newmap_npc_encounter`
 - 일반 `npc_log`의 이벤트 결과 행
-- `dungeon_member`, `dungeon_log`
-- `dungeon_maze_session/member/room/battle/action/inventory/vote/log/reward`
+- `dungeon_state`, `dungeon_maze_member/room/battle/action/inventory/vote/log/reward`
 - `inventory_guard`, `inventory_journal`
 - `k_battle_realtime_buff/log/skill`
 - realtime character unit
@@ -1016,13 +951,15 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 - `stat_list` 순서와 map_id 순서가 같은지
 - A skill을 K cache까지 만들었다면 `unified_a_sk_id`/`unified_a_sh_id` 누락이 없는지
 - raid state 0, raid list에 ID 포함
-- raid monster unit 1개와 origin monster 존재
-- monster pattern의 모든 K sk_id가 monster ownership과 일치
+- raid monster unit 1개와 `monster_master.raid_id`가 가리키는 K 원본 몬스터 존재
+- 공용 스킬의 `sk_info.monster_shared`가 유효하고, 각 `monster_master.profile.shared.skills[*].skill_id`가 같은 `k_battle_skill.sk_id`를 가리킴
+- 몸통박치기 1개를 슬라임과 파수꾼 두 몬스터가 함께 보유함
 
 ### 8.5 던전/미궁
 
-- QA dungeon 1개, open state 1개, map 일치
-- maze config JSON이 `JSON_VALID(settings)=1`
+- QA dungeon 1개와 맵 연결, 던전 출현 목록의 공용 몬스터 3종
+- seed 직후 새 `dungeon_state`는 0개이며 실제 발생·입장 흐름 후 생성됨
+- 탐험 JSON이 `JSON_VALID(dg_settings)=1`, 별도 config 테이블 없음
 - `min_players=1`, `max_players=dg_count`
 - boss monster 1개 이상, rooms/branches 제약 통과
 - reward/item/status 참조가 모두 존재
@@ -1042,9 +979,10 @@ MyISAM 때문에 point INSERT 뒤 member UPDATE 전에 프로세스가 죽는 �
 - equip → inventory, item
 - map event → map/action/item
 - NPC place/script/choice → parent
-- monster skill/pattern → monster/skill
+- `monster_master.raid_id` → `k_battle_monster`, 보유 `skill_id` → 공용 `k_battle_skill`
+- `dungeon_monster_pool.monster_id` → `monster_master`, 미궁 몬스터 ID → `monster_master`
 - raid unit → raid/monster
-- dungeon item/config/state → dungeon/item/map
+- dungeon item/pool/state → dungeon/item/map
 - maze item effect/status IDs → item/status
 
 ---
@@ -1114,7 +1052,12 @@ SQL 생성자는 마지막 주석에 아래 순서를 출력한다.
 4. equipment → inventory → item 순서 준수
 5. skill_has/cache/level → skill 순서 준수
 6. NPC choice/script/place/item/setting → NPC character 순서 준수
-7. dungeon state/config/item → dungeon 순서 준수
+7. dungeon state/pool/item → dungeon 순서 준수
+   - 미궁 세션은 관리자 종료 처리로 참가자와 보관 아이템을 먼저 정산한다.
+   - `dungeon_maze_action` → battle → vote/reward/log/inventory/member/room → dungeon_state 순서로 QA 세션 자식만 정리한다.
+   - `dungeon_combat_event`와 해당 `maze:<battle_id>`의 `monster_runtime`만 정리한다.
+   - `dungeon_monster_pool`·`dungeon_item`을 해당 QA `dg_id`로 정리한 후 `dungeon` 정의를 삭제한다.
+   - 공용 몬스터의 `monster_master.profile` 보유 스킬을 참조하는 관계와 레이드 유닛·로그를 정리한 뒤 QA `monster_master`와 공용 K 스킬을 삭제한다. `k_battle_monster`는 공용 정의를 읽는 뷰라 별도 삭제 대상이 아니다.
 8. map event/action → map 순서 준수
 9. member.ch_id가 QA character면 0 또는 안전한 기존 character로 바꾼 뒤 character 삭제
 
@@ -1134,7 +1077,8 @@ LLM이 만든 SQL은 다음을 모두 만족할 때만 완료다.
 - 아린 한 캐릭터만으로 맵, NPC, 레이드 입장, 1인 미궁을 바로 시험할 수 있다.
 - 바론/세라로 역할별 stat/skill/equipment 차이를 시험할 수 있다.
 - NPC 조건 분기의 성공과 실패를 모두 만들 수 있다.
-- 레이드의 monster, skill, pattern, list, 준비중 room이 연결된다.
+- 레이드의 공용 몬스터·스킬과 입장 목록·준비중 room이 연결된다.
+- 던전 출현 목록은 공용 Monster Master ID만 참조하고, 같은 스킬을 두 몬스터가 보유한다.
 - 미궁의 이동, 조사, 선택, 아이템, 함정, 상태, 회복, 전투, 보스, 정산을 모두 시험할 정의가 있다.
 - engine/migration이 준비되지 않은 환경에서 미궁 출발을 우회하지 않는다.
 - runtime/history 데이터를 불필요하게 미리 만들지 않는다.

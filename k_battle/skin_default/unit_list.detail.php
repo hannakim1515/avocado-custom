@@ -90,7 +90,7 @@
             <i><?php echo $hp_now . '/' . $hp_max ?></i>
         </div>
 
-        <?php if (!empty($kb_cf['mp'])): ?>
+        <?php if (!empty($kb_cf['mp']) && ($rm['unit_type']??'')!=='mo'): ?>
             <div class="mp-bar">
                 <span class="bar-inner" style="width:<?php echo $mp_pct ?>%"></span>
                 <i><?php echo $mp_now . '/' . $mp_max ?></i>

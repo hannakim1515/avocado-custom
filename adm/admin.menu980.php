@@ -7,7 +7,6 @@ $menu['menu980'] = array (
     array('980100', '--스탯 설정(바로가기)--',G5_ADMIN_URL.'/status_list.php', ''),
 	array('980110', '커스텀 스탯 설정', G5_ADMIN_URL.'/980_k_stat_func.php?category=stat', '', ),
 	array('980120', '전투 함수 설정', G5_ADMIN_URL.'/980_k_stat_func.php?category=battle', '', ),
-	array('980130', '스탯 복사', G5_ADMIN_URL.'/980_k_stat_copy.php', '', ),
 	array('980300', '------장비 관리------',G5_ADMIN_URL.'/980_k_equip_list.php',   '', ),
 	array('980301', '장비 등록',G5_ADMIN_URL.'/980_k_equip_list.php',   '', ),
 	array('980310', '보유 장비 관리',G5_ADMIN_URL.'/980_k_ch_equip.php',   '', ),

@@ -5,6 +5,10 @@ include_once('./_common.php');
 auth_check($auth[$sub_menu], 'r');
 
 $token = get_token();
+require_once __DIR__.'/dungeon_maze.admin.lib.php';
+require_once __DIR__.'/dungeon_admin.lib.php';
+$maze_configs=array();
+if(maze_readiness()['ready']) foreach(inventory_boundary_rows('SELECT dg_id,dg_settings AS settings FROM `'.$g5['dungeon_table'].'`') as $entry) $maze_configs[(int)$entry['dg_id']]=array_replace(array('rooms_min'=>9,'rooms_max'=>15,'branches_min'=>1,'branches_max'=>3),!empty($entry['settings'])?maze_data($entry['settings']):array());
 
 $sql_common = " from {$g5['dungeon_table']} ";
 
@@ -23,7 +27,7 @@ $sql = " select count(*) as cnt
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
-$rows = $config['cf_page_rows'];
+$rows = max(1,(int)($config['cf_page_rows']??0) ?: 20);
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -57,21 +61,6 @@ if($config['cf_dungeon_open']) {
 
 
 /** 지역 정보 **/
-$ma = array();
-$ma_sql = "select ma_id, ma_name from {$g5['map_table']} where ma_use = 1 and ma_id = ma_parent order by ma_id asc";
-$ma_result = sql_query($ma_sql);
-$index = 0;
-for($i=0; $map = sql_fetch_array($ma_result); $i++) { 
-	$sub_ma_sql = "select ma_id, ma_name from {$g5['map_table']} where ma_use = 1 and ma_id != ma_parent and ma_parent = {$map['ma_id']} and ma_use_dungeon = 1 order by ma_id asc";
-	$sub_ma_result = sql_query($sub_ma_sql);
-	for($j=0; $sub_map = sql_fetch_array($sub_ma_result); $j++) { 
-		$ma[$index]['name'] = $sub_map['ma_name'];
-		$ma[$index]['id'] = $sub_map['ma_id'];
-		$index++;
-	}
-}
-
-
 // 스탯 정보 가져오기
 $status = array();
 $status_result = sql_query("select * from {$g5['status_config_table']}");
@@ -178,7 +167,8 @@ for($i=0; $st = sql_fetch_array($status_result); $i++) {
 
 	<?php if ($is_admin == 'super') { ?>
 	<div class="btn_add01 btn_add">
-		<a href="./dungeon_form.php" id="bo_add">던전정보 추가</a>
+		<a href="./dungeon_form.php" id="bo_add">던전 추가</a>
+		<a href="./dungeon_maze_common.php" class="btn btn_02">탐험 공통 설정</a>
 	</div>
 	<?php } ?>
 
@@ -224,8 +214,8 @@ for($i=0; $st = sql_fetch_array($status_result); $i++) {
 			<?php
 			for ($i=0; $row=sql_fetch_array($result); $i++) {
 				$one_update = '<a href="./dungeon_form.php?w=u&amp;dg_id='.$row['dg_id'].'&amp;'.$qstr.'">수정</a>';
-				$one_copy = '<a href="./dungeon_form_copy.php?dg_id='.$row['dg_id'].'&amp;'.$qstr.'" onclick="return confirm(\'해당 던전 정보를 복사하시겠습니까?\');">복사</a>';
 				$bg = 'bg'.($i%2);
+				$row_regions=da_dungeon_regions(explode('||',$row['ma_ids']));
 
 				// 던전 상태 가져오기
 				$state = sql_fetch("select * from {$g5['dungeon_state_table']} where dg_id = '{$row['dg_id']}' and ds_state != 'E'");
@@ -254,14 +244,16 @@ for($i=0; $st = sql_fetch_array($status_result); $i++) {
 				</td>
 				<td>
 					<input type="text" name="dg_title[<?php echo $i ?>]" value="<?php echo $row['dg_title'] ?>"  style="width:100%;">
+					<?php if(isset($maze_configs[(int)$row['dg_id']])):$maze_config=$maze_configs[(int)$row['dg_id']]; ?><p>방 탐험 · 방 <?=(int)$maze_config['rooms_min']?> ~ <?=(int)$maze_config['rooms_max']?> · 갈림길 <?=(int)$maze_config['branches_min']?> ~ <?=(int)$maze_config['branches_max']?></p><?php endif; ?>
 				</td>
 				<td style="text-align:left;">
-					<? for($k=0; $k < count($ma); $k++) { ?>
+						<? for($k=0; $k < count($row_regions); $k++) { ?>
 						<span style="display: inline-block; vertical-align: middle; min-width: 140px;">
-							<input type="checkbox" name="ma_ids[<?=$i?>][]" id="ma_ids_<?=$i?>_<?=$k?>" value="<?=$ma[$k]['id']?>" <?=strstr($row['ma_ids'], "||".$ma[$k]['id']."||") ? "checked" : "" ?> />
-							<label for="ma_ids_<?=$i?>_<?=$k?>"><?=$ma[$k]['name']?></label>
+							<input type="checkbox" name="ma_ids[<?=$i?>][]" id="ma_ids_<?=$i?>_<?=$k?>" value="<?=$row_regions[$k]['id']?>" <?=strstr($row['ma_ids'], "||".$row_regions[$k]['id']."||") ? "checked" : "" ?> />
+							<label for="ma_ids_<?=$i?>_<?=$k?>"><?=da_h($row_regions[$k]['name'])?></label>
 						</span>
-					<? } ?>
+						<? } ?>
+						<?php if(!$row_regions): ?><span class="frm_info">출현 가능한 지역이 없습니다. <a href="map_list.php">지역 관리</a>에서 사용·던전을 설정해 주세요.</span><?php endif; ?>
 				</td>
 				<td>
 					<input type="text" name="dg_per_s[<?php echo $i ?>]" value="<?php echo $row['dg_per_s'] ?>"  style="width:100%; text-align:center;">

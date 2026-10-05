@@ -1,6 +1,9 @@
 <?php
 
 include_once('./_common.php');
+require_once G5_PATH.'/lib/monster_shared.lib.php';
+if(($_GET['unit_type']??'')==='mo' && monster_shared_ready())goto_url('./monster_skill.php');
+
 
 if(!isset($page)||$page<1) $page = 1;
 

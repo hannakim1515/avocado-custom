@@ -65,6 +65,7 @@ if ($bo_1_subj === 'mmbraid' && $bo_1 === 'true' && empty($write['wr_k_raid_log'
                     <select name="admin_action" id="admin_action">
                         <option value="" style="color:black; background-color:white;">몬스터 행동 선택(필수)</option>
                         <option value="msg" style="color:black; background-color:white;">메시지만 출력</option>
+                        <option value="pattern" style="color:black; background-color:white;">등록된 몬스터 패턴 실행</option>
                         <option value="allatk" style="color:black; background-color:white;">전체 공격</option>
                         <option value="randatk" style="color:black; background-color:white;">무작위 공격</option>
                         <option value="randstun" style="color:black; background-color:white;">무작위 기절</option>
@@ -80,6 +81,7 @@ if ($bo_1_subj === 'mmbraid' && $bo_1 === 'true' && empty($write['wr_k_raid_log'
                             <div class="theme-box">
                                 <p>*몬스터 행동을 선택하지 않으면 관리자 기능이 작동하지 않습니다. 메시지만 출력할 때도 반드시 선택해 주세요.</p>
                                 <p>*관리자 행동과 캐릭터 행동 동시 선택시 관리자 행동만 발생합니다.</p>
+                                <p>*등록된 몬스터 패턴 실행: 몬스터 관리에서 저장한 HP 구간·행동 순서 또는 턴 조건에 따라 실행합니다. 누를 때마다 몬스터 턴이 한 번 진행됩니다. MP와 재사용 대기 제한은 없습니다.</p>
                                 <p>*<span>공격력 보정</span>: 몬스터의 공격력이 적은 %만큼만 반영됩니다. 예) 80 입력시 80%만 반영, 120 입력시 120% 반영</p>
                                 <p>*<span>기절의 효과</span>: 1턴간 캐릭터가 행동하지 못하게 함</p>
                                 <p>*<span>무작위 기절/공격시</span>: 도발을 사용한 캐릭터가 있을 경우 도발 사용자가 우선적으로 선택됩니다.</p>

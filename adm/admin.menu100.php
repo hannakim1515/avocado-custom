@@ -9,6 +9,7 @@ $menu['menu100'] = array (
 	/*array('100310', '팝업레이어관리', G5_ADMIN_URL.'/newwinlist.php', 'scf_poplayer'),*/
 	array('100320', '메인슬라이드 관리', G5_ADMIN_URL.'/banner_list.php', 'cf_banner'),
 	array('100330', '인트로 관리', G5_ADMIN_URL.'/intro_list.php', 'cf_banner'),
+	array('100950', '시스템 설치 / 업데이트', G5_ADMIN_URL.'/system_install.php', 'system_install'),
 	array('100990', 'DB관리', G5_DB_URL, '')
 );
 

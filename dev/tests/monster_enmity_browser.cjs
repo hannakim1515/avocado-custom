@@ -1,0 +1,30 @@
+const {chromium}=require('../../artifacts/system-browser/node_modules/playwright');
+const fs=require('fs'),path=require('path'),root=path.resolve(__dirname,'../..'),base='http://127.0.0.1:38082';
+const fixture=JSON.parse(fs.readFileSync(path.join(root,'artifacts/monster-shared-test.json'),'utf8'));
+function check(ok,label){if(!ok)throw Error('FAIL '+label);console.log('PASS '+label);}
+(async()=>{const browser=await chromium.launch({channel:'chrome',headless:true});try{
+const p=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(base+'/_fixture_login.php');
+const probe=async query=>{const r=await p.request.get(base+'/_fixture_enmity_probe.php?'+query);const text=await r.text();try{return JSON.parse(text);}catch{throw Error(text.slice(0,2500));}};
+await p.goto(base+'/adm/monster_skill.php?skill_id='+fixture.skill);await p.locator('[name=cue]').fill('거대한 팔을 들어 올린다.');await p.getByRole('button',{name:'스킬 저장',exact:true}).click();
+check(await p.locator('[name=cue]').inputValue()==='거대한 팔을 들어 올린다.','preparation cue saves and reloads through native admin POST');
+const seeded=await probe('op=seed&id='+fixture.id);
+await p.goto(base+'/dungeon/maze.php?ds_id='+seeded.maze_ds);await p.waitForSelector('.monster-forecast');check((await p.locator('.monster-forecast').innerText()).includes('거대한 팔'),'Maze shares preparation cue UI');
+await p.getByRole('button',{name:'스킬',exact:true}).click();await p.locator('.skill-choice').filter({hasText:seeded.skill_name}).click();await p.getByRole('button',{name:seeded.skill_name+' 제출',exact:true}).click();await p.waitForFunction(()=>!document.querySelector('#maze-controls button')?.disabled);
+check(!(await p.locator('#maze-error').innerText()),'Maze provoke submission POST succeeds');
+const boot=await p.locator('#maze-boot').textContent(),token=JSON.parse(boot).token;
+let state=await (await p.request.get(base+'/dungeon/maze_state.php?ds_id='+seeded.maze_ds)).json();
+const resolved=await p.request.post(base+'/dungeon/maze.php',{form:{ajax:'1',token,ds_id:String(seeded.maze_ds),operation:'resolve',version:String(state.version),room_id:String(state.room),battle_id:String(state.battle.id),turn_no:String(state.battle.turn)}});check((await resolved.json()).ok,'Maze resolves native player and monster turn');
+state=await (await p.request.get(base+'/dungeon/maze_state.php?ds_id='+seeded.maze_ds)).json();const mr=await probe('op=runtime&ds='+seeded.ds+'&battle='+seeded.maze_battle);const m=JSON.parse(mr.find(r=>r.battle_key==='maze:'+seeded.maze_battle).state);
+check(Number(m.enmity[seeded.members[1]])>Number(m.enmity[seeded.members[2]]) && Number(state.battle.turn)===2,'actual Maze provoke raises threat and advances telegraph turn');
+await p.reload();await p.screenshot({path:path.join(root,'artifacts/monster-forecast-maze.png'),fullPage:true});
+const raid=await probe('op=raid&id='+fixture.id),actor1=raid.actors[0],actor2=raid.actors[1];
+check(Number(raid.damage.enmity[actor2])===12,'Raid actual damage creates per-monster threat');
+check(Number(raid.provoke.enmity[actor1])>12,'Raid existing provoke skill raises highest threat');
+check(Number(raid.heal.enmity[actor2])===17,'Raid capped HP healing creates half actual healing threat');
+check(raid.logs.some(l=>l.lo_content.includes('거대한 팔')) && raid.logs.some(l=>l.lo_content.includes('다음 행동 2턴')),'Raid existing log displays first and next turn preparation cues');
+const healSeed=await probe('op=seed&id='+fixture.id);await probe('op=maze_heal&ds='+healSeed.maze_ds);await p.goto(base+'/dungeon/maze.php?ds_id='+healSeed.maze_ds);
+let healBoot=JSON.parse(await p.locator('#maze-boot').textContent());const healPost=async operation=>{const s=await (await p.request.get(base+'/dungeon/maze_state.php?ds_id='+healSeed.maze_ds)).json();return p.request.post(base+'/dungeon/maze.php',{form:{ajax:'1',token:healBoot.token,ds_id:String(healSeed.maze_ds),operation,version:String(s.version),room_id:String(s.room),battle_id:String(s.battle.id),turn_no:String(s.battle.turn),action:'SKILL',reference_id:String(healSeed.sh),target_id:String(healSeed.members[1])}});};
+check((await (await healPost('submit')).json()).ok && (await (await healPost('resolve')).json()).ok,'HP resource healing skill submits and resolves');
+const healLedger=await probe('op=runtime&ds='+healSeed.ds+'&battle='+healSeed.maze_battle);check(Number(JSON.parse(healLedger.find(r=>r.battle_key==='maze:'+healSeed.maze_battle).state).enmity[healSeed.members[1]])===9,'Maze healing threat uses actual recovery before HP resource cost');
+check(errors.length===0,'no gameplay JavaScript errors');
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});
