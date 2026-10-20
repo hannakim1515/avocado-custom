@@ -56,8 +56,8 @@ function monster_shared_validate_phases($phases,$catalog) {
     }
     return $normalized;
 }
-function monster_shared_compile($profile) {
-    $d=$profile['shared'];unset($d['mp']);$catalog=monster_shared_skills();$skills=array();
+function monster_shared_compile($profile,$catalog=null) {
+    $d=$profile['shared'];unset($d['mp']);if($catalog===null)$catalog=monster_shared_skills();$skills=array();
     if(!empty($d['phases']))$d['phases']=monster_shared_validate_phases($d['phases'],$catalog);
     $entries=$d['skills']??array();
     if(!empty($d['phases'])) {
@@ -93,10 +93,14 @@ function monster_shared_from_raid($id) {
     if(!$row)return null;
     $profile=monster_profile($row['monster_id'],false);return $profile['shared']??null;
 }
-function monster_shared_runtime($key,$unit,$definition) {
-    $row=sql_fetch('SELECT state FROM `'.monster_table('monster_runtime').'` WHERE battle_key='.monster_quote($key).' AND unit_key='.monster_quote($unit));
+function monster_shared_runtime($key,$unit,$definition,$row=null) {
+    if($row===null)$row=sql_fetch('SELECT state FROM `'.monster_table('monster_runtime').'` WHERE battle_key='.monster_quote($key).' AND unit_key='.monster_quote($unit));
     if($row) {
         $runtime=json_decode($row['state'],true);
+        if(strpos($key,'maze:')===0) {
+            $definition['skills']=array_map('monster_shared_normalize_skill',$definition['skills']);
+            $runtime['definition']=$definition;
+        }
         return monster_shared_normalize_runtime($runtime);
     }
     $definition['skills']=array_map('monster_shared_normalize_skill',$definition['skills']);
@@ -111,6 +115,7 @@ function monster_shared_normalize_runtime($runtime) {
     return $runtime;
 }
 function monster_shared_save($key,$unit,$state) {
+    if(strpos($key,'maze:')===0)unset($state['definition']);
     sql_query('INSERT INTO `'.monster_table('monster_runtime').'` (battle_key,unit_key,state) VALUES ('.monster_quote($key).','.monster_quote($unit).','.monster_quote(json_encode($state,JSON_UNESCAPED_UNICODE)).') ON DUPLICATE KEY UPDATE state=VALUES(state)');
 }
 function monster_shared_targets($skill,$enemies,$allies,$self,$runtime=null) {
@@ -174,10 +179,21 @@ function monster_shared_planned(&$runtime,$turn,$self) {
     return $skills;
 }
 function monster_shared_ranking($runtime,$participants) {
-    $pool=array_values(array_filter($participants,function($p){return $p['hp']>0 && in_array($p['state']??'ACTIVE',array('ACTIVE','S'),true);}));
-    foreach($pool as &$p)$p['enmity']=(float)($runtime['enmity'][$p['id']]??0);unset($p);
+    $pool=array_values(array_filter($participants,function($participant){
+        return $participant['hp']>0 && in_array($participant['state']??'ACTIVE',array('ACTIVE','S'),true);
+    }));
+    foreach($pool as &$participant) {
+        $participant['enmity']=(float)($runtime['enmity'][$participant['id']]??0);
+    }
+    unset($participant);
     $current=$runtime['enmity_target']??null;
-    usort($pool,function($a,$b)use($current){if($a['enmity']!==$b['enmity'])return $a['enmity']<$b['enmity']?1:-1;if($a['id']==$b['id'])return 0;if($a['id']==$current)return -1;if($b['id']==$current)return 1;return $a['id']<=>$b['id'];});
+    usort($pool,function($left,$right)use($current){
+        if($left['enmity']!==$right['enmity'])return $left['enmity']<$right['enmity']?1:-1;
+        if($left['id']==$right['id'])return 0;
+        if($left['id']==$current)return -1;
+        if($right['id']==$current)return 1;
+        return $left['id']<=>$right['id'];
+    });
     return $pool;
 }
 function monster_shared_enmity(&$runtime,$actor,$amount,$provoke=false) {
@@ -207,25 +223,32 @@ function monster_shared_forecast($runtime,$turn,$self,$participants,$disabled=fa
 /** Apply callback receives the chosen skill, living targets and the common scalar. */
 function monster_shared_turn(&$runtime,$turn,$self,$enemies,$allies,$apply) {
     $runtime=monster_shared_normalize_runtime($runtime);
-    $d=$runtime['definition'];$acted=false;
+    $definition=$runtime['definition'];
+    $acted=false;
     monster_shared_prune($runtime,$enemies);
     if($runtime['guard_until']<$turn)$runtime['guard']=0;
-    $actions=!empty($d['enmity_enabled'])?monster_shared_planned($runtime,$turn,$self):monster_shared_schedule($runtime,$turn,$self);
-    $phase_intent=!empty($d['phases'])?($runtime['intent']??null):null;
+    $actions=!empty($definition['enmity_enabled'])?monster_shared_planned($runtime,$turn,$self):monster_shared_schedule($runtime,$turn,$self);
+    $phase_intent=!empty($definition['phases'])?($runtime['intent']??null):null;
     foreach($actions as $skill) {
-        $targets=monster_shared_targets($skill,$enemies,$allies,$self,$runtime);if(!$targets)continue;
+        $targets=monster_shared_targets($skill,$enemies,$allies,$self,$runtime);
+        if(!$targets)continue;
         if($skill['target']==='enemy' && ($skill['mode']??'SINGLE')==='SINGLE')$runtime['enmity_target']=$targets[0]['id'];
-        $living_after=$apply($skill,$targets,monster_shared_amount($skill,$d));
+        $living_after=$apply($skill,$targets,monster_shared_amount($skill,$definition));
         $acted=true;
         if($living_after===false)break;
     }
-    if(!$acted && !empty($d['default_attack']) && empty($d['enmity_enabled'])) {
-        $skill=monster_shared_basic($d);$targets=monster_shared_targets($skill,$enemies,$allies,$self,$runtime);
-        if($targets){$runtime['enmity_target']=$targets[0]['id'];$apply($skill,$targets,monster_shared_amount($skill,$d));$acted=true;}
+    if(!$acted && !empty($definition['default_attack']) && empty($definition['enmity_enabled'])) {
+        $skill=monster_shared_basic($definition);
+        $targets=monster_shared_targets($skill,$enemies,$allies,$self,$runtime);
+        if($targets) {
+            $runtime['enmity_target']=$targets[0]['id'];
+            $apply($skill,$targets,monster_shared_amount($skill,$definition));
+            $acted=true;
+        }
     }
     if($phase_intent) {
         $runtime['phase_index']=(int)$phase_intent['phase'];
-        $runtime['phase_step']=((int)$phase_intent['step']+1)%count($d['phases'][$runtime['phase_index']]['actions']);
+        $runtime['phase_step']=((int)$phase_intent['step']+1)%count($definition['phases'][$runtime['phase_index']]['actions']);
     }
     unset($runtime['intent']);
     return $acted;

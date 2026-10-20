@@ -62,7 +62,7 @@ function get_map_dungeon($ma_id) {
 	// Prefer the player's running party, then a waiting opening. Never let an
 	// older running instance hide a new opening in the same region.
 	foreach($rows as $row) {
-		if(!empty($character['ch_id']) && maze_entry_label((int)$row['ds_id'], (int)$character['ch_id']) === '미궁 이어하기') return $row;
+		if(!empty($character['ch_id']) && maze_entry_label((int)$row['ds_id'], (int)$character['ch_id'], $row) === '미궁 이어하기') return $row;
 	}
 	foreach($rows as $row) if(empty($row['snapshot']) || $row['phase'] === 'WAITING') return $row;
 	return $rows ? $rows[0] : array();
@@ -75,7 +75,7 @@ function get_map_dungeon($ma_id) {
  * actual ds_ma_id stored by the dungeon generator.
  */
 function get_map_open_dungeons($ma_id, $include_descendants = false) {
-	global $g5, $config;
+	global $g5, $config, $character;
 
 	$ma_id = (int)$ma_id;
 	if($ma_id <= 0 || empty($g5['dungeon_state_table']) || empty($g5['dungeon_table'])) {
@@ -117,6 +117,15 @@ function get_map_open_dungeons($ma_id, $include_descendants = false) {
 		for($i = 0; $row = sql_fetch_array($sql); $i++) {
 			$result[] = $row;
 		}
+	}
+	if($result) {
+		$member_states = array();
+		if(!empty($character['ch_id']) && maze_installed()) {
+			$ids = array_unique(array_map('intval', array_column($result, 'ds_id')));
+			foreach(monster_rows('SELECT ds_id,state FROM `'.maze_table('member').'` WHERE ch_id='.(int)$character['ch_id'].' AND ds_id IN ('.implode(',',$ids).')') as $person) $member_states[(int)$person['ds_id']] = $person['state'];
+		}
+		foreach($result as &$row) $row['maze_member_state'] = $member_states[(int)$row['ds_id']]??null;
+		unset($row);
 	}
 	return $result;
 }

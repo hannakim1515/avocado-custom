@@ -14,10 +14,11 @@ function maze_data($value) {
     return $data;
 }
 function maze_one($sql) { $rows = inventory_boundary_rows($sql); return $rows ? $rows[0] : null; }
-function maze_update($table, $data, $where) {
+function maze_update($table, $data, $where, $increment_version = false) {
     if($table==='session' && isset($data['phase']))$data['ds_state']=in_array($data['phase'],array('CLEAR','FAILED','CLOSED'),true)?'E':'S';
     $sets = array();
     foreach ($data as $key => $value) $sets[] = '`'.$key.'`='.inventory_boundary_quote($value);
+    if ($increment_version && $table === 'session') $sets[] = '`version`=`version`+1';
     inventory_boundary_query('UPDATE `'.maze_table($table).'` SET '.implode(',', $sets).' WHERE '.$where);
 }
 function maze_insert($table, $data) {
@@ -45,30 +46,31 @@ function maze_log($ds_id, $dm_id, $kind, $message) {
 }
 function maze_installed() {
     static $exists = null;
-    if ($exists === null) {
-        $table = sql_escape_string(maze_table('session'));
-        $row = sql_fetch("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='{$table}'", false);
-        $exists = !empty($row['TABLE_NAME']) && maze_readiness()['ready'];
-    }
+    if ($exists === null) $exists = maze_readiness(false)['ready'];
     return $exists;
 }
 function maze_session($ds_id, $lock = false) {
     if (!maze_installed()) return null;
     return maze_one('SELECT * FROM `'.maze_table('session').'` WHERE snapshot IS NOT NULL AND ds_id='.(int)$ds_id.($lock ? ' FOR UPDATE' : ''));
 }
-function maze_routes_instance($ds_id) { return maze_installed(); }
-function maze_is_configured_instance($ds_id) {
-    global $g5;
-    return maze_installed() && (bool)maze_one('SELECT ds_id FROM `'.$g5['dungeon_state_table'].'` WHERE ds_id='.(int)$ds_id);
-}
-function maze_entry_label($ds_id, $ch_id) {
-    $session = maze_session((int)$ds_id);
-    if (!$session || $session['phase'] === 'WAITING') return '입장하기';
+function maze_entry_label($ds_id, $ch_id, $session = null) {
+    if (!maze_installed()) return '입장하기';
+    if ($session === null) $session = maze_one('SELECT phase FROM `'.maze_table('session').'` WHERE snapshot IS NOT NULL AND ds_id='.(int)$ds_id);
+    if (!$session || (array_key_exists('snapshot',$session) && $session['snapshot'] === null) || $session['phase'] === 'WAITING') return '입장하기';
+    if (array_key_exists('maze_member_state',$session)) return $session['maze_member_state'] === 'ACTIVE' ? '미궁 이어하기' : '';
     $person = maze_one('SELECT state FROM `'.maze_table('member').'` WHERE ds_id='.(int)$ds_id.' AND ch_id='.(int)$ch_id);
     return $person && $person['state'] === 'ACTIVE' ? '미궁 이어하기' : '';
 }
-function maze_readiness() {
-    static $result = null;
+function maze_readiness($full = true) {
+    static $result = null, $version_result = null;
+    if (!$full) {
+        if ($version_result !== null) return $version_result;
+        $version_result = inventory_boundary_readiness(false);
+        $row = sql_fetch('SELECT version FROM `'.G5_TABLE_PREFIX."system_migration_meta` WHERE module='labyrinth'", false);
+        if (!$row || version_compare((string)$row['version'], '1.7.0', '<')) $version_result['errors'][] = '미궁 시스템 DB migration 미완료';
+        $version_result['ready'] = !$version_result['errors'];
+        return $version_result;
+    }
     if ($result !== null) return $result;
     $result = inventory_boundary_readiness();
     $server=sql_fetch('SELECT VERSION() AS version',false);
@@ -133,14 +135,15 @@ function maze_readiness() {
     return $result;
 }
 function maze_require_ready() {
-    $ready = maze_readiness();
+    $ready = maze_readiness(false);
     if (!$ready['ready']) throw new RuntimeException('미궁 시스템 DB migration이 적용되지 않았음');
 }
-function maze_defaults($dg) {
+function maze_defaults($dg, $rewards = null, $pool = null) {
     global $g5;
-    $rewards=!empty($dg['dg_id']) ? dungeon_rewards($dg['dg_id']) : array();
+    if ($rewards === null) $rewards=!empty($dg['dg_id']) ? dungeon_rewards($dg['dg_id']) : array();
     $monsters=array();$boss=false;$encounters=false;
-    if(!empty($dg['dg_id']))foreach(monster_rows('SELECT * FROM `'.monster_table('dungeon_monster_pool').'` WHERE dg_id='.(int)$dg['dg_id'].' ORDER BY monster_id') as $entry) {
+    if ($pool === null) $pool=!empty($dg['dg_id']) ? monster_rows('SELECT * FROM `'.monster_table('dungeon_monster_pool').'` WHERE dg_id='.(int)$dg['dg_id'].' ORDER BY monster_id') : array();
+    foreach($pool as $entry) {
         $monsters[]=array('monster_id'=>(int)$entry['monster_id'],'weight'=>(int)$entry['weight'],'enabled'=>(bool)$entry['enabled'],'boss'=>(bool)$entry['is_boss'],'min_count'=>(int)($entry['min_count']??1),'max_count'=>(int)($entry['max_count']??1));
         if($entry['enabled'] && $entry['weight']>0){if($entry['is_boss'])$boss=true;else $encounters=true;}
     }

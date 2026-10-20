@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const boot = JSON.parse(document.getElementById('maze-boot').textContent);
-  let state = boot.state, busy = false, polling = null, timer, known = '', logId = 0, chatId = 0, eventId = 0;
+  let state = boot.state, busy = false, polling = null, timer, logId = 0, chatId = 0, eventId = 0;
   let mode = 'main', selectedSkill = 0, selectedItem = 0, target = state.actor, selectedEnemy = 0;
   let pendingAction = null, pollController = null;
   let submission = null, resolveQueued = false;
@@ -86,7 +86,7 @@
     if (op === 'submit') pendingAction = data;
     busy = true; error(''); clearTimeout(timer); render();
     if (polling) { pollController?.abort(); await polling; }
-    const body = new URLSearchParams({ ajax: '1', token: boot.token, ds_id: boot.ds_id, operation: op, last_log_id: logId, last_chat_id: chatId, version: state.version, room_id: state.room, battle_id: state.battle?.id || 0, turn_no: state.battle?.turn || 0, ...data });
+    const body = new URLSearchParams({ ajax: '1', token: boot.token, ds_id: boot.ds_id, operation: op, last_log_id: logId, last_chat_id: chatId, last_event_id: eventId, version: state.version, room_id: state.room, battle_id: state.battle?.id || 0, turn_no: state.battle?.turn || 0, ...data });
     let success = false, updated = false;
     try {
       const endpoint = 'maze.php';
@@ -95,7 +95,7 @@
       if (result.state) { applyState(result.state); updated = true; }
     } catch (e) { error(e.message); }
     finally {
-      pendingAction = null; busy = false; known = '';
+      pendingAction = null; busy = false;
       if (!updated) await sync(true);
       render(); clearTimeout(timer); if (!document.hidden && !ended()) timer = setTimeout(sync, 2500);
     }
@@ -108,7 +108,7 @@
     polling = (async () => {
       const controller = new AbortController(); pollController = controller; const timeout = setTimeout(() => controller.abort(), 15000);
       try {
-        const query = new URLSearchParams({ ds_id: boot.ds_id, last_log_id: logId, last_chat_id: chatId, last_event_id: eventId, known_version: known });
+        const query = new URLSearchParams({ ds_id: boot.ds_id, last_log_id: logId, last_chat_id: chatId, last_event_id: eventId, known_version: state.version });
         const response = await fetch(`maze_state.php?${query}`, { cache: 'no-store', credentials: 'same-origin', signal: controller.signal });
         const result = await response.json(); if (!response.ok || result.error) throw new Error(result.error || '연결 실패');
         applyState(result); if (result.phase) render();
@@ -119,7 +119,6 @@
     return polling;
   }
   function applyState(result) {
-    known = result.known_version || '';
     messages(result.chat || [], 'maze-chat', true); messages(result.logs || [], 'maze-log', false);
     combatMessages(result.events || []);
     if (result.phase) {

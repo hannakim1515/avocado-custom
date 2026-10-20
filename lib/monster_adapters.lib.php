@@ -2,30 +2,65 @@
 if(!defined('_GNUBOARD_'))exit;
 require_once __DIR__.'/monster_shared.lib.php';
 
-function monster_shared_maze($session,&$battle,&$party,&$companions=null) {
-    $m=maze_data($battle['monster']);if(empty($m['shared']))return false;
-    if($battle['weak_turn']>0){$battle['weak_turn']--;
-        $r=monster_shared_runtime('maze:'.$battle['battle_id'],0,$m['shared']);monster_shared_prepare($r,(int)$battle['turn_no']+1,array('hp'=>$battle['hp'],'max_hp'=>$m['dg_mon_hp']));monster_shared_save('maze:'.$battle['battle_id'],0,$r);return true;}
-    $settings=maze_data($session['snapshot']);$key='maze:'.$battle['battle_id'];$runtime=monster_shared_runtime($key,0,$m['shared']);
-    $self=array('id'=>$companions===null?0:(int)$battle['battle_id'],'hp'=>(int)$battle['hp'],'max_hp'=>(int)$m['dg_mon_hp'],'name'=>$m['dg_mon_name']);
+function monster_shared_maze($session,&$battle,&$party,&$companions,&$runtimes) {
+    $monster_definition=maze_data($battle['monster']);
+    if(empty($monster_definition['shared']))return false;
+    if($battle['weak_turn']>0) {
+        $battle['weak_turn']--;
+        $runtime=&$runtimes[(int)$battle['battle_id']];
+        monster_shared_prepare($runtime,(int)$battle['turn_no']+1,array('hp'=>$battle['hp'],'max_hp'=>$monster_definition['dg_mon_hp']));
+        return true;
+    }
+    $settings=maze_data($session['snapshot']);
+    $runtime=&$runtimes[(int)$battle['battle_id']];
+    $self=array('id'=>$companions===null?0:(int)$battle['battle_id'],'hp'=>(int)$battle['hp'],'max_hp'=>(int)$monster_definition['dg_mon_hp'],'name'=>$monster_definition['dg_mon_name']);
     $allies=array($self);
-    if($companions!==null){$allies=array();foreach($companions as $unit){$definition=maze_data($unit['monster']);$allies[]=array('id'=>(int)$unit['battle_id'],'hp'=>(int)$unit['hp'],'max_hp'=>(int)$definition['dg_mon_hp'],'name'=>$definition['dg_mon_name']);}}
-    $enemies=array();foreach($party as $id=>$p)$enemies[]=array('id'=>$id,'hp'=>(int)$p['hp'],'max_hp'=>(int)$p['max_hp'],'name'=>$p['name']);
-    $acted=monster_shared_turn($runtime,(int)$battle['turn_no'],$self,$enemies,$allies,function($sk,$targets,$amount)use(&$runtime,&$battle,&$party,&$companions,$session,$settings,$m,$key){
+    if($companions!==null) {
+        $allies=array();
+        foreach($companions as $unit) {
+            $definition=maze_data($unit['monster']);
+            $allies[]=array('id'=>(int)$unit['battle_id'],'hp'=>(int)$unit['hp'],'max_hp'=>(int)$definition['dg_mon_hp'],'name'=>$definition['dg_mon_name']);
+        }
+    }
+    $enemies=array();
+    foreach($party as $id=>$participant) {
+        $enemies[]=array('id'=>$id,'hp'=>(int)$participant['hp'],'max_hp'=>(int)$participant['max_hp'],'name'=>$participant['name']);
+    }
+    $acted=monster_shared_turn($runtime,(int)$battle['turn_no'],$self,$enemies,$allies,function($sk,$targets,$amount)use(&$runtime,&$runtimes,&$battle,&$party,&$companions,$session,$settings,$monster_definition){
         foreach($targets as $target) {
-            $id=$target['id'];$actual=$amount;$result=$sk['type'];
+            $id=$target['id'];
+            $actual=$amount;
+            $result=$sk['type'];
             if($sk['target']==='enemy') {
                 if($party[$id]['hp']<=0)continue;
-                $p=&$party[$id];$before=(int)$p['hp'];
+                $participant=&$party[$id];
+                $before=(int)$participant['hp'];
                 if($sk['type']==='DAMAGE') {
-                    $evaded=maze_evasion($p);
-                    foreach($settings['codes'] as $code)if(!$evaded && $code['ex_name']==='자동회피' && random_int(0,1000)<=maze_code($session,$p,'자동회피'))$evaded=true;
-                    $actual=$evaded?0:max(0,$amount-maze_code($session,$p,$settings['defense_code']));
-                    $actual=(int)round($actual*(1-min(90,max(0,maze_effect_value($p,'GUARD')))/100));$p['hp']=max(0,$p['hp']-$actual);$actual=$before-$p['hp'];if($evaded)$result='EVADE';
-                }elseif($sk['type']==='HEAL'){maze_heal($p,$amount);$actual=$p['hp']-$before;}
-                elseif($sk['type']==='MP_HEAL'){$stats=maze_data($p['stats']);$mp=(int)$settings['mp_id'];$before=(int)($stats[$mp]??0);$stats[$mp]=min((int)($stats['_maximum'][$mp]??$before),$before+$amount);$actual=$stats[$mp]-$before;$p['stats']=maze_json($stats);}
-                elseif($sk['type']==='GUARD'){$effects=maze_data($p['effects']);$effects['monster:'.$sk['id']]=array('remaining'=>$sk['duration']+1,'components'=>array(array('type'=>'GUARD','value'=>$amount)));$p['effects']=maze_json($effects);}
-                unset($p);
+                    $evaded=maze_evasion($participant);
+                    foreach($settings['codes'] as $code)if(!$evaded && $code['ex_name']==='자동회피' && random_int(0,1000)<=maze_code($session,$participant,'자동회피'))$evaded=true;
+                    $actual=$evaded?0:max(0,$amount-maze_code($session,$participant,$settings['defense_code']));
+                    $actual=(int)round($actual*(1-min(90,max(0,maze_effect_value($participant,'GUARD')))/100));
+                    $participant['hp']=max(0,$participant['hp']-$actual);
+                    $actual=$before-$participant['hp'];
+                    if($evaded)$result='EVADE';
+                }elseif($sk['type']==='HEAL'){
+                    maze_heal($participant,$amount);
+                    $actual=$participant['hp']-$before;
+                }
+                elseif($sk['type']==='MP_HEAL'){
+                    $stats=maze_data($participant['stats']);
+                    $mp=(int)$settings['mp_id'];
+                    $before=(int)($stats[$mp]??0);
+                    $stats[$mp]=min((int)($stats['_maximum'][$mp]??$before),$before+$amount);
+                    $actual=$stats[$mp]-$before;
+                    $participant['stats']=maze_json($stats);
+                }
+                elseif($sk['type']==='GUARD'){
+                    $effects=maze_data($participant['effects']);
+                    $effects['monster:'.$sk['id']]=array('remaining'=>$sk['duration']+1,'components'=>array(array('type'=>'GUARD','value'=>$amount)));
+                    $participant['effects']=maze_json($effects);
+                }
+                unset($participant);
             }else {
                 if($companions===null)$unit=&$battle;else $unit=&$companions[$id];
                 $definition=maze_data($unit['monster']);
@@ -34,18 +69,21 @@ function monster_shared_maze($session,&$battle,&$party,&$companions=null) {
                 elseif($sk['type']==='MP_HEAL'){$actual=0;}
                 elseif($sk['type']==='GUARD'){
                     if((int)$unit['battle_id']===(int)$battle['battle_id']){$runtime['guard']=min(90,$amount);$runtime['guard_until']=$battle['turn_no']+$sk['duration'];}
-                    elseif(!empty($definition['shared'])){$ally=monster_shared_runtime('maze:'.$unit['battle_id'],0,$definition['shared']);$ally['guard']=min(90,$amount);$ally['guard_until']=$battle['turn_no']+$sk['duration'];monster_shared_save('maze:'.$unit['battle_id'],0,$ally);}
+                    elseif(!empty($definition['shared'])){$runtimes[(int)$unit['battle_id']]['guard']=min(90,$amount);$runtimes[(int)$unit['battle_id']]['guard_until']=$battle['turn_no']+$sk['duration'];}
                 }
                 unset($unit);
             }
-            maze_combat_event($session,$battle['turn_no'],$m['dg_mon_name'],$target['name'],$sk['name'],$actual,$result);
+            maze_combat_event($session,$battle['turn_no'],$monster_definition['dg_mon_name'],$target['name'],$sk['name'],$actual,$result);
         }
         return $battle['hp']>0;
     });
-    $participants=array();foreach($party as $pid=>$p)$participants[]=array('id'=>$pid,'hp'=>$p['hp']);monster_shared_prune($runtime,$participants);
-    monster_shared_prepare($runtime,(int)$battle['turn_no']+1,array('hp'=>$battle['hp'],'max_hp'=>$m['dg_mon_hp']));
-    monster_shared_save($key,0,$runtime);
-    if(!$acted)maze_combat_event($session,$battle['turn_no'],$m['dg_mon_name'],$m['dg_mon_name'],'대기',0,'SKIP');
+    $participants=array();
+    foreach($party as $participant_id=>$participant) {
+        $participants[]=array('id'=>$participant_id,'hp'=>$participant['hp']);
+    }
+    monster_shared_prune($runtime,$participants);
+    monster_shared_prepare($runtime,(int)$battle['turn_no']+1,array('hp'=>$battle['hp'],'max_hp'=>$monster_definition['dg_mon_hp']));
+    if(!$acted)maze_combat_event($session,$battle['turn_no'],$monster_definition['dg_mon_name'],$monster_definition['dg_mon_name'],'대기',0,'SKIP');
     return true;
 }
 
@@ -77,7 +115,11 @@ function monster_shared_raid($unit,$ra_id,$turn,$option='',$system='') {
     if(!$saved)return false; // Only units registered with a shared snapshot use this path.
     $runtime=monster_shared_normalize_runtime(json_decode($saved['state'],true));$d=$runtime['definition'];
     $self=array('id'=>$id,'hp'=>(int)$unit['hp_now'],'max_hp'=>(int)$unit['hp_max'],'name'=>$d['name'],'unit_type'=>'mo');$enemies=array();$allies=array();
-    foreach(monster_rows('SELECT u.*,COALESCE(c.ch_name,m.mo_name) name FROM `'.$battle_table.'_unit` u LEFT JOIN `'.$GLOBALS['g5']['character_table']."` c ON u.unit_type='ch' AND c.ch_id=u.unit_id LEFT JOIN `".$GLOBALS['g5']['k_monster_table']."` m ON u.unit_type='mo' AND m.mo_id=u.unit_id WHERE u.ra_id=".monster_quote($ra_id).' AND u.hp_now>0') as $u){$p=array('id'=>(int)$u['rm_id'],'hp'=>(int)$u['hp_now'],'max_hp'=>(int)$u['hp_max'],'name'=>$u['name'],'unit_type'=>$u['unit_type']);if($u['unit_type']==='ch')$enemies[]=$p;else $allies[]=$p;}
+    foreach(monster_rows('SELECT u.*,COALESCE(c.ch_name,m.mo_name) name FROM `'.$battle_table.'_unit` u LEFT JOIN `'.$GLOBALS['g5']['character_table']."` c ON u.unit_type='ch' AND c.ch_id=u.unit_id LEFT JOIN `".$GLOBALS['g5']['k_monster_table']."` m ON u.unit_type='mo' AND m.mo_id=u.unit_id WHERE u.ra_id=".monster_quote($ra_id).' AND u.hp_now>0') as $unit_row) {
+        $participant=array('id'=>(int)$unit_row['rm_id'],'hp'=>(int)$unit_row['hp_now'],'max_hp'=>(int)$unit_row['hp_max'],'name'=>$unit_row['name'],'unit_type'=>$unit_row['unit_type']);
+        if($unit_row['unit_type']==='ch') $enemies[]=$participant;
+        else $allies[]=$participant;
+    }
     $acted=monster_shared_turn($runtime,$turn,$self,$enemies,$allies,function($sk,$targets,$amount)use(&$runtime,$unit,$id,$key,$ra_id,$turn,$option,$system,$battle_table){
         foreach($targets as $target) {
             $tid=(int)$target['id'];$p=get_k_unit($tid,$target['unit_type']);if(!$p || $p['hp_now']<=0)continue;$actual=$amount;$result=$sk['type'];

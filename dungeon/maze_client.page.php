@@ -13,7 +13,7 @@ try {
         if(!$ajax)goto_url('./maze.php?ds_id='.$ds_id);
     }
     $person=maze_one('SELECT dm_id FROM `'.maze_table('member').'` WHERE ds_id='.$ds_id.' AND ch_id='.(int)$character['ch_id'].' AND mb_id='.inventory_boundary_quote($member['mb_id']));
-    if($person)$state=maze_client_state($ds_id,(int)($_POST['last_log_id']??0),(int)($_POST['last_chat_id']??0));
+    if($person)$state=maze_client_state($ds_id,(int)($_POST['last_log_id']??0),(int)($_POST['last_chat_id']??0),(int)($_POST['last_event_id']??0));
     elseif($ajax)throw new RuntimeException('미궁 참가자가 아닙니다.');
 } catch(Throwable $e) { $error=$e->getMessage(); }
 if($ajax){header('Content-Type: application/json; charset=utf-8');header('Cache-Control: no-store');if($error)http_response_code(400);echo json_encode($error?array('error'=>$error):array('ok'=>true,'state'=>$state),JSON_UNESCAPED_UNICODE|JSON_INVALID_UTF8_SUBSTITUTE);exit;}

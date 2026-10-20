@@ -2,10 +2,12 @@
 if (!defined('_GNUBOARD_')) exit;
 
 function maze_config($dg) {
-    $settings = array_replace(maze_defaults($dg), !empty($dg['dg_settings']) ? maze_data($dg['dg_settings']) : array());
-    $settings['rewards']=dungeon_rewards($dg['dg_id']);
+    $rewards=dungeon_rewards($dg['dg_id']);
+    $pool=monster_rows('SELECT p.*,m.enabled AS monster_enabled FROM `'.monster_table('dungeon_monster_pool').'` p LEFT JOIN `'.monster_table('monster_master').'` m ON m.monster_id=p.monster_id WHERE p.dg_id='.(int)$dg['dg_id'].' ORDER BY p.monster_id');
+    $settings = array_replace(maze_defaults($dg,$rewards,$pool), !empty($dg['dg_settings']) ? maze_data($dg['dg_settings']) : array());
+    $settings['rewards']=$rewards;
     $settings['monsters']=array();
-    foreach(monster_rows('SELECT p.* FROM `'.monster_table('dungeon_monster_pool').'` p JOIN `'.monster_table('monster_master').'` m ON m.monster_id=p.monster_id WHERE p.dg_id='.(int)$dg['dg_id'].' AND p.enabled=1 AND m.enabled=1 ORDER BY p.monster_id') as $entry)
+    foreach($pool as $entry) if($entry['enabled'] && $entry['monster_enabled'])
         $settings['monsters'][]=array('monster_id'=>(int)$entry['monster_id'],'enabled'=>true,'weight'=>(int)$entry['weight'],'boss'=>(bool)$entry['is_boss'],'min_count'=>(int)($entry['min_count']??1),'max_count'=>(int)($entry['max_count']??1));
     // dg_count remains the single source of maximum party size.
     $settings['title']=$dg['dg_title'];
@@ -16,12 +18,23 @@ function maze_config($dg) {
     $settings['stat_definitions']=inventory_boundary_rows('SELECT * FROM `'.$g5['status_config_table'].'` ORDER BY st_id');
     $settings['hp_id']=0;$settings['mp_id']=(int)($kb_cf['mp']??0);
     foreach($settings['stat_definitions'] as $definition)if($definition['st_use_hp']){$settings['hp_id']=(int)$definition['st_id'];break;}
-    foreach ($settings['monsters'] as &$monster) $monster['data'] = maze_monster_definition(!empty($monster['monster_id'])?monster_profile($monster['monster_id']):$monster['data'], $dg);
-    unset($monster);
     $settings['events']=array_values(array_filter(array_map(function($event)use($settings){return maze_event_for_pool($event,$settings['monsters']);},$settings['events'])));
+    $monster_ids=array();
+    foreach($settings['monsters'] as $monster) if(!empty($monster['monster_id'])) $monster_ids[]=(int)$monster['monster_id'];
+    foreach($settings['events'] as $event) {
+        if(($event['type']??'')==='MONSTER' && empty($event['choices']) && !empty($event['monster_id'])) $monster_ids[]=(int)$event['monster_id'];
+        if(!empty($event['choices'])) foreach($event['choices'] as $choice) if(($choice['type']??'')==='MONSTER' && !empty($choice['monster_id'])) $monster_ids[]=(int)$choice['monster_id'];
+    }
+    $monster_ids=array_values(array_unique(array_filter($monster_ids)));
+    $master_rows=array();
+    if($monster_ids) foreach(monster_rows('SELECT * FROM `'.monster_table('monster_master').'` WHERE monster_id IN ('.implode(',',$monster_ids).') AND enabled=1') as $row) $master_rows[(int)$row['monster_id']]=$row;
+    $definitions=array();$catalog=null;
+    foreach($monster_ids as $id) $definitions[$id]=monster_profile($id,true,$master_rows[$id]??false,$catalog);
+    foreach ($settings['monsters'] as &$monster) $monster['data'] = maze_monster_definition(!empty($monster['monster_id'])?$definitions[(int)$monster['monster_id']]:$monster['data'], $dg);
+    unset($monster);
     foreach ($settings['events'] as &$event) {
-        if (($event['type']??'')==='MONSTER' && empty($event['choices'])) $event['monster'] = maze_monster_definition(!empty($event['monster_id'])?monster_profile($event['monster_id']):$event['monster'], $dg);
-        if (!empty($event['choices'])) foreach ($event['choices'] as &$choice) if (($choice['type']??'')==='MONSTER') $choice['monster'] = maze_monster_definition(!empty($choice['monster_id'])?monster_profile($choice['monster_id']):$choice['monster'], $dg);
+        if (($event['type']??'')==='MONSTER' && empty($event['choices'])) $event['monster'] = maze_monster_definition(!empty($event['monster_id'])?$definitions[(int)$event['monster_id']]:$event['monster'], $dg);
+        if (!empty($event['choices'])) foreach ($event['choices'] as &$choice) if (($choice['type']??'')==='MONSTER') $choice['monster'] = maze_monster_definition(!empty($choice['monster_id'])?$definitions[(int)$choice['monster_id']]:$choice['monster'], $dg);
         unset($choice);
     }
     unset($event);
@@ -118,6 +131,7 @@ function maze_join($ds_id) {
         $preview=array();foreach($settings['stat_definitions'] as $definition){$id=(int)$definition['st_id'];$preview[$id]=function_exists('unified_stat_value')?(int)unified_stat_value($ch_id,$id):(int)get_status($ch_id,$id)['now'];}
         $data['hp']=$data['max_hp']=(int)($preview[$settings['hp_id']]??0);$preview['_maximum']=$preview;$data['stats']=maze_json($preview);
         if ($existing) maze_update('member', $data, 'dm_id='.(int)$existing['dm_id']); else maze_insert('member', $data);
+        maze_update('session', array(), 'ds_id='.$ds_id, true);
         maze_log($ds_id, 0, 'PARTY', $owner['ch_name'].' 입장');
         inventory_boundary_query('COMMIT');
     } catch (Throwable $error) { sql_query('ROLLBACK', false); throw $error; }
@@ -160,7 +174,7 @@ function maze_expire_waiting() {
     foreach ($rows as $row) maze_transaction($row['ds_id'], function ($session) {
         if ($session['phase'] !== 'WAITING' || !$session['expires_at'] || strtotime($session['expires_at']) > time()) return;
         maze_update('member', array('state' => 'LEFT', 'ready' => 0, 'exited_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id']." AND state='ACTIVE'");
-        maze_update('session', array('phase' => 'CLOSED', 'finished_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id']);
+        maze_update('session', array('phase' => 'CLOSED', 'finished_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id'], true);
     });
 }
 
@@ -174,7 +188,7 @@ function maze_start($session, $actor) {
     if (count($party) < $settings['min_players'] || count($party) > $settings['max_players']) throw new RuntimeException('출발 인원을 확인해 주세요.');
     foreach ($party as $person) if (!$person['ready']) throw new RuntimeException('참가자 전원이 READY 상태여야 합니다.');
     inventory_boundary_lock_owners(array_column($party, 'ch_id'));
-    $definitions = inventory_boundary_rows("SELECT * FROM `{$g5['status_config_table']}` ORDER BY st_id");
+    $definitions = $settings['stat_definitions'];
     $hp_id = 0;
     foreach ($definitions as $definition) if (!empty($definition['st_use_hp'])) { $hp_id = (int)$definition['st_id']; break; }
     if (!$hp_id) throw new RuntimeException('HP 스탯 설정이 필요합니다.');
@@ -216,7 +230,7 @@ function maze_start($session, $actor) {
         $generated_rooms[] = $room;
     }
     maze_insert_many('room',$generated_rooms);
-    maze_update('session', array('phase' => 'EXPLORE', 'room_id' => 1, 'snapshot' => maze_json($settings), 'started_at' => date('Y-m-d H:i:s'), 'version' => (int)$session['version'] + 1), 'ds_id='.(int)$session['ds_id']);
+    maze_update('session', array('phase' => 'EXPLORE', 'room_id' => 1, 'snapshot' => maze_json($settings), 'started_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id'], true);
     maze_log($session['ds_id'], $actor['dm_id'], 'START', '미궁 탐험을 시작했습니다.');
 }
 
@@ -236,6 +250,6 @@ function maze_finish($session, $clear) {
     inventory_boundary_lock_owners(array_column($party, 'ch_id'));
     foreach ($party as $person) maze_settle_member($session, $person, $clear ? 'CLEAR' : 'FAILED', $clear);
     if ($session['battle_id']) inventory_boundary_query('UPDATE `'.maze_table('battle').'` SET state="CLOSED" WHERE ds_id='.(int)$session['ds_id'].' AND (battle_id='.(int)$session['battle_id'].' OR encounter_id='.(int)$session['battle_id'].') AND state="ACTIVE"');
-    maze_update('session', array('phase' => $clear ? 'CLEAR' : 'FAILED', 'finished_at' => date('Y-m-d H:i:s'), 'version' => (int)$session['version'] + 1), 'ds_id='.(int)$session['ds_id']);
+    maze_update('session', array('phase' => $clear ? 'CLEAR' : 'FAILED', 'finished_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id'], true);
     inventory_boundary_query('DELETE FROM `'.maze_table('vote').'` WHERE ds_id='.(int)$session['ds_id']);
 }

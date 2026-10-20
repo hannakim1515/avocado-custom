@@ -26,7 +26,7 @@ $open_dungeons = $show_dungeon_map && function_exists('get_map_open_dungeons') ?
 			<ul>
 			<? for($i = 0; $i < count($open_dungeons); $i++) {
 				$open_dungeon = $open_dungeons[$i];
-				$entry_label = maze_entry_label((int)$open_dungeon['ds_id'], (int)$character['ch_id']);
+				$entry_label = maze_entry_label((int)$open_dungeon['ds_id'], (int)$character['ch_id'], $open_dungeon);
 			?>
 				<li>
 					<span><?=get_text($open_dungeon['dg_title'])?> · <?=get_text($open_dungeon['ds_ma_id'] ? get_map_name($open_dungeon['ds_ma_id']) : '지역 제한 없음')?></span>

@@ -49,8 +49,12 @@ function maze_code($session, $person, $name) {
     }
     throw new RuntimeException('연동 코드 설정이 없습니다: '.$name);
 }
-function maze_person_save($person) {
-    maze_update('member', array('hp' => max(0, (int)$person['hp']), 'stats' => $person['stats'], 'skills' => $person['skills'], 'effects' => $person['effects']), 'dm_id='.(int)$person['dm_id']);
+function maze_person_save($person,$before=null) {
+    $values=array('hp'=>max(0,(int)$person['hp']),'stats'=>$person['stats'],'skills'=>$person['skills'],'effects'=>$person['effects']);
+    if($before!==null) {
+        foreach($values as $field=>$value)if($field==='hp'?(int)$before[$field]===$value:maze_data($before[$field])===maze_data($value))unset($values[$field]);
+    }
+    if($values)maze_update('member',$values,'dm_id='.(int)$person['dm_id']);
 }
 function maze_status_apply($session, &$person, $status_id) {
     $settings = maze_data($session['snapshot']);
@@ -141,7 +145,6 @@ function maze_check_escape_vote($session, $input) {
 }
 function maze_combat_event($session,$turn,$actor,$target,$action,$amount,$result) {
     combat_event('maze',$session['ds_id'],$turn,$actor,$target,$action,$amount,$result);
-    maze_log($session['ds_id'],0,'COMBAT',$actor.' → '.$target.' / '.$action.' / '.($result==='HEAL'?'+':'').$amount.' '.$result.' · 턴 '.$turn);
 }
 function maze_submit($session, $actor, $input) {
     $battle = maze_battle_current($session);
@@ -169,6 +172,7 @@ function maze_submit($session, $actor, $input) {
     if ($action === 'ITEM') maze_inventory_owned($session, $actor, $reference);
     $escape = !empty($input['escape_vote']) ? 1 : 0;
     inventory_boundary_query('INSERT INTO `'.maze_table('action').'` (battle_id,turn_no,dm_id,action,target_id,monster_id,reference_id,escape_vote) VALUES ('.(int)$battle['battle_id'].','.(int)$battle['turn_no'].','.(int)$actor['dm_id'].','.inventory_boundary_quote($action).','.$target_id.','.$enemy_id.','.$reference.','.$escape.') ON DUPLICATE KEY UPDATE action=VALUES(action),target_id=VALUES(target_id),monster_id=VALUES(monster_id),reference_id=VALUES(reference_id),escape_vote=VALUES(escape_vote)');
+    if ((int)maze_one('SELECT ROW_COUNT() AS changed')['changed'] > 0) maze_update('session', array(), 'ds_id='.(int)$session['ds_id'], true);
     // Submission only records the choice; resolving requires an explicit POST.
 }
 function maze_skill_targets($skill, $actor_id, $target_id, $party) {
@@ -181,10 +185,9 @@ function maze_skill_targets($skill, $actor_id, $target_id, $party) {
     }
     return $targets;
 }
-function maze_attack_monster(&$battle, $monster, $code, $amount) {
+function maze_attack_monster(&$battle, $monster, $code, $amount, &$runtimes) {
     if(!empty($monster['shared'])) {
-        require_once G5_PATH.'/lib/monster_shared.lib.php';
-        $runtime=monster_shared_runtime('maze:'.$battle['battle_id'],0,$monster['shared']);
+        $runtime=$runtimes[(int)$battle['battle_id']];
         if($runtime['guard_until']>=(int)$battle['turn_no'])$amount*=1-$runtime['guard']/100;
     }
     if (!empty($monster['dg_strong_code']) && $monster['dg_strong_code'] === $code) $amount *= (float)$monster['dg_strong_value'];
@@ -198,7 +201,7 @@ function maze_attack_monster(&$battle, $monster, $code, $amount) {
     $battle['hp'] = max(0, (int)$battle['hp'] - max(0, (int)$amount));
     return max(0,(int)$amount);
 }
-function maze_skill_enemy_apply(&$battle,$skill,$value,$person) {
+function maze_skill_enemy_apply(&$battle,$skill,$value,$person,&$runtimes) {
     $monster=maze_data($battle['monster']);
     if($skill['sk_function']==='공격') {
         $mod=0;
@@ -206,7 +209,7 @@ function maze_skill_enemy_apply(&$battle,$skill,$value,$person) {
         elseif($skill['sk_def_enermy']==='공격')$mod=$monster['dg_d_attack_max']+maze_monster_bonus($monster,'공격');
         elseif($skill['sk_def_enermy']==='방어')$mod=$monster['dg_defence']+maze_monster_bonus($monster,'방어');
         if($skill['sk_def_type']==='+')$value+=$mod;elseif($skill['sk_def_type']==='-')$value-=$mod;
-        $damage=maze_attack_monster($battle,$monster,$skill['sk_status_code'],$value+maze_effect_value($person,'CODE','공통대미지'));
+        $damage=maze_attack_monster($battle,$monster,$skill['sk_status_code'],$value+maze_effect_value($person,'CODE','공통대미지'),$runtimes);
         if($skill['sk_keep_limit']>0)$monster['_effects']['skill:'.$skill['sh_id']]=array('type'=>'DOT','value'=>$damage,'remaining'=>(int)$skill['sk_keep_limit']);
     } else {
         if(!in_array($skill['sk_mod_enermy'],array('체력','공격','방어'),true))throw new RuntimeException('적 스탯 대상이 잘못되었습니다.');
@@ -214,7 +217,7 @@ function maze_skill_enemy_apply(&$battle,$skill,$value,$person) {
     }
     $battle['monster']=maze_json($monster);
 }
-function maze_skill_execute($session, &$battle, &$party, $id, $action, &$enemies = null) {
+function maze_skill_execute($session, &$battle, &$party, $id, $action, &$enemies, &$runtimes) {
     $person =& $party[$id]; $skill = maze_skill($person, $action['reference_id']);
     if ($skill['sh_limit'] > 0) throw new RuntimeException('스킬 재사용 대기 중');
     $settings = maze_data($session['snapshot']); $stats = maze_data($person['stats']);
@@ -227,7 +230,7 @@ function maze_skill_execute($session, &$battle, &$party, $id, $action, &$enemies
     if ($skill['sl_set_value']) $value = $skill['sk_value_type'] === 'x' ? $value * (float)$skill['sl_set_value'] : $value + (float)$skill['sl_set_value'];
     $function = $skill['sk_function'];
     if ($function === '공격' || ($skill['sk_target']==='적' && in_array($function,array('스탯강화','연동코드강화'),true))) {
-        if($enemies===null)maze_skill_enemy_apply($battle,$skill,$value,$person);
+        if($enemies===null)maze_skill_enemy_apply($battle,$skill,$value,$person,$runtimes);
         else {
             $living=maze_battle_living($enemies);$mode=$skill['sk_dungeon_target_mode']??'SINGLE';
             if($mode==='ALL')$targets=array_keys($living);
@@ -236,7 +239,7 @@ function maze_skill_execute($session, &$battle, &$party, $id, $action, &$enemies
             if(!$targets)throw new RuntimeException('살아 있는 몬스터가 없습니다.');
             foreach($targets as $enemy) {
                 if(!isset($enemies[$enemy]) || $enemies[$enemy]['hp']<=0)throw new RuntimeException('선택한 몬스터가 이미 전투불능입니다.');
-                maze_skill_enemy_apply($enemies[$enemy],$skill,$value,$person);
+                maze_skill_enemy_apply($enemies[$enemy],$skill,$value,$person,$runtimes);
             }
         }
     } else {
@@ -289,6 +292,25 @@ function maze_resolve($session, $battle, $skip_time) {
     if ($escape && random_int(1,10000) <= (int)round($settings['escape_percent'] * 100)) {
         maze_battle_end($session, $battle, 'ESCAPED'); return;
     }
+    $runtimes=array();
+    $runtime_before=array();
+    $runtime_rows=array();
+    foreach($enemies as $enemy_id=>$unit) {
+        if(!empty(maze_data($unit['monster'])['shared'])) $runtime_rows[$enemy_id]=false;
+    }
+    if($runtime_rows) {
+        require_once G5_PATH.'/lib/monster_shared.lib.php';
+        $keys=array_map(function($enemy_id){return monster_quote('maze:'.$enemy_id);},array_keys($runtime_rows));
+        foreach(monster_rows('SELECT battle_key,state FROM `'.monster_table('monster_runtime').'` WHERE unit_key=0 AND battle_key IN ('.implode(',',$keys).')') as $runtime_row) {
+            $runtime_rows[(int)substr($runtime_row['battle_key'],5)]=$runtime_row;
+        }
+        foreach($runtime_rows as $enemy_id=>$runtime_row) {
+            $definition=maze_data($enemies[$enemy_id]['monster'])['shared'];
+            $runtimes[$enemy_id]=monster_shared_runtime('maze:'.$enemy_id,0,$definition,$runtime_row);
+            $runtime_before[$enemy_id]=$runtime_row?maze_data($runtime_row['state']):null;
+        }
+    }
+    $party_at_start=$party;
     if (!$escape) foreach ($alive_at_start as $id) {
         if ($party[$id]['hp'] <= 0 || maze_effect_value($party[$id], 'ACTION_DISABLE') > 0 || empty($actions[$id]['action'])) continue;
         $action = $actions[$id];
@@ -302,7 +324,7 @@ function maze_resolve($session, $battle, $skip_time) {
             if ($action['action'] === 'ATTACK') {
                 $enemy=(int)($action['monster_id']?:$leader_id);
                 if(!isset($enemies[$enemy]) || $enemies[$enemy]['hp']<=0)throw new RuntimeException('선택한 몬스터가 이미 전투불능입니다.');
-                maze_attack_monster($enemies[$enemy], maze_data($enemies[$enemy]['monster']), $settings['attack_code'], maze_code($session, $party[$id], $settings['attack_code']) + maze_effect_value($party[$id], 'CODE', '공통대미지'));
+                maze_attack_monster($enemies[$enemy], maze_data($enemies[$enemy]['monster']), $settings['attack_code'], maze_code($session, $party[$id], $settings['attack_code']) + maze_effect_value($party[$id], 'CODE', '공통대미지'),$runtimes);
             }
             elseif ($action['action'] === 'GUARD') {
                 $effects = maze_data($party[$id]['effects']); $effects['guard'] = array('remaining' => 1, 'components' => array(array('type' => 'GUARD', 'value' => min(90, maze_code($session, $party[$id], $settings['guard_code']))))); $party[$id]['effects'] = maze_json($effects);
@@ -310,7 +332,7 @@ function maze_resolve($session, $battle, $skip_time) {
                 $target = (int)$action['target_id'];
                 if (!isset($party[$target]) || $party[$target]['hp'] <= 0) throw new RuntimeException('회복 대상 없음');
                 maze_heal($party[$target], maze_code($session, $party[$id], $settings['heal_code']));
-            } elseif ($action['action'] === 'SKILL') maze_skill_execute($session, $battle, $party, $id, $action, $enemies);
+            } elseif ($action['action'] === 'SKILL') maze_skill_execute($session, $battle, $party, $id, $action, $enemies, $runtimes);
             elseif ($action['action'] === 'ITEM') {
                 $target = (int)$action['target_id'];
                 if (!isset($party[$target])) throw new RuntimeException('아이템 대상 없음');
@@ -322,16 +344,15 @@ function maze_resolve($session, $battle, $skip_time) {
             foreach($enemies as $enemy_id=>$unit) {
                 $monster=maze_data($unit['monster']);
                 if(empty($monster['shared']['enmity_enabled']))continue;
-                require_once G5_PATH.'/lib/monster_shared.lib.php';
-                $r=monster_shared_runtime('maze:'.$enemy_id,0,$monster['shared']);
+                $r=&$runtimes[$enemy_id];
                 $participants=array();foreach($before_party as $pid=>$p)$participants[]=array('id'=>$pid,'hp'=>$p['hp']);monster_shared_prune($r,$participants);
                 monster_shared_enmity($r,$id,max(0,(int)$before_enemies[$enemy_id]['hp']-(int)$unit['hp'])+$healed*.5);
                 if($paid && $paid['sk_function']==='도발' && $unit['hp']>0) {
                     monster_shared_enmity($r,$id,0,true);
                     maze_combat_event($session,$battle['turn_no'],$party[$id]['name'],$monster['dg_mon_name'],'도발 · 위협 1위',0,'PROVOKE');
                 }
-                monster_shared_save('maze:'.$enemy_id,0,$r);
             }
+            unset($r);
             $label=$action['action'];
             if($label==='SKILL')$label=maze_skill($before_party[$id],$action['reference_id'])['sk_name'];
             elseif($label==='ITEM') $label=$item_label;
@@ -353,7 +374,7 @@ function maze_resolve($session, $battle, $skip_time) {
         if (!maze_battle_living($enemies)) break;
     }
     foreach($enemies as &$unit) {
-        if($unit['hp']>0 && array_filter($party,function($p){return $p['hp']>0;}))maze_monster_phase($session,$unit,$party,$enemies);
+        if($unit['hp']>0 && array_filter($party,function($p){return $p['hp']>0;}))maze_monster_phase($session,$unit,$party,$enemies,$runtimes);
     }
     unset($unit);
     foreach($enemies as &$unit) if($unit['hp']>0) {
@@ -367,8 +388,8 @@ function maze_resolve($session, $battle, $skip_time) {
     }
     unset($unit);
     $boss_killed = !maze_battle_living($enemies) && $room['is_boss'];
-    foreach ($party as &$person) {
-        if ($boss_killed) { maze_person_save($person); continue; }
+    foreach ($party as $person_id=>&$person) {
+        if ($boss_killed) { maze_person_save($person,$party_at_start[$person_id]); continue; }
         $effects = maze_data($person['effects']);
         foreach ($effects as $key => &$effect) {
             if ($person['hp'] > 0) foreach ($effect['components'] as $component) if ($component['type'] === 'DOT_HP') { $before=$person['hp'];$person['hp'] = max(0, $person['hp'] - max(0, (int)$component['value']));maze_combat_event($session,$battle['turn_no'],'지속 효과',$person['name'],'지속 피해',$before-$person['hp'],'DAMAGE'); }
@@ -376,32 +397,39 @@ function maze_resolve($session, $battle, $skip_time) {
         }
         unset($effect); $person['effects'] = maze_json($effects);
         $skills = maze_data($person['skills']); foreach ($skills as &$skill) $skill['sh_limit'] = max(0, (int)$skill['sh_limit'] - 1); unset($skill);
-        $person['skills'] = maze_json($skills); maze_person_save($person);
+        $person['skills'] = maze_json($skills); maze_person_save($person,$party_at_start[$person_id]);
     }
     unset($person);
     maze_log($session['ds_id'], 0, 'TURN', '턴 '.$battle['turn_no'].' 처리 완료'.($escape ? ' · 도주 실패' : ''));
     $living = array_filter($party, function ($person) { return $person['hp'] > 0; });
-    if (!$living) { foreach($enemies as $unit)maze_battle_unit_save($unit,'LOST');maze_finish($session, false); return; }
-    if (!maze_battle_living($enemies)) { maze_battle_end($session, $battle, 'WON', $enemies); return; }
-    $deadline=maze_deadline();
-    foreach($enemies as $unit) {
-        $m=maze_data($unit['monster']);if($unit['hp']>0 && !empty($m['shared']['enmity_enabled'])){$r=monster_shared_runtime('maze:'.$unit['battle_id'],0,$m['shared']);monster_shared_prepare($r,(int)$battle['turn_no']+1,array('hp'=>$unit['hp'],'max_hp'=>$m['dg_mon_hp']));monster_shared_save('maze:'.$unit['battle_id'],0,$r);}
-        $unit['turn_no']=(int)$battle['turn_no']+1;$unit['deadline_at']=$deadline;maze_battle_unit_save($unit);
+    if (!$living) { foreach($enemies as $unit)maze_battle_unit_save($unit,'LOST');maze_finish($session, false); }
+    elseif (!maze_battle_living($enemies)) maze_battle_end($session, $battle, 'WON', $enemies);
+    else {
+        $deadline=maze_deadline();
+        foreach($enemies as $unit) {
+            $m=maze_data($unit['monster']);if($unit['hp']>0 && !empty($m['shared']['enmity_enabled']))monster_shared_prepare($runtimes[(int)$unit['battle_id']],(int)$battle['turn_no']+1,array('hp'=>$unit['hp'],'max_hp'=>$m['dg_mon_hp']));
+            $unit['turn_no']=(int)$battle['turn_no']+1;$unit['deadline_at']=$deadline;maze_battle_unit_save($unit);
+        }
+        maze_update('session', array(), 'ds_id='.(int)$session['ds_id'], true);
     }
-    maze_update('session', array('version' => (int)$session['version'] + 1), 'ds_id='.(int)$session['ds_id']);
+    foreach($runtimes as $enemy_id=>$runtime) {
+        $state=$runtime;unset($state['definition']);
+        $before=$runtime_before[$enemy_id];if($before!==null)unset($before['definition']);
+        if($state!==$before)monster_shared_save('maze:'.$enemy_id,0,$runtime);
+    }
 }
 function maze_battle_end($session, $battle, $state, $enemies = null) {
     $room = maze_one('SELECT * FROM `'.maze_table('room').'` WHERE ds_id='.(int)$session['ds_id'].' AND room_id='.(int)$session['room_id']);
     if($enemies===null){$enemies=maze_battle_group($session,$battle);$enemies[(int)$battle['battle_id']]=$battle;}
     foreach($enemies as $unit)maze_battle_unit_save($unit,$state);
     maze_update('room', array('encounter_done' => 1), 'ds_id='.(int)$session['ds_id'].' AND room_id='.(int)$session['room_id']);
-    maze_update('session', array('phase' => $room['is_boss'] && $state === 'WON' ? 'BOSS_RESULT' : 'EXPLORE', 'version' => (int)$session['version'] + 1), 'ds_id='.(int)$session['ds_id']);
+    maze_update('session', array('phase' => $room['is_boss'] && $state === 'WON' ? 'BOSS_RESULT' : 'EXPLORE'), 'ds_id='.(int)$session['ds_id'], true);
     maze_log($session['ds_id'], 0, 'BATTLE', $state);
     if($state==='WON')foreach($enemies as $unit)maze_combat_event($session,$battle['turn_no'],maze_data($unit['monster'])['dg_mon_name'],maze_data($unit['monster'])['dg_mon_name'],'전투불능',0,'DEAD');
 }
-function maze_monster_phase($session, &$battle, &$party, &$enemies = null) {
+function maze_monster_phase($session, &$battle, &$party, &$enemies, &$runtimes) {
     require_once G5_PATH.'/lib/monster_adapters.lib.php';
-    if(monster_shared_maze($session,$battle,$party,$enemies))return;
+    if(monster_shared_maze($session,$battle,$party,$enemies,$runtimes))return;
     $monster = maze_data($battle['monster']); $settings = maze_data($session['snapshot']);
     foreach (array('d','w','s1','s2') as $pattern) {
         $prefix = 'dg_'.$pattern.'_attack_'; $interval = (int)$monster[$prefix.'turn'];

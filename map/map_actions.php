@@ -17,7 +17,7 @@ $is_current_map = ((int)$character['ma_id'] === (int)$ma['ma_id']);
 
 <div class="map-pannel map-vn-pannel">
 	<? foreach($open_dungeons as $open_dungeon) {
-		$maze_entry_label = maze_entry_label((int)$open_dungeon['ds_id'], (int)$character['ch_id']);
+		$maze_entry_label = maze_entry_label((int)$open_dungeon['ds_id'], (int)$character['ch_id'], $open_dungeon);
 	?>
 		<div class="map-vn-dungeon-notice" data-dungeon-id="<?=(int)$open_dungeon['ds_id']?>">
 			<strong>던전 발생</strong>

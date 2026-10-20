@@ -53,8 +53,8 @@ function monster_dungeon_read_view_sql() {
 }
 function monster_dungeon_read_table() { return monster_table('dungeon_monster_read'); }
 function monster_dungeon_read_ready() {
-    $row=sql_fetch('SELECT TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='.monster_quote(monster_dungeon_read_table()),false);
-    return $row && $row['TABLE_TYPE']==='VIEW';
+    $row=sql_fetch('SELECT version FROM `'.monster_table('system_migration_meta')."` WHERE module='monsters'",false);
+    return $row && version_compare((string)$row['version'],'1.8.0','>=');
 }
 function monster_raid_next_id($preferred=0) {
     $table='`'.monster_table('monster_master').'`';
@@ -71,13 +71,13 @@ function monster_ready() {
     }
     return $ready;
 }
-function monster_profile($id, $enabled = true) {
-    $row = sql_fetch('SELECT * FROM `'.monster_table('monster_master').'` WHERE monster_id='.(int)$id.($enabled?' AND enabled=1':''));
-    if (!$row) throw new RuntimeException('사용 가능한 던전 몬스터 프로필이 없습니다.');
+function monster_profile($id, $enabled = true, $row = null, &$catalog = null) {
+    if ($row === null) $row = sql_fetch('SELECT * FROM `'.monster_table('monster_master').'` WHERE monster_id='.(int)$id.($enabled?' AND enabled=1':''));
+    if (!$row || ($enabled && !$row['enabled'])) throw new RuntimeException('사용 가능한 던전 몬스터 프로필이 없습니다.');
     $profile = json_decode($row['profile'], true);
     if (!is_array($profile) || empty($profile['dg_mon_hp'])) throw new RuntimeException('몬스터 전투 수치를 확인하세요.');
     $profile=array_replace($profile, array('dg_mon_name'=>$row['name'],'dg_mon_img'=>$row['image'],'dg_mon_descript'=>$row['description'],'monster_id'=>(int)$row['monster_id']));
-    if(!empty($profile['shared'])) {require_once __DIR__.'/monster_shared.lib.php';$profile['shared']=monster_shared_compile($profile);}
+    if(!empty($profile['shared'])) {require_once __DIR__.'/monster_shared.lib.php';if($catalog===null)$catalog=monster_shared_skills();$profile['shared']=monster_shared_compile($profile,$catalog);}
     return $profile;
 }
 function monster_sync_raid($id) {
@@ -103,13 +103,4 @@ function monster_image_input($url_key,$file_key) {
         $url=G5_DATA_URL.'/monster/'.$name;
     }
     return $url;
-}
-function monster_field_label($field) {
-    $labels=array('dg_mon_hp'=>'최대 HP','dg_defence'=>'방어','dg_strong_code'=>'강점 코드','dg_strong_value'=>'강점 배율','dg_weak_code'=>'약점 코드','dg_weak_value'=>'약점 배율','dg_weak_effect_count'=>'그로기 발동 횟수','dg_weak_effect_turn'=>'그로기 지속 횟수');
-    if (isset($labels[$field])) return $labels[$field];
-    foreach(array('d'=>'일반','w'=>'전체','s1'=>'조건 1','s2'=>'조건 2') as $key=>$name) {
-        $prefix='dg_'.$key.'_attack_';
-        if (strpos($field,$prefix)===0) { $suffix=substr($field,strlen($prefix)); $names=array('min'=>'최소 피해','max'=>'최대 피해','turn'=>'발동 간격(턴)','count'=>'대상 수','comment'=>'행동 문구','st_id'=>'조건 스탯 ID','st_value'=>'조건 수치','type'=>'조건 방향 (이상/이하)'); return $name.' · '.($names[$suffix]??$suffix); }
-    }
-    return $field;
 }

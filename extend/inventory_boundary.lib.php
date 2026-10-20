@@ -37,6 +37,7 @@ function inventory_boundary_quote($value) {
     return $value === null ? 'NULL' : "'".sql_escape_string((string)$value)."'";
 }
 function inventory_boundary_json($value) {
+    // Despite the legacy name, this is base64-encoded PHP serialization, not JSON.
     // Base64 keeps even legacy non-UTF8/custom binary column values intact.
     return base64_encode(serialize($value));
 }
@@ -47,9 +48,15 @@ function inventory_boundary_decode($value) {
     if (!is_array($data)) throw new RuntimeException('보관 데이터를 확인할 수 없습니다.');
     return $data;
 }
-function inventory_boundary_readiness() {
+function inventory_boundary_readiness($full = true) {
     global $g5;
-    static $result = null;
+    static $result = null, $version_result = null;
+    if (!$full) {
+        if ($version_result !== null) return $version_result;
+        $row = sql_fetch('SELECT version FROM `'.G5_TABLE_PREFIX."system_migration_meta` WHERE module='inventory_boundary'", false);
+        $ready = $row && version_compare((string)$row['version'], '1.0.0', '>=');
+        return $version_result = array('ready' => (bool)$ready, 'errors' => $ready ? array() : array('인벤토리 안전 처리 DB migration 미완료'));
+    }
     if ($result !== null) return $result;
     $tables = array($g5['inventory_table'], inventory_boundary_table('guard'), inventory_boundary_table('journal'));
     $quoted = array_map('inventory_boundary_quote', $tables);
@@ -63,12 +70,13 @@ function inventory_boundary_readiness() {
         $has_identity = false;
         foreach ($inventory_columns as $column) if ($column['Field'] === 'in_id' && $column['Key'] === 'PRI' && strpos($column['Extra'],'auto_increment') !== false) $has_identity = true;
         if (!$has_identity) $errors[] = $g5['inventory_table'].': in_id AUTO_INCREMENT PRIMARY KEY 필요';
+        $inventory_indexes = inventory_boundary_rows('SHOW INDEX FROM `'.$g5['inventory_table'].'`');
         $primary = array();
-        foreach (inventory_boundary_rows('SHOW INDEX FROM `'.$g5['inventory_table'].'`') as $index) if ($index['Key_name']==='PRIMARY') $primary[(int)$index['Seq_in_index']]=$index['Column_name'];
+        foreach ($inventory_indexes as $index) if ($index['Key_name']==='PRIMARY') $primary[(int)$index['Seq_in_index']]=$index['Column_name'];
         ksort($primary);
         if (array_values($primary)!==array('in_id')) $errors[]=$g5['inventory_table'].': 단일 in_id 기본키 필요';
         $owner_index = false;
-        foreach (inventory_boundary_rows('SHOW INDEX FROM `'.$g5['inventory_table'].'`') as $index) if ((int)$index['Seq_in_index'] === 1 && $index['Column_name'] === 'ch_id' && $index['Sub_part'] === null) $owner_index = true;
+        foreach ($inventory_indexes as $index) if ((int)$index['Seq_in_index'] === 1 && $index['Column_name'] === 'ch_id' && $index['Sub_part'] === null) $owner_index = true;
         if (!$owner_index) $errors[] = $g5['inventory_table'].': ch_id 선두 인덱스 필요 (004 수동 migration)';
         $required = array('guard' => array('ch_id','active_journal'), 'journal' => array('journal_id','ch_id','mb_id','operation','state','request_key','originals','intent','result_note','created_at','finished_at'));
         foreach ($required as $name => $columns) {
@@ -92,7 +100,7 @@ function inventory_boundary_readiness() {
     return $result;
 }
 function inventory_boundary_require_ready() {
-    $check = inventory_boundary_readiness();
+    $check = inventory_boundary_readiness(false);
     if (!$check['ready']) throw new RuntimeException('아이템 안전 처리 DB migration이 적용되지 않았습니다. 관리자에게 문의해 주세요.');
 }
 function inventory_boundary_owner($ch_id) {

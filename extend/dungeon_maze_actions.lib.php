@@ -22,6 +22,7 @@ function maze_leave($session, $person, $reason) {
     $ds_id = (int)$session['ds_id']; $id = (int)$person['dm_id'];
     inventory_boundary_query('DELETE FROM `'.maze_table('vote')."` WHERE ds_id={$ds_id} AND (target_id={$id} OR voter_id={$id})");
     if ($session['battle_id']) inventory_boundary_query('DELETE FROM `'.maze_table('action').'` WHERE battle_id='.(int)$session['battle_id'].' AND dm_id='.$id);
+    maze_update('session', array(), 'ds_id='.$ds_id, true);
 }
 function maze_recount_votes($session) {
     // Party shrink can make another existing vote unanimous; iterate only removals.
@@ -45,7 +46,7 @@ function maze_move($session, $input) {
     if (!$next) throw new RuntimeException('그 방향으로 이동할 수 없습니다.');
     if ($next['is_exit']) maze_require_clear_allowed($session);
     maze_update('room', array('visited' => 1), 'ds_id='.(int)$session['ds_id'].' AND room_id='.(int)$next['room_id']);
-    maze_update('session', array('room_id' => $next['room_id'], 'version' => (int)$session['version'] + 1), 'ds_id='.(int)$session['ds_id']);
+    maze_update('session', array('room_id' => $next['room_id']), 'ds_id='.(int)$session['ds_id'], true);
     $session['room_id'] = $next['room_id']; $session['version']++;
     $payload = maze_data($next['payload']);
     maze_log($session['ds_id'], 0, 'MOVE', '방 '.$next['room_id'].' 이동');
@@ -90,7 +91,7 @@ function maze_event($session, $actor, $input) {
     } elseif (!in_array($type, array('NONE','TEXT'), true)) throw new RuntimeException('이벤트 결과 설정이 잘못되었습니다.');
     $text = isset($event['text']) ? $event['text'] : '';
     maze_update('room', array('resolved' => 1, 'result_text' => $text), 'ds_id='.(int)$session['ds_id'].' AND room_id='.(int)$room['room_id']);
-    maze_update('session', array('version' => (int)$session['version'] + 1), 'ds_id='.(int)$session['ds_id']);
+    maze_update('session', array(), 'ds_id='.(int)$session['ds_id'], true);
     maze_log($session['ds_id'], $actor['dm_id'], 'EVENT', $type.': '.$text);
     maze_alive_or_fail($session);
 }
@@ -104,7 +105,8 @@ function maze_action($ds_id, $operation, $input) {
         if ($operation === 'chat') {
             $message = trim(isset($input['message']) ? $input['message'] : '');
             if ($message === '' || mb_strlen($message, 'UTF-8') > 1000) throw new RuntimeException('채팅은 1~1000자로 입력해 주세요.');
-            maze_log($session['ds_id'], $actor['dm_id'], 'CHAT', $message); return;
+            maze_log($session['ds_id'], $actor['dm_id'], 'CHAT', $message);
+            maze_update('session', array(), 'ds_id='.(int)$session['ds_id'], true); return;
         }
         if ($session['phase'] === 'BOSS_RESULT') {
             if ($operation !== 'escape_final' || $actor['hp'] <= 0) throw new RuntimeException('보스 처치 후에는 탈출만 가능합니다.');
@@ -123,12 +125,19 @@ function maze_action($ds_id, $operation, $input) {
                 $where = 'ds_id='.(int)$session['ds_id'].' AND target_id='.$id.' AND voter_id='.(int)$actor['dm_id'];
                 if (!empty($input['cancel'])) inventory_boundary_query('DELETE FROM `'.maze_table('vote').'` WHERE '.$where);
                 else inventory_boundary_query('INSERT INTO `'.maze_table('vote').'` (ds_id,target_id,voter_id) VALUES ('.(int)$session['ds_id'].','.$id.','.(int)$actor['dm_id'].') ON DUPLICATE KEY UPDATE voter_id=VALUES(voter_id)');
+                if ((int)maze_one('SELECT ROW_COUNT() AS changed')['changed'] > 0) maze_update('session', array(), 'ds_id='.(int)$session['ds_id'], true);
             }
             maze_recount_votes($session); return;
         }
         if ($session['phase'] === 'WAITING') {
             if ($session['expires_at'] && strtotime($session['expires_at']) <= time()) throw new RuntimeException('모집이 종료되었습니다.');
-            if ($operation === 'ready') maze_update('member', array('ready' => !empty($input['ready']) ? 1 : 0), 'dm_id='.(int)$actor['dm_id']);
+            if ($operation === 'ready') {
+                $ready=!empty($input['ready']) ? 1 : 0;
+                if ((int)$actor['ready'] !== $ready) {
+                    maze_update('member', array('ready' => $ready), 'dm_id='.(int)$actor['dm_id']);
+                    maze_update('session', array(), 'ds_id='.(int)$session['ds_id'], true);
+                }
+            }
             elseif ($operation === 'start') maze_start($session, $actor);
             else throw new RuntimeException('대기실에서 실행할 수 없는 행동입니다.');
             return;
@@ -154,7 +163,7 @@ function maze_action($ds_id, $operation, $input) {
             if (!isset($party[$target_id])) throw new RuntimeException('현재 파티의 대상만 선택할 수 있습니다.');
             maze_item_apply($session, $actor, $party[$target_id], (int)$input['inventory_id']);
             maze_person_save($party[$target_id]);
-            maze_update('session', array('version' => (int)$session['version'] + 1), 'ds_id='.(int)$session['ds_id']);
+            maze_update('session', array(), 'ds_id='.(int)$session['ds_id'], true);
         } else throw new RuntimeException('지원하지 않는 행동입니다.');
     });
     maze_pay_rewards((int)$ds_id);
