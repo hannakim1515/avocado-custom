@@ -110,7 +110,7 @@ function maze_settle_member($session, $participant, $reason, $clear_reward = fal
         }
         if ((int)$settings['points'] > 0) maze_insert('reward', array('ds_id' => $session['ds_id'], 'dm_id' => $id, 'reward_type' => 'POINT', 'mb_id' => $current['mb_id'], 'amount' => (int)$settings['points']));
     }
-    maze_update('member', array('settled' => 1, 'state' => $reason, 'reward_eligible' => (int)$eligible, 'exited_at' => date('Y-m-d H:i:s')), 'dm_id='.$id);
+    maze_update('member', array('settled' => 1, 'state' => $reason, 'exited_at' => date('Y-m-d H:i:s')), 'dm_id='.$id);
     maze_log($session['ds_id'], $id, 'SETTLEMENT', $reason.($eligible ? ' · 클리어 보상: '.implode(', ',$reward_summary).' · 포인트 '.(int)$settings['points'] : ' · 클리어 보상 없음'));
     return true;
 }

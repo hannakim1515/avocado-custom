@@ -82,7 +82,7 @@ function maze_readiness($full = true) {
     $contract = array(
         'meta' => 'singleton schema_version action_timeout',
         'session' => 'ds_id dg_id phase version room_id battle_id snapshot expires_at started_at finished_at created_at',
-        'member' => 'dm_id ds_id ch_id mb_id name state ready hp max_hp stats skills effects settled reward_eligible joined_at exited_at',
+        'member' => 'dm_id ds_id ch_id mb_id name state ready hp max_hp stats skills effects settled joined_at exited_at',
         'room' => 'ds_id room_id parent_id direction depth kind is_exit is_boss visited resolved encounter_done payload result_text',
         'battle' => 'battle_id ds_id room_id encounter_id state turn_no deadline_at monster hp weak_count weak_turn',
         'action' => 'battle_id turn_no dm_id action target_id monster_id reference_id escape_vote',
@@ -126,10 +126,6 @@ function maze_readiness($full = true) {
             foreach(isset($indexes[$table])?$indexes[$table]:array() as $index){ksort($index);if(array_slice(array_values($index),0,count($required))===$required)$found=true;}
             if(!$found)$result['errors'][]=$table.': missing lookup index ('.implode(',',$required).')';
         }
-    }
-    if (!$result['errors']) {
-        $meta = maze_one('SELECT * FROM `'.maze_table('meta').'` WHERE singleton=1');
-        if (!$meta || (int)$meta['schema_version'] !== 1) $result['errors'][] = 'schema 버전 미완료';
     }
     $result['ready'] = !$result['errors'];
     return $result;

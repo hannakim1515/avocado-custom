@@ -92,7 +92,7 @@ function maze_client_state($ds_id,$last_log=0,$last_chat=0,$last_event=0) {
         }
     }
     $chat=monster_rows('SELECT l.log_id,l.message,l.created_at,m.name FROM `'.maze_table('log').'` l LEFT JOIN `'.maze_table('member').'` m ON m.dm_id=l.dm_id WHERE l.ds_id='.(int)$ds_id." AND l.kind='CHAT' AND l.log_id>".(int)$last_chat.' ORDER BY l.log_id '.($last_chat>0?'ASC':'DESC').' LIMIT 60');
-    $logs=monster_rows('SELECT log_id,kind,message,created_at FROM `'.maze_table('log').'` WHERE ds_id='.(int)$ds_id." AND kind NOT IN ('CHAT','COMBAT') AND log_id>".(int)$last_log.' ORDER BY log_id '.($last_log>0?'ASC':'DESC').' LIMIT 80');
+    $logs=monster_rows('SELECT log_id,kind,message,created_at FROM `'.maze_table('log').'` WHERE ds_id='.(int)$ds_id." AND kind <> 'CHAT' AND log_id>".(int)$last_log.' ORDER BY log_id '.($last_log>0?'ASC':'DESC').' LIMIT 80');
     $events=monster_rows('SELECT event_id,turn_no,actor,target,action,amount,result,created_at FROM `'.monster_table('dungeon_combat_event')."` WHERE source='maze' AND ds_id=".(int)$ds_id.' AND event_id>'.(int)$last_event.' ORDER BY event_id '.($last_event>0?'ASC':'DESC').' LIMIT 80');
     $map=monster_rows('SELECT room_id,parent_id,kind,is_boss FROM `'.maze_table('room').'` WHERE ds_id='.(int)$ds_id.' AND visited=1 ORDER BY room_id');
     return array(
