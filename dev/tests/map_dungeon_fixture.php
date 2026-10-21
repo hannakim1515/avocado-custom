@@ -75,7 +75,7 @@ elseif(in_array($op,array('legacy_event','legacy_room','rogue_battle'),true)) {
         require $root.'/lib/monster.lib.php';require $root.'/extend/inventory_boundary.lib.php';require $root.'/extend/dungeon_maze.lib.php';require $root.'/extend/dungeon_maze_combat.lib.php';
         $s=sql_fetch('SELECT * FROM web_dungeon_state WHERE ds_id='.$ds);$snapshot=maze_data($s['snapshot']);$event['monster']=monster_profile($data['rogue_monster']);$snapshot['events']=array($event);
         maze_update('session',array('snapshot'=>maze_json($snapshot),'version'=>(int)$s['version']+1),'ds_id='.$ds);
-        $room=sql_fetch('SELECT * FROM web_dungeon_maze_room WHERE ds_id='.$ds.' AND room_id='.(int)$s['room_id']);$payload=maze_data($room['payload']);$payload['event']=$event;
+        $room=sql_fetch('SELECT * FROM web_dungeon_maze_room WHERE ds_id='.$ds.' AND room_id='.(int)$s['room_id']);$payload=maze_data($room['payload']);$payload['event_index']=0;
         maze_update('room',array('payload'=>maze_json($payload),'resolved'=>$op==='rogue_battle'?1:0,'result_text'=>$op==='rogue_battle'?$event['text']:''),'ds_id='.$ds.' AND room_id='.(int)$s['room_id']);
         if($op==='rogue_battle') {sql_query('START TRANSACTION');try{maze_battle_begin($s,$room,$event['monster']);sql_query('COMMIT');}catch(Throwable $e){sql_query('ROLLBACK');throw $e;}}
     }

@@ -519,14 +519,16 @@ try {
     $s=maze_session(8);$snapshot=maze_data($s['snapshot']);$snapshot['monsters']=array(array('monster_id'=>17,'enabled'=>true,'min_count'=>2,'max_count'=>2));
     maze_update('session',array('snapshot'=>maze_json($snapshot)),'ds_id=8');
     $before_units=(int)maze_one('SELECT COUNT(*) n FROM avo_dungeon_maze_battle WHERE ds_id=8')['n'];
-    maze_update('room',array('resolved'=>0,'payload'=>maze_json(array('event'=>array('type'=>'MONSTER','monster_id'=>19,'monster'=>$pack)))),'ds_id=8 AND room_id='.(int)$s['room_id']);
+    $snapshot['events']=array(array('type'=>'MONSTER','monster_id'=>19,'monster'=>$pack));maze_update('session',array('snapshot'=>maze_json($snapshot)),'ds_id=8');
+    maze_update('room',array('resolved'=>0,'payload'=>maze_json(array('event_index'=>0))),'ds_id=8 AND room_id='.(int)$s['room_id']);
     maze_action(8,'event',array('room_id'=>$s['room_id'],'version'=>$s['version']));
     check(maze_session(8)['phase']==='EXPLORE' && (int)maze_one('SELECT COUNT(*) n FROM avo_dungeon_maze_battle WHERE ds_id=8')['n']===$before_units,'legacy room event outside the departure pool cannot spawn a monster');
     $choices=array('enabled'=>true,'choices'=>array(array('label'=>'Excluded','type'=>'MONSTER','monster_id'=>19),array('label'=>'Text','type'=>'TEXT','text'=>'Safe'),array('label'=>'Allowed','type'=>'MONSTER','monster_id'=>17)));
     check(array_keys(maze_event_for_pool($choices,$snapshot['monsters'])['choices'])===array(1,2),'removed event choice keeps original indexes for visible allowed choices');
     check(!maze_event_for_pool(array('enabled'=>false,'type'=>'MONSTER','monster_id'=>17),$snapshot['monsters']),'disabled monster event cannot execute');
     $s=maze_session(8);
-    maze_update('room',array('resolved'=>0,'payload'=>maze_json(array('event'=>array('type'=>'MONSTER','monster_id'=>17,'monster'=>$pack)))),'ds_id=8 AND room_id='.(int)$s['room_id']);
+    $snapshot['events']=array(array('type'=>'MONSTER','monster_id'=>17,'monster'=>$pack));maze_update('session',array('snapshot'=>maze_json($snapshot)),'ds_id=8');
+    maze_update('room',array('resolved'=>0,'payload'=>maze_json(array('event_index'=>0))),'ds_id=8 AND room_id='.(int)$s['room_id']);
     maze_action(8,'event',array('room_id'=>$s['room_id'],'version'=>$s['version']));
     check(count(maze_battle_group(maze_session(8),maze_battle_current(maze_session(8))))===2,'event encounter uses the same configured species count');
     $b=maze_battle_current(maze_session(8));maze_action(8,'submit',array('battle_id'=>$b['battle_id'],'turn_no'=>1,'action'=>'SKIP','escape_vote'=>1));maze_action(8,'resolve',array('battle_id'=>$b['battle_id'],'turn_no'=>1));

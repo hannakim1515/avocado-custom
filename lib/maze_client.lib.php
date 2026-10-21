@@ -36,7 +36,7 @@ function maze_client_state($ds_id,$last_log=0,$last_chat=0,$last_event=0) {
         foreach(monster_rows('SELECT direction FROM `'.maze_table('room').'` WHERE ds_id='.(int)$ds_id.' AND parent_id='.(int)$session['room_id']) as $next) $choices[]=array('op'=>'move','label'=>array('forward'=>'앞으로 간다','left'=>'왼쪽으로 간다','right'=>'오른쪽으로 간다')[$next['direction']],'data'=>array('direction'=>$next['direction']));
         if($room['parent_id']) $choices[]=array('op'=>'move','label'=>'이전 방으로 돌아간다','data'=>array('direction'=>'back'));
         if(!$room['resolved']) {
-            $payload=maze_data($room['payload']);$event=maze_event_for_pool($payload['event']??null,$settings['monsters']??array());
+            $event=maze_event_for_pool($settings['events'][maze_data($room['payload'])['event_index']]??null,$settings['monsters']);
             $view_phase='INVESTIGATE';$prompt=$event['prompt']??$event['text']??'주변에서 조사할 대상을 선택하세요.';
             if(!empty($event['choices'])) foreach($event['choices'] as $index=>$choice)$choices[]=array('op'=>'event','label'=>$choice['label'],'data'=>array('choice'=>$index));
             else $choices[]=array('op'=>'event','label'=>$room['kind']==='TREASURE'?'상자를 연다':'조사한다','data'=>array());

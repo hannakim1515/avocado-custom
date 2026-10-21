@@ -233,15 +233,12 @@ function maze_generate($settings) {
             'is_exit' => (int)($id === $exit), 'is_boss' => (int)($id === $boss), 'visited' => (int)($id === 1),
             'resolved' => (int)($id === 1), 'encounter_done' => 0, 'result_text' => '');
         $events = array();
-        foreach ($settings['events'] as $event) if (!empty($event['enabled']) && $event['room_kind'] === $room['kind']) {
-            $event=maze_event_for_pool($event,$settings['monsters']);if($event)$events[]=$event;
+        foreach ($settings['events'] as $index => $event) if (!empty($event['enabled']) && $event['room_kind'] === $room['kind']) {
+            if(maze_event_for_pool($event,$settings['monsters']))$events[]=array('index'=>$index,'weight'=>$event['weight']);
         }
-        $event = maze_weighted($events);
-        $monster = null;
-        if ($id === $boss) $monster = maze_weighted($bosses);
-        elseif ($id !== 1 && $id !== $exit && random_int(1,100) <= $settings['encounter_percent']) $monster = maze_weighted($monsters);
+        $monster = maze_weighted($id === $boss ? $bosses : ($id !== 1 && $id !== $exit && random_int(1,100) <= $settings['encounter_percent'] ? $monsters : array()));
         $count = $monster ? maze_monster_count_range($monster) : array(1,1);
-        $room['payload'] = array('event' => $event, 'monster' => $monster ? $monster['data'] : null, 'monster_count' => $monster ? random_int($count[0],$count[1]) : 0);
+        $room['payload'] = array('event_index' => maze_weighted($events)['index']??null, 'monster_count' => $monster ? random_int($count[0],$count[1]) : 0) + ($monster ? array('monster_id'=>$monster['monster_id']) : array());
     }
     unset($room);
     return array_values($rooms);

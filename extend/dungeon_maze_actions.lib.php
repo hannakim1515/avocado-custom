@@ -50,14 +50,14 @@ function maze_move($session, $input) {
     $session['room_id'] = $next['room_id']; $session['version']++;
     $payload = maze_data($next['payload']);
     maze_log($session['ds_id'], 0, 'MOVE', '방 '.$next['room_id'].' 이동');
-    if (!$next['encounter_done'] && !empty($payload['monster'])) maze_battle_begin($session, $next, $payload['monster'], (int)($payload['monster_count']??1));
+    if (!$next['encounter_done'] && isset($payload['monster_id'])) maze_battle_begin($session, $next, maze_pool_monster($payload['monster_id'],maze_data($session['snapshot'])['monsters'])['data'], $payload['monster_count']);
     elseif ($next['is_exit']) maze_finish($session, true);
 }
 function maze_event($session, $actor, $input) {
     $room = maze_room($session);
     if ($room['resolved']) throw new RuntimeException('이미 처리한 방입니다.');
     $settings = maze_data($session['snapshot']);
-    $payload = maze_data($room['payload']); $event = maze_event_for_pool($payload['event']??null,$settings['monsters']??array());
+    $event=maze_event_for_pool($settings['events'][maze_data($room['payload'])['event_index']]??null,$settings['monsters']);
     if (!$event) $event = array('type' => $room['kind'] === 'TRAP' ? 'TRAP' : 'NONE', 'text' => '', 'target' => 'ACTOR');
     if (!empty($event['choices'])) {
         $choice = isset($input['choice']) ? (int)$input['choice'] : -1;
