@@ -172,7 +172,7 @@ function maze_submit($session, $actor, $input) {
     if ($action === 'ITEM') maze_inventory_owned($session, $actor, $reference);
     $escape = !empty($input['escape_vote']) ? 1 : 0;
     inventory_boundary_query('INSERT INTO `'.maze_table('action').'` (battle_id,turn_no,dm_id,action,target_id,monster_id,reference_id,escape_vote) VALUES ('.(int)$battle['battle_id'].','.(int)$battle['turn_no'].','.(int)$actor['dm_id'].','.inventory_boundary_quote($action).','.$target_id.','.$enemy_id.','.$reference.','.$escape.') ON DUPLICATE KEY UPDATE action=VALUES(action),target_id=VALUES(target_id),monster_id=VALUES(monster_id),reference_id=VALUES(reference_id),escape_vote=VALUES(escape_vote)');
-    if ((int)maze_one('SELECT ROW_COUNT() AS changed')['changed'] > 0) maze_update('session', array(), 'ds_id='.(int)$session['ds_id'], true);
+    if ((int)maze_one('SELECT ROW_COUNT() AS changed')['changed'] > 0) maze_update('session', array(), 'ds_id='.(int)$session['ds_id']);
     // Submission only records the choice; resolving requires an explicit POST.
 }
 function maze_skill_targets($skill, $actor_id, $target_id, $party) {
@@ -410,7 +410,7 @@ function maze_resolve($session, $battle, $skip_time) {
             $m=maze_data($unit['monster']);if($unit['hp']>0 && !empty($m['shared']['enmity_enabled']))monster_shared_prepare($runtimes[(int)$unit['battle_id']],(int)$battle['turn_no']+1,array('hp'=>$unit['hp'],'max_hp'=>$m['dg_mon_hp']));
             $unit['turn_no']=(int)$battle['turn_no']+1;$unit['deadline_at']=$deadline;maze_battle_unit_save($unit);
         }
-        maze_update('session', array(), 'ds_id='.(int)$session['ds_id'], true);
+        maze_update('session', array(), 'ds_id='.(int)$session['ds_id']);
     }
     foreach($runtimes as $enemy_id=>$runtime) {
         $state=$runtime;unset($state['definition']);
@@ -423,7 +423,7 @@ function maze_battle_end($session, $battle, $state, $enemies = null) {
     if($enemies===null){$enemies=maze_battle_group($session,$battle);$enemies[(int)$battle['battle_id']]=$battle;}
     foreach($enemies as $unit)maze_battle_unit_save($unit,$state);
     maze_update('room', array('encounter_done' => 1), 'ds_id='.(int)$session['ds_id'].' AND room_id='.(int)$session['room_id']);
-    maze_update('session', array('phase' => $room['is_boss'] && $state === 'WON' ? 'BOSS_RESULT' : 'EXPLORE'), 'ds_id='.(int)$session['ds_id'], true);
+    maze_update('session', array('phase' => $room['is_boss'] && $state === 'WON' ? 'BOSS_RESULT' : 'EXPLORE'), 'ds_id='.(int)$session['ds_id']);
     maze_log($session['ds_id'], 0, 'BATTLE', $state);
     if($state==='WON')foreach($enemies as $unit)maze_combat_event($session,$battle['turn_no'],maze_data($unit['monster'])['dg_mon_name'],maze_data($unit['monster'])['dg_mon_name'],'전투불능',0,'DEAD');
 }

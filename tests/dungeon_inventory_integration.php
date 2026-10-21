@@ -17,7 +17,28 @@ define('G5_TABLE_PREFIX', 'avo_');
 $g5 = array('inventory_table' => 'avo_inventory', 'item_table' => 'avo_item', 'k_ch_equip_table' => 'avo_equip');
 $member = array('mb_id' => 'tester');
 $character = array('ch_id' => 1);
-function sql_query($sql, $error = true) { global $db; if(isset($GLOBALS['query_capture']))$GLOBALS['query_capture'][]=$sql; try { return $db->query($sql); } catch (Throwable $e) { if ($error) throw $e; return false; } }
+function sql_query($sql, $error = true) {
+    global $db;
+    if(isset($GLOBALS['query_capture']))$GLOBALS['query_capture'][]=$sql;
+    $version_call=null;$versions=array();
+    if(isset($GLOBALS['maze_version_checks']) && strpos($sql,'UPDATE `avo_dungeon_state` SET ')===0){
+        foreach(debug_backtrace() as $frame)if(($frame['function']??'')==='maze_update' && $frame['args'][0]==='session'){
+            $version_call=$frame;$rows=$db->query('SELECT ds_id,version FROM avo_dungeon_state WHERE '.$frame['args'][2]);
+            while($row=$rows->fetch_assoc())$versions[$row['ds_id']]=(int)$row['version'];
+            break;
+        }
+    }
+    try {
+        $result=$db->query($sql);
+        if($version_call && $versions){
+            $rows=$db->query('SELECT ds_id,version FROM avo_dungeon_state WHERE ds_id IN ('.implode(',',array_keys($versions)).')');
+            while($row=$rows->fetch_assoc())if((int)$row['version']!==$versions[$row['ds_id']]+1)throw new LogicException('Session UPDATE did not increment version exactly once: '.$version_call['file'].':'.$version_call['line']);
+            $key=str_replace('\\','/',$version_call['file']).':'.$version_call['line'];
+            $GLOBALS['maze_version_checks'][$key]=($GLOBALS['maze_version_checks'][$key]??0)+1;
+        }
+        return $result;
+    } catch (Throwable $e) { if ($error) throw $e; return false; }
+}
 function sql_fetch_array($result) { return $result->fetch_assoc(); }
 function sql_fetch($sql, $error = true) { $result = sql_query($sql, $error); return $result ? $result->fetch_assoc() : false; }
 function sql_escape_string($str) { global $db; return $db->real_escape_string($str); }
@@ -54,7 +75,7 @@ if ($worker && $argv[1]==='version') {
     $stale=maze_session((int)$argv[3]);
     echo (int)$stale['version']."\n"; flush();
     if (trim(fgets(STDIN)) !== 'GO') exit(2);
-    maze_update('session',array(),'ds_id='.(int)$argv[3],true);
+    maze_update('session',array(),'ds_id='.(int)$argv[3]);
     echo "UPDATED\n"; exit;
 }
 if ($worker) {
@@ -94,6 +115,7 @@ function add_inventory($id, $it_id = 1, $owner = 1) {
 }
 function act_as($id) {global $character,$member;$character=get_character($id);$member=array('mb_id'=>$character['mb_id']);}
 
+$GLOBALS['maze_version_checks']=array();
 try {
     sql_query("CREATE TABLE avo_inventory (in_id INT AUTO_INCREMENT PRIMARY KEY,it_id INT NOT NULL,ch_id VARCHAR(20) NOT NULL,it_name VARCHAR(255) NOT NULL,ch_name VARCHAR(255) NOT NULL,in_use VARCHAR(20) NOT NULL DEFAULT '',in_memo TEXT,custom_state VARBINARY(30),KEY owner_rows(ch_id,in_id)) ENGINE=InnoDB");
     sql_query("CREATE TABLE avo_item (it_id INT PRIMARY KEY,it_name VARCHAR(100),it_type VARCHAR(30),it_value VARCHAR(100) NOT NULL DEFAULT '',it_use_battle_able INT,it_use_ever INT) ENGINE=MyISAM");
@@ -277,7 +299,7 @@ try {
         try{maze_action(2,$blocked,array());check(false,'boss result must block '.$blocked);}catch(RuntimeException $expected){}
     }
     $before_chat=(int)maze_session(2)['version'];maze_action(2,'chat',array('message'=>'Boss defeated'));
-    check((int)maze_session(2)['version']===$before_chat+1,'chat advances the version without a turn change');
+    check((int)maze_session(2)['version']===$before_chat && (int)maze_one("SELECT COUNT(*) n FROM avo_dungeon_maze_log WHERE ds_id=2 AND kind='CHAT' AND message='Boss defeated'")['n']===1,'chat is stored without a session version change');
     maze_insert('member',array('ds_id'=>2,'ch_id'=>2,'mb_id'=>'other','name'=>'Dead participant','hp'=>0,'stats'=>'{}','skills'=>'{}','effects'=>'{}','joined_at'=>date('Y-m-d H:i:s')));
     act_as(2);try{maze_action(2,'escape_final',array());check(false,'dead participant cannot trigger final exit');}catch(RuntimeException $expected){}act_as(1);
     $reward_before=(int)maze_one('SELECT COUNT(*) AS n FROM avo_inventory WHERE ch_id=1 AND it_id=2')['n'];
@@ -521,6 +543,7 @@ try {
     $before_units=(int)maze_one('SELECT COUNT(*) n FROM avo_dungeon_maze_battle WHERE ds_id=8')['n'];
     $snapshot['events']=array(array('type'=>'MONSTER','monster_id'=>19,'monster'=>$pack));maze_update('session',array('snapshot'=>maze_json($snapshot)),'ds_id=8');
     maze_update('room',array('resolved'=>0,'payload'=>maze_json(array('event_index'=>0))),'ds_id=8 AND room_id='.(int)$s['room_id']);
+    $s=maze_session(8);
     maze_action(8,'event',array('room_id'=>$s['room_id'],'version'=>$s['version']));
     check(maze_session(8)['phase']==='EXPLORE' && (int)maze_one('SELECT COUNT(*) n FROM avo_dungeon_maze_battle WHERE ds_id=8')['n']===$before_units,'legacy room event outside the departure pool cannot spawn a monster');
     $choices=array('enabled'=>true,'choices'=>array(array('label'=>'Excluded','type'=>'MONSTER','monster_id'=>19),array('label'=>'Text','type'=>'TEXT','text'=>'Safe'),array('label'=>'Allowed','type'=>'MONSTER','monster_id'=>17)));
@@ -529,6 +552,7 @@ try {
     $s=maze_session(8);
     $snapshot['events']=array(array('type'=>'MONSTER','monster_id'=>17,'monster'=>$pack));maze_update('session',array('snapshot'=>maze_json($snapshot)),'ds_id=8');
     maze_update('room',array('resolved'=>0,'payload'=>maze_json(array('event_index'=>0))),'ds_id=8 AND room_id='.(int)$s['room_id']);
+    $s=maze_session(8);
     maze_action(8,'event',array('room_id'=>$s['room_id'],'version'=>$s['version']));
     check(count(maze_battle_group(maze_session(8),maze_battle_current(maze_session(8))))===2,'event encounter uses the same configured species count');
     $b=maze_battle_current(maze_session(8));maze_action(8,'submit',array('battle_id'=>$b['battle_id'],'turn_no'=>1,'action'=>'SKIP','escape_vote'=>1));maze_action(8,'resolve',array('battle_id'=>$b['battle_id'],'turn_no'=>1));
@@ -559,6 +583,7 @@ try {
     check(readiness_probe()==='BLOCKED','missing required lookup index is blocked');
     sql_query('ALTER TABLE avo_dungeon_maze_member ADD KEY daily_settled(ch_id,settled,exited_at)');
     check(readiness_probe()==='READY','complete engine/schema/index contract enables readiness again');
+    require __DIR__.'/dungeon_version_integration.php';
     echo "All inventory integration checks passed.\n";
 } finally {
     sql_query('ROLLBACK', false);

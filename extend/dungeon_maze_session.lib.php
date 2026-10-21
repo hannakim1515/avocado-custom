@@ -131,7 +131,7 @@ function maze_join($ds_id) {
         $preview=array();foreach($settings['stat_definitions'] as $definition){$id=(int)$definition['st_id'];$preview[$id]=function_exists('unified_stat_value')?(int)unified_stat_value($ch_id,$id):(int)get_status($ch_id,$id)['now'];}
         $data['hp']=$data['max_hp']=(int)($preview[$settings['hp_id']]??0);$preview['_maximum']=$preview;$data['stats']=maze_json($preview);
         if ($existing) maze_update('member', $data, 'dm_id='.(int)$existing['dm_id']); else maze_insert('member', $data);
-        maze_update('session', array(), 'ds_id='.$ds_id, true);
+        maze_update('session', array(), 'ds_id='.$ds_id);
         maze_log($ds_id, 0, 'PARTY', $owner['ch_name'].' 입장');
         inventory_boundary_query('COMMIT');
     } catch (Throwable $error) { sql_query('ROLLBACK', false); throw $error; }
@@ -174,7 +174,7 @@ function maze_expire_waiting() {
     foreach ($rows as $row) maze_transaction($row['ds_id'], function ($session) {
         if ($session['phase'] !== 'WAITING' || !$session['expires_at'] || strtotime($session['expires_at']) > time()) return;
         maze_update('member', array('state' => 'LEFT', 'ready' => 0, 'exited_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id']." AND state='ACTIVE'");
-        maze_update('session', array('phase' => 'CLOSED', 'finished_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id'], true);
+        maze_update('session', array('phase' => 'CLOSED', 'finished_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id']);
     });
 }
 
@@ -230,7 +230,7 @@ function maze_start($session, $actor) {
         $generated_rooms[] = $room;
     }
     maze_insert_many('room',$generated_rooms);
-    maze_update('session', array('phase' => 'EXPLORE', 'room_id' => 1, 'snapshot' => maze_json($settings), 'started_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id'], true);
+    maze_update('session', array('phase' => 'EXPLORE', 'room_id' => 1, 'snapshot' => maze_json($settings), 'started_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id']);
     maze_log($session['ds_id'], $actor['dm_id'], 'START', '미궁 탐험을 시작했습니다.');
 }
 
@@ -250,6 +250,6 @@ function maze_finish($session, $clear) {
     inventory_boundary_lock_owners(array_column($party, 'ch_id'));
     foreach ($party as $person) maze_settle_member($session, $person, $clear ? 'CLEAR' : 'FAILED', $clear);
     if ($session['battle_id']) inventory_boundary_query('UPDATE `'.maze_table('battle').'` SET state="CLOSED" WHERE ds_id='.(int)$session['ds_id'].' AND (battle_id='.(int)$session['battle_id'].' OR encounter_id='.(int)$session['battle_id'].') AND state="ACTIVE"');
-    maze_update('session', array('phase' => $clear ? 'CLEAR' : 'FAILED', 'finished_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id'], true);
+    maze_update('session', array('phase' => $clear ? 'CLEAR' : 'FAILED', 'finished_at' => date('Y-m-d H:i:s')), 'ds_id='.(int)$session['ds_id']);
     inventory_boundary_query('DELETE FROM `'.maze_table('vote').'` WHERE ds_id='.(int)$session['ds_id']);
 }

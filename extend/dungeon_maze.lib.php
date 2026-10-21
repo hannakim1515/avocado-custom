@@ -14,11 +14,11 @@ function maze_data($value) {
     return $data;
 }
 function maze_one($sql) { $rows = inventory_boundary_rows($sql); return $rows ? $rows[0] : null; }
-function maze_update($table, $data, $where, $increment_version = false) {
+function maze_update($table, $data, $where) {
     if($table==='session' && isset($data['phase']))$data['ds_state']=in_array($data['phase'],array('CLEAR','FAILED','CLOSED'),true)?'E':'S';
     $sets = array();
     foreach ($data as $key => $value) $sets[] = '`'.$key.'`='.inventory_boundary_quote($value);
-    if ($increment_version && $table === 'session') $sets[] = '`version`=`version`+1';
+    if ($table === 'session') $sets[] = '`version`=`version`+1';
     inventory_boundary_query('UPDATE `'.maze_table($table).'` SET '.implode(',', $sets).' WHERE '.$where);
 }
 function maze_insert($table, $data) {
