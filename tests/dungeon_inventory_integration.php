@@ -584,6 +584,74 @@ try {
     sql_query('ALTER TABLE avo_dungeon_maze_member ADD KEY daily_settled(ch_id,settled,exited_at)');
     check(readiness_probe()==='READY','complete engine/schema/index contract enables readiness again');
     require __DIR__.'/dungeon_version_integration.php';
+
+    // The three payload regressions reuse this fixture and its existing helpers.
+    act_as(1);$member['ch_id']=1;$test_dungeon['dg_id']=200;$test_dungeon['dg_count']=1;$test_dungeon['dg_point']=0;
+    $profile=array('dg_mon_hp'=>10,'dg_defence'=>0);
+    sql_query(system_install_default_row('monster_master',array('monster_id'=>1701,'name'=>'Frozen monster','enabled'=>1,'profile'=>maze_json($profile))));
+    sql_query('INSERT INTO avo_dungeon_monster_pool (dg_id,monster_id,weight,enabled,is_boss,min_count,max_count) VALUES (200,1701,1,1,0,1,1)');
+    $payload_settings=maze_defaults($test_dungeon);
+    $payload_settings['rooms_min']=3;$payload_settings['rooms_max']=3;$payload_settings['branches_min']=0;$payload_settings['branches_max']=0;
+    $payload_settings['encounter_percent']=0;$payload_settings['boss']=false;
+    $payload_settings['weights']=array('EMPTY'=>0,'SEARCH'=>1,'TREASURE'=>0,'TRAP'=>0);
+
+    // 1. Exercise both readers with an unfiltered snapshot and original choice keys.
+    $excluded=array('label'=>'Excluded','type'=>'MONSTER','monster_id'=>1999);
+    $payload_settings['events']=array(array('enabled'=>true,'room_kind'=>'SEARCH','weight'=>1,'text'=>'Frozen choices','choices'=>array($excluded,array('label'=>'Text','type'=>'TEXT','text'=>'Safe choice'),array('label'=>'Allowed','type'=>'MONSTER','monster_id'=>1701))));
+    $test_dungeon['dg_settings']=maze_json($payload_settings);
+    maze_join(70);maze_action(70,'ready',array('ready'=>1));maze_action(70,'start',array());
+    $snapshot=maze_data(maze_session(70)['snapshot']);$snapshot['events'][0]['choices'][0]=$excluded;ksort($snapshot['events'][0]['choices']);
+    maze_update('session',array('snapshot'=>maze_json($snapshot)),'ds_id=70');
+    $s=maze_session(70);maze_action(70,'move',array('version'=>$s['version'],'room_id'=>1,'direction'=>'forward'));
+    $view=maze_client_state(70);$visible=array_values(array_filter($view['choices'],function($choice){return $choice['op']==='event';}));
+    $choice_keys=array_column(array_column($visible,'data'),'choice');$s=maze_session(70);$rejected=false;
+    try{maze_action(70,'event',array('version'=>$s['version'],'room_id'=>2,'choice'=>0));}
+    catch(RuntimeException $expected){$rejected=strpos($expected->getMessage(),'선택지를 골라')!==false;}
+    $rejection_unchanged=maze_session(70)===$s;
+    maze_action(70,'event',array('version'=>$s['version'],'room_id'=>2,'choice'=>1));
+    check($choice_keys===array(1,2) && $rejected && $rejection_unchanged && maze_room(maze_session(70))['result_text']==='Safe choice','payload: choice filter preserves visible keys and rejects excluded choice');
+    maze_action(70,'leave',array('version'=>maze_session(70)['version']));
+
+    // 2. Generate an index-zero event and a genuine null allocation in separate runs.
+    $index_checks=array();
+    foreach(array('SEARCH'=>71,'EMPTY'=>72) as $kind=>$ds_id){
+        $case_settings=$payload_settings;$case_settings['weights']=array('EMPTY'=>0,'SEARCH'=>0,'TREASURE'=>0,'TRAP'=>0);$case_settings['weights'][$kind]=1;
+        $case_settings['events']=array(array('enabled'=>true,'room_kind'=>'SEARCH','weight'=>1,'type'=>'TEXT','text'=>'Departure event'));
+        $test_dungeon['dg_settings']=maze_json($case_settings);
+        maze_join($ds_id);maze_action($ds_id,'ready',array('ready'=>1));maze_action($ds_id,'start',array());
+        $s=maze_session($ds_id);$frozen_snapshot=$s['snapshot'];
+        $live_settings=$case_settings;$live_settings['events']=array(array('enabled'=>true,'room_kind'=>$kind,'weight'=>1,'type'=>'TEXT','text'=>'New live event'));
+        $test_dungeon['dg_settings']=maze_json($live_settings);
+        maze_action($ds_id,'move',array('version'=>$s['version'],'room_id'=>1,'direction'=>'forward'));
+        $s=maze_session($ds_id);$payload=maze_data(maze_room($s)['payload']);$view=maze_client_state($ds_id);
+        maze_action($ds_id,'event',array('version'=>$s['version'],'room_id'=>2));
+        $index_checks[]=$payload['event_index']===($kind==='SEARCH'?0:null) && $view['prompt']===($kind==='SEARCH'?'Departure event':'주변에서 조사할 대상을 선택하세요.') && maze_room(maze_session($ds_id))['result_text']===($kind==='SEARCH'?'Departure event':'') && maze_session($ds_id)['snapshot']===$frozen_snapshot;
+        maze_action($ds_id,'leave',array('version'=>maze_session($ds_id)['version']));
+    }
+    check(!in_array(false,$index_checks,true),'payload: event index zero works and null stays empty after live event addition');
+
+    // 3. Change the real master row and this fixture's dungeon catalog after departure.
+    $case_settings=$payload_settings;$case_settings['rooms_min']=4;$case_settings['rooms_max']=4;$case_settings['encounter_percent']=100;
+    $case_settings['events']=array(array('enabled'=>true,'room_kind'=>'SEARCH','weight'=>1,'type'=>'MONSTER','monster_id'=>1701,'text'=>'Frozen event'));
+    $test_dungeon['dg_settings']=maze_json($case_settings);
+    maze_join(73);maze_action(73,'ready',array('ready'=>1));maze_action(73,'start',array());
+    $s=maze_session(73);$frozen_snapshot=$s['snapshot'];
+    $profile['dg_mon_hp']=999;sql_query('UPDATE avo_monster_master SET name=\'Changed monster\',profile='.inventory_boundary_quote(maze_json($profile)).' WHERE monster_id=1701');
+    $live_settings=$case_settings;$live_settings['events']=array(array('enabled'=>true,'room_kind'=>'SEARCH','weight'=>1,'type'=>'NONE','text'=>'Changed event'));
+    $test_dungeon['dg_settings']=maze_json($live_settings);
+    maze_action(73,'move',array('version'=>$s['version'],'room_id'=>1,'direction'=>'forward'));
+    $s=maze_session(73);$battle=maze_battle_current($s);$monster=maze_data($battle['monster']);$view=maze_client_state(73);
+    $ordinary_frozen=$monster['dg_mon_name']==='Frozen monster' && $monster['dg_mon_hp']===10 && $view['monsters'][0]['name']==='Frozen monster' && $view['monsters'][0]['max_hp']===10;
+    for($attempt=0;maze_session(73)['phase']==='BATTLE' && $attempt<4;$attempt++){
+        $battle=maze_battle_current(maze_session(73));
+        maze_action(73,'submit',array('battle_id'=>$battle['battle_id'],'turn_no'=>$battle['turn_no'],'action'=>'ATTACK'));
+        maze_action(73,'resolve',array('battle_id'=>$battle['battle_id'],'turn_no'=>$battle['turn_no']));
+    }
+    $s=maze_session(73);$event_view=maze_client_state(73);
+    maze_action(73,'event',array('version'=>$s['version'],'room_id'=>2));
+    $monster=maze_data(maze_battle_current(maze_session(73))['monster']);$live=maze_one('SELECT name,profile FROM avo_monster_master WHERE monster_id=1701');
+    check($live['name']==='Changed monster' && maze_data($live['profile'])['dg_mon_hp']===999 && $ordinary_frozen && $event_view['prompt']==='Frozen event' && $monster['dg_mon_name']==='Frozen monster' && $monster['dg_mon_hp']===10 && maze_room(maze_session(73))['result_text']==='Frozen event' && maze_session(73)['snapshot']===$frozen_snapshot,'payload: departure snapshot freezes monster name HP and event after catalog changes');
+    maze_action(73,'leave',array('version'=>maze_session(73)['version']));
     echo "All inventory integration checks passed.\n";
 } finally {
     sql_query('ROLLBACK', false);
