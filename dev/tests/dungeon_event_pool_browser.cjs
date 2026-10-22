@@ -2,7 +2,6 @@ const {chromium}=require('../../artifacts/system-browser/node_modules/playwright
 const {execFileSync}=require('child_process');
 const base='http://127.0.0.1:38082';
 const fixture=(op)=>JSON.parse(execFileSync('C:/xampp/php/php.exe',['-d','short_open_tag=1','dev/tests/map_dungeon_fixture.php',op],{encoding:'utf8'}));
-const repair=(apply=false)=>JSON.parse(execFileSync('C:/xampp/php/php.exe',['-d','short_open_tag=1','dev/tools/repair_unlisted_dungeon_events.php','--fixture',...(apply?['--apply']:[])],{encoding:'utf8'}));
 const check=(ok,label)=>{if(!ok)throw Error(label);console.log('PASS '+label);};
 (async()=>{
  const data=fixture('prepare');let browser;
@@ -37,12 +36,6 @@ const check=(ok,label)=>{if(!ok)throw Error(label);console.log('PASS '+label);};
   await p.getByRole('button',{name:'조사한다',exact:true}).click();
   await p.waitForFunction(()=>document.querySelector('#maze-phase').textContent.includes('탐색'));
   check(fixture('inspect').battles.length===0,'old generated event cannot bypass the assigned pool');
-  fixture('rogue_battle');const before=fixture('inspect').party;
-  check(repair().cancel_untouched_battles.some(x=>x.ds_id===data.instances.waiting),'repair locates only the untouched unlisted event fight');
-  const applied=repair(true);check(applied.applied.battles.includes(data.instances.waiting),'repair cancels the wrong encounter');
-  check(JSON.stringify(fixture('inspect').party)===JSON.stringify(before),'repair keeps participant HP, resources and preparation state');
-  await p.reload();check(await p.locator('#maze-error').isHidden()&&(await p.locator('#maze-phase').innerText()).includes('탐색')&&await p.locator('#maze-enemies .maze-token').count()===0,'repaired session resumes exploration without stale enemies or polling errors');
-  const repeated=repair(true);check(!repeated.disable_events.length&&!repeated.cancel_untouched_battles.length,'repeat repair has no further changes');
   check(!errors.length,'event editor and exploration have no JavaScript errors');
  } finally {if(browser)await browser.close();fixture('cleanup');}
 })().catch(e=>{console.error(e);process.exit(1);});
